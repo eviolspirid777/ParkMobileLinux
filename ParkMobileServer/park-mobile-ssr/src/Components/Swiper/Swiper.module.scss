@@ -1,0 +1,23 @@
+.image-container {
+  background-size: cover; /* Изменяем auto на cover */
+  background-repeat: no-repeat;
+  height: 400px; /* Можно оставить фиксированной высотой или сделать адаптивной */
+  background-position: 25%;
+  width: 100%; /* Обязательно указывайте ширину на 100% */
+  display: flex; /* Для дополнения стилей */
+  justify-content: center; /* Для центрирования */
+  align-items: center; /* Для центрирования */
+}
+
+@media (min-width:1025px) {
+  .image-container {
+    background-size: cover; /* Изменяем auto на cover */
+    background-repeat: no-repeat;
+    background-position: 70%;
+    height: 400px; /* Можно оставить фиксированной высотой или сделать адаптивной */
+    width: 100%; /* Обязательно указывайте ширину на 100% */
+    display: block; /* Для дополнения стилей */
+    justify-content: center; /* Для центрирования */
+    align-items: center; /* Для центрирования */
+  }
+}

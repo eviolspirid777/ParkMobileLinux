@@ -1,0 +1,226 @@
+.delivery-block {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+    gap: 90px;
+    &-krasnodar-delivery {
+        background-image: linear-gradient(0.25turn, rgba(105, 136, 154, 1) 0%, rgba(35, 46, 52, 1) 100%);
+        border-radius: 16px;
+        width: 50%;
+        height: 240px;
+        padding: 2%;
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 25px;
+        color: white;
+        font-family: "SF-Pro-Display-Regular_light";
+        &-payment {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 5px;
+        }
+        & h4,
+        & h5 {
+            font-family: "SF-Pro-Display-Regular";
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        & h4 {
+            font-size: 1.5rem;
+        }
+        & h5 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        & ul {
+            padding-left: 2%;
+            & li {
+                list-style-type: disc;
+            }
+        }
+    }
+    &-russia-delivery {
+        background-image: linear-gradient(0.25turn, rgba(243, 243, 243, 1) 0%, rgba(141, 141, 141, 1) 100%);
+        border-radius: 16px;
+        width: 50%;
+        height: 240px;
+        padding: 2%;
+        display: grid;
+        grid-template-columns: 4fr 1fr;
+        gap: 5px;
+        &-text-grid {
+            display: flex;
+            flex-flow: column wrap;
+            gap: 25px;
+            color: black;
+            font-family: "SF-Pro-Display-Regular_light";
+            &-payment {
+                display: flex;
+                flex-flow: column nowrap;
+                gap: 5px;
+            }
+            & h4,
+            & h5 {
+                font-family: "SF-Pro-Display-Regular";
+                font-weight: 700;
+                letter-spacing: 2px;
+            }
+            & h4 {
+                font-size: 1.5rem;
+            }
+            & h5 {
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+            }
+            & ul {
+                padding-left: 2%;
+                & li {
+                    list-style-type: disc;
+                }
+            }
+        }
+    }
+    &-payment-info {
+        width: 60%;
+        font-family: "SF-Pro-Display-Regular_light";
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        line-height: 22px;
+        & h3 {
+            font-family: "SF-Pro-Display-Regular";
+            font-size: 2rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+    }
+    &-faq {
+        width: 80%;
+        margin-top: 60px;
+        margin-bottom: 180px;
+        & h3 {
+            font-family: "SF-Pro-Display-Regular";
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+    }
+}
+
+
+.krasnodar-delivery-block {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 35px;
+    &-delivery {
+        & strong {
+            font-weight: 1000;
+            font-family: "SF-Pro-Display-Regular";
+        }
+        & ul {
+            list-style-type: disc;
+            & li {
+                margin-left: 20px;
+            }
+        }
+    }
+    &-payment {
+        & strong {
+            font-weight: 1000;
+            font-family: "SF-Pro-Display-Regular";
+        }
+    
+        & ul {
+            list-style-type: decimal;
+    
+            & li {
+                margin-left: 20px;
+            }
+        }
+    }
+}
+
+.russia-delivery-block {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 25px;
+
+    &-delivery {
+        & strong {
+            font-weight: 1000;
+            font-family: "SF-Pro-Display-Regular";
+        }
+    
+        & ul {
+            list-style-type: disc;
+    
+            & li {
+                margin-left: 20px;
+            }
+        }
+    }
+
+    &-payment {
+        & strong {
+            font-weight: 1000;
+            font-family: "SF-Pro-Display-Regular";
+        }
+    
+        & ul {
+            list-style-type: decimal;
+    
+            & li {
+                margin-left: 20px;
+            }
+        }
+    }
+
+    &-nodes {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 5px;
+    }
+}
+
+@media (max-width:1024px) {
+    .delivery-block-payment-info {
+        width: 80%;
+    }
+
+    .delivery-block-krasnodar-delivery {
+        width: 90%;
+        padding: 4%;
+
+        & h4 {
+            font-size: 1.3rem;
+        }
+        
+        & ul {
+            padding-left: 5%;
+        }
+    }
+    
+    .delivery-block-russia-delivery {
+        width: 90%;
+        padding: 4%;
+
+        & h4 {
+            font-size: 1.3rem;
+        }
+
+        & ul {
+            padding-left: 5%;
+        }
+    }
+
+    .delivery-block-faq {
+        & details {
+            & span {
+                text-wrap: nowrap;
+            }
+        }
+    }
+}

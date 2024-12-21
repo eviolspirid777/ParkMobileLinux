@@ -1,0 +1,164 @@
+.footer-block {
+    height: 355px;
+    background-color: #121212;
+    color: white;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    font-family: "SF-Pro-Display-Regular";
+    letter-spacing: 1px;
+    & hr{
+        background-color: #505050;
+        width: 65%;
+    }
+    &-help {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        gap: 120px;
+        padding-bottom: 30px;
+        width: 100%;
+        font-size: 0.8rem;
+        user-select: none;
+        &-items {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 15px;
+            & h2 {
+                font-size: 0.9rem;
+            }
+            & span, a {
+                font-size: 0.8rem;
+                color: #909090;
+                cursor: pointer;
+                text-decoration: none;
+                &:hover {
+                    color: #a4a4a4;
+                }
+            }
+            &-first-block {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                &-number-address {
+                    display: flex;
+                    flex-flow: column wrap;
+                    gap: 10px;
+                    width: 200px;
+                }
+            }
+        }
+    }
+    &-info {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        gap: 230px;
+        width: 100%;
+        padding-top: 20px;
+        font-size: 0.7rem;
+        color: #909090;
+        & span:not(:first-child):hover {
+            cursor: pointer;
+            user-select: none;
+            color: #a4a4a4;
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .footer-block {
+        height: fit-content;
+        background-color: #121212;
+        color: white;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+        font-family: "SF-Pro-Display-Regular";
+        letter-spacing: 1px;
+        & hr{
+            background-color: #505050;
+            width: 75vw;
+        }
+        &-help {
+            display: flex;
+            flex-flow: column wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
+            padding-bottom: 30px;
+            width: 80vw;
+            font-size: 0.8rem;
+            user-select: none;
+            margin-top: 50px;
+            margin-left: 20vw;
+            &-items {
+                display: flex;
+                flex-flow: column nowrap;
+                gap: 15px;
+                & a[href="tel:89337772777"] {
+                    font-size: 1rem !important;
+                    color: white !important;
+                    &:hover {
+                        color: rgba(255, 255, 255, 0.774) !important;
+                    }
+                }
+                & span, a {
+                    font-size: 0.9rem;
+                    color: #909090;
+                    cursor: pointer;
+                    text-decoration: none;
+                    &:hover {
+                        color: #a4a4a4;
+                    }
+                }
+                &-first-block {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    &-number-address {
+                        display: flex;
+                        flex-flow: column wrap;
+                        gap: 10px;
+                        width: 200px;
+                    }
+                }
+                &:last-child {
+                    margin: 50px 0px;
+                }
+            }
+        }
+        &-info {
+            display: flex;
+            flex-flow: column wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 75vw;
+            padding-top: 20px;
+            font-size: 0.7rem;
+            color: #909090;
+            margin-bottom: 100px;
+            & span:not(:first-child):hover {
+                cursor: pointer;
+                user-select: none;
+                color: #a4a4a4;
+            }
+        }
+    }
+}
+
+.footer-data {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 5px;
+}
+
+.subscribe-text {
+    pointer-events: none;
+}
+
+.reqesits {
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+}

@@ -1,0 +1,111 @@
+.gurantee-block {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+    &-gurantee {
+        width: 60%;
+        display: flex;
+        flex-flow: column nowrap;
+        font-family: "SF-Pro-Display-Regular_light";
+        letter-spacing: 1px;
+        gap: 15px;
+        line-height: 22px;
+        & h3 {
+            font-family: "SF-Pro-Display-Regular";
+            font-size: 2rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+        & hr {
+            margin: 70px 0px;
+            background-color: #e8e8ed;
+        }
+        &-telephone {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 5px;
+            & a {
+                text-decoration: none;
+                color: #abbcae;
+                cursor: pointer;
+                width: fit-content;
+                &:hover {
+                    color: #a4d0ac;
+                }
+            }
+        }
+    }
+    &-requirments {
+        width: 60%;
+        font-family: "SF-Pro-Display-Regular_light";
+        letter-spacing: 1px;
+        line-height: 22px;
+        & h3 {
+            font-family: "SF-Pro-Display-Regular";
+            font-size: 2rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+        & ul {
+            display: flex;
+            flex-flow: column nowrap;
+            gap: 15px;
+            list-style-type: disc;
+        }
+        & hr {
+            margin: 70px 0px;
+            background-color: #e8e8ed;
+        }
+    }
+    &-faq {
+        width: 80%;
+        margin-bottom: 180px;
+        & h3 {
+            font-family: "SF-Pro-Display-Regular";
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .gurantee-block {
+        margin-top: 40px;
+    }
+
+    .gurantee-block-gurantee {
+        width: 90vw;
+        
+        & h3 {
+            text-align: center;
+        }
+
+        & span {
+            padding: 0% 4%;
+        }
+
+        & .gurantee-block-gurantee-telephone {
+            & a {
+                padding-left: 4%;
+            }
+        }
+    }
+
+    .gurantee-block-requirments {
+        width: 90vw;
+
+        & h3 {
+            text-align: center;
+        }
+
+        & ul {
+            padding: 0% 4%;
+        }
+    }
+}

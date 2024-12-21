@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+.DS_Store
+.env
+*.log
+coverage
+.firebase
+.next
+out
+.git
+Dockerfile
+docker-compose.yml

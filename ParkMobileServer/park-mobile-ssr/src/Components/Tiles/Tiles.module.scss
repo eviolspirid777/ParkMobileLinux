@@ -1,0 +1,270 @@
+.card-tiles-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.card-item-block {
+    position: relative;
+    & h2[data-image="2"] { //Macbook
+        position: absolute;
+        top: 10%;
+        left: 40%;
+        font-size: 2.5rem;
+        font-weight: 500;
+        font-family: 'SF-Pro-Display-Regular';
+        opacity: 0;
+    }
+    & span[data-image="2"] {
+        position: absolute;
+        top: 20%;
+        left: 27%;
+        font-size: 1.8rem;
+        font-weight: 500;
+        font-family: "SF-Pro-Display-Regular_light";
+        opacity: 0;
+    }
+
+    & h2[data-image="1"] { //Watches
+        position: absolute;
+        top: 10%;
+        left: 40%;
+        font-size: 2.5rem;
+        font-weight: 500;
+        font-family: 'SF-Pro-Display-Regular';
+        color: white;
+        opacity: 0;
+    }
+    & span[data-image="1"] {
+        position: absolute;
+        top: 20%;
+        left: 30%;
+        font-size: 1.8rem;
+        font-weight: 500;
+        font-family: "SF-Pro-Display-Regular_light";
+        color: white;
+        opacity: 0;
+    }
+
+    & h2[data-image="3"] { //Ipad
+        position: absolute;
+        top: 10%;
+        left: 48%;
+        font-size: 2.5rem;
+        font-weight: 500;
+        font-family: 'SF-Pro-Display-Regular';
+        opacity: 0;
+    }
+    & span[data-image="3"] {
+        position: absolute;
+        top: 20%;
+        left: 18% !important;
+        font-size: 1.8rem;
+        font-weight: 500;
+        font-family: "SF-Pro-Display-Regular_light";
+        text-wrap: nowrap;
+        opacity: 0;
+    }
+
+    & h2[data-image="4"] { //AirPods
+        position: absolute;
+        top: 10%;
+        left: 41%;
+        font-size: 2.5rem;
+        font-weight: 500;
+        font-family: 'SF-Pro-Display-Regular';
+        color: white;
+        opacity: 0;
+    }
+
+    & span[data-image="4"] {
+        position: absolute;
+        top: 20%;
+        left: 26%;
+        font-size: 1.8rem;
+        font-weight: 500;
+        font-family: "SF-Pro-Display-Regular_light";
+        text-wrap: nowrap;
+        color: white;
+        opacity: 0;
+    }
+    &-button-block {
+        position: absolute;
+        top: 33%;
+        left: 33%;
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 20px;
+        opacity: 0;
+        & button {
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            font-family: 'SF-Pro-Display-Regular';
+            border-radius: 10px;
+            height: 45px;
+            &[data-button="подробнее"] {
+                width: 175px;
+                background-color: #f5f5f7;
+                color: #87a08b;
+            }
+            &[data-button="купить"] {
+                width: 140px;
+                background-color: #87a08b;
+                color: #f5f5f7;
+            }
+        }
+        & .more {
+            font-size: 2.4rem;
+        }
+        & .buy {
+
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .card-tiles-block {
+        display: grid;
+        grid-template-rows: repeat(4, 1fr);
+        grid-template-columns: 1fr;
+    }
+
+    .card-item-block {
+        position: relative;
+
+        & img {
+            min-width: 100%;
+            min-height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: 400px !important;
+        }
+
+        & h2[data-image="2"] {
+            //Macbook
+            position: absolute;
+            top: 6% !important;
+            left: 35% !important;
+            font-size: 1.6rem !important;
+            font-weight: 500;
+            font-family: 'SF-Pro-Display-Regular';
+            opacity: 0;
+        }
+
+        & span[data-image="2"] {
+            position: absolute;
+            top: 17% !important;
+            left: 16% !important;
+            font-size: 1.2rem !important;
+            font-weight: 500;
+            font-family: "SF-Pro-Display-Regular_light";
+            opacity: 0;
+        }
+
+        & h2[data-image="1"] {
+            //Watches
+            position: absolute;
+            top: 6% !important;
+            left: 35% !important;
+            font-size: 1.6rem !important;
+            font-weight: 500;
+            font-family: 'SF-Pro-Display-Regular';
+            color: white;
+            opacity: 0;
+        }
+
+        & span[data-image="1"] {
+            position: absolute;
+            top: 17% !important;
+            left: 22% !important;
+            font-size: 1.2rem !important;
+            font-weight: 500;
+            font-family: "SF-Pro-Display-Regular_light";
+            color: white;
+            opacity: 0;
+        }
+
+        & h2[data-image="3"] {
+            //Ipad
+            position: absolute;
+            top: 6% !important;
+            left: 46% !important;
+            font-size: 1.6rem !important;
+            font-weight: 500;
+            font-family: 'SF-Pro-Display-Regular';
+            opacity: 0;
+        }
+
+        & span[data-image="3"] {
+            position: absolute;
+            top: 17% !important;
+            left: 5% !important;
+            font-size: 1.2rem !important;
+            font-weight: 500;
+            font-family: "SF-Pro-Display-Regular_light";
+            text-wrap: nowrap;
+            opacity: 0;
+        }
+
+        & h2[data-image="4"] {
+            //AirPods
+            position: absolute;
+            top: 6% !important;
+            left: 37% !important;
+            font-size: 1.6rem !important;
+            font-weight: 500;
+            font-family: 'SF-Pro-Display-Regular';
+            color: white;
+            opacity: 0;
+        }
+
+        & span[data-image="4"] {
+            position: absolute;
+            top: 17% !important;
+            left: 14% !important;
+            font-size: 1.2rem !important;
+            font-weight: 500;
+            font-family: "SF-Pro-Display-Regular_light";
+            text-wrap: nowrap;
+            color: white;
+            opacity: 0;
+        }
+
+        &-button-block {
+            position: absolute;
+            top: 30% !important;
+            left: 18% !important;
+            display: flex;
+            flex-flow: row nowrap;
+            gap: 20px;
+            opacity: 0;
+
+            & button {
+                font-size: 1.25rem !important;
+                letter-spacing: 1px;
+                font-family: 'SF-Pro-Display-Regular';
+                border-radius: 10px;
+                height: 40px !important;
+
+                &[data-button="подробнее"] {
+                    width: 130px !important;
+                    background-color: #f5f5f7;
+                    color: #87a08b;
+                }
+
+                &[data-button="купить"] {
+                    width: 130px !important;
+                    background-color: #87a08b;
+                    color: #f5f5f7;
+                }
+            }
+
+            & .more {
+                font-size: 2.4rem;
+            }
+
+            & .buy {}
+        }
+    }
+}

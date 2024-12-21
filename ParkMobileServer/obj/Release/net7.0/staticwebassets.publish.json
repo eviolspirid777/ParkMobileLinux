@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "oJsz8qfkOM+mIQN5jOC+1+0RjvqXEhS3Stc3FPLpiCU=",
+  "Source": "ParkMobileServer",
+  "BasePath": "_content/ParkMobileServer",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

@@ -1,0 +1,249 @@
+.blur-block {
+    &-visible {
+        position: fixed;
+        top: 55px;
+        left: 0px;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: background-color .5s ease-in-out;
+        height: calc(100% - 55px);
+        width: 100%;
+        overflow-y: hidden;
+        z-index: 2;
+        backdrop-filter: blur(0px);
+        animation: BlurIn 0.8s forwards;
+    }
+
+    &-invisible {
+        position: absolute;
+        top: 55px;
+        left: 0px;
+        background-color: rgba(255, 255, 255, 0.1);
+        height: calc(100% - 55px);
+        width: 100%;
+        overflow-y: hidden;
+        z-index: 2;
+        backdrop-filter: blur(0px);
+        animation: BlurOut 0.6s forwards;
+    }
+
+    &-content {
+        &-visible {
+            position: fixed;
+            opacity: 1;
+            z-index: 3;
+            width: 100%;
+            height: 350px;
+            transition: height .5s ease-in-out;
+            background-color: #454545;
+            animation: BlurContentIn 0.6s forwards cubic-bezier(0.075, 0.82, 0.165, 1);
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+            padding-top: 1%;
+            padding-left: 14%;
+            &-titles {
+                display: flex;
+                flex-flow: column nowrap;
+                font-family: "SF-Pro-Display-Heavy";
+                font-size: 1.4rem;
+                gap: 10px;
+                color: #cfdeef;
+                transition: color .15s;
+                & span {
+                    width: fit-content;
+                    cursor: pointer;
+                    &:hover {
+                        color: #87a08b;
+                        transition: color .15s;
+                    }
+                }
+            }
+            &-subtitles {
+                display: flex;
+                flex-flow: column nowrap;
+                font-family: "SF-Pro-Display-Regular";
+                font-size: 1.2rem;
+                gap: 10px;
+                color: #aebbc9;
+                transition: color .15s;
+                & span {
+                    width: fit-content;
+                    cursor: pointer;
+                    &:hover {
+                        color: #87a08b;
+                        transition: color .15s;
+                    }
+                }
+            }
+            &-items {
+                display: flex;
+                flex-flow: row nowrap;
+                padding-left: 5%;
+                gap: 100px;
+                &-item-block {
+                    display: grid;
+                    grid-template-rows: 2fr 1fr;
+                    gap: 10px;
+                    background-color: #454545;
+                    cursor: pointer;
+                    max-height: 330px;
+                    &-image {
+                        width: 200px;
+                        height: 200px;
+                    }
+                    &-text-block {
+                        display: grid;
+                        grid-template-rows: 1fr 1fr;
+                        gap: 10px;
+                        &-tag {
+                            color: #ffffff;
+                            font-family: "SF-Pro-Display-Regular_light";
+                            font-size: 1.1rem;
+                            max-width: 253px;
+                            overflow-wrap: break-word;
+                            justify-self: end;
+                            align-self: self-end;
+                        }
+                        &-price {
+                            color: #ffffff;
+                            font-family: "SF-Pro-Display-Regular";
+                            font-size: 1.6rem;
+                            justify-self: center;
+                            align-self: self-start;
+                        }
+                    }
+                }
+            }
+        }
+
+        &-invisible {
+            display: grid;
+            grid-template-columns: 1fr 5fr;
+            padding-top: 1%;
+            padding-left: 14%;
+            position: absolute;
+            opacity: 0;
+            z-index: 3;
+            width: 100%;
+            height: 350px;
+            background-color: #454545;
+            animation: BlurContentOut 0.2s forwards ease-out;
+        }
+    }
+}
+
+.search-items-block-container {
+    margin-top: 120px;
+    height: 80vh;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+
+    & > span {
+        font-family: "SF-Pro-Display-Regular_light";
+        font-size: .8rem;
+        padding-right: 30%;
+    }
+
+    &-data {
+        width: 90%;
+        min-height: 85%;
+        margin-top: 1%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        align-items: center;
+        justify-items: end;
+        gap: 25px 20px;
+    }
+}
+
+.pagination-block {
+    align-self: center;
+    justify-content: center;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 15px;
+    margin-top: 1%;
+    &-item {
+        font-family: "SF-Pro-Display-Regular_light";
+        transition: color .05s;
+        color: #5c5c5c;
+        padding: 10px 15px;
+        cursor: pointer;
+        user-select: none;
+        &:hover {
+        transition: color .15s;
+        color: black;
+        }
+    }
+}
+
+.selected {
+    background-color: #87a08b;
+    color: white !important;
+    border-radius: 5px;
+    transition: color .15s;
+}
+
+.has-value {
+    height: 90px;
+    transition: height .5s ease-in-out;
+    &-bg {
+        background-color: white;
+        transition: background-color .3s ease-in-out;
+    }
+}
+
+
+@keyframes BlurIn {
+    0% {
+        backdrop-filter: blur(0px);
+        opacity: 0;
+    }
+
+    100% {
+        backdrop-filter: blur(7px);
+        opacity: 1;
+    }
+}
+
+@keyframes BlurOut {
+    0% {
+        backdrop-filter: blur(7px);
+    }
+
+    90% {
+        opacity: 0;
+    }
+
+    100% {
+        backdrop-filter: blur(0px);
+        opacity: 0;
+    }
+}
+
+@keyframes BlurContentIn {
+    0% {
+        transform: translateY(-350px);
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes BlurContentOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-350px);
+        opacity: 0;
+    }
+}

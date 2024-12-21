@@ -1,0 +1,49 @@
+.not-found-main-block {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(210deg in oklab, #ffffff, #454545);
+
+    & img {
+        width: 400px;
+    }
+
+    & h3, h5, a {
+        display: inherit;
+        color: white;
+        width: 100%;
+    }
+
+    & h3 {
+        font-size: 2.7rem;
+        font-family: "SF-Pro-Display-Heavy";
+    }
+    
+    & h5, a {
+        font-family: "SF-Pro-Display-Regular_light";
+        font-size: 1.4rem;
+    }
+
+    &-text {
+        display: flex;
+        justify-self: end;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: center;
+        width: 70%;
+        gap: 35px;
+
+        & div {
+            width: 100%;
+        }
+
+        & a {
+            &:hover {
+                color: rgba(255, 255, 255, 0.765);
+            }
+        }
+    }
+}

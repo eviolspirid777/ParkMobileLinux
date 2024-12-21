@@ -1,0 +1,11 @@
+.menu-items-list {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    gap: 10px;
+    &-button {
+        width: 10%;
+        align-self: flex-end;
+    }
+}

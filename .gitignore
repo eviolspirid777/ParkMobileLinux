@@ -1,0 +1,9 @@
+./ParkMobileServer/obj/*
+./ParkMobileServer/obj
+
+./ParkMobileServer/bin/*
+./ParkMobileServer/bin/
+
+.idea
+.vs
+./.vs

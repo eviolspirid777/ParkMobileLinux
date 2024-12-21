@@ -1,0 +1,34 @@
+.seven-step-block {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 5px;
+    padding: 1%;
+
+    & h3 {
+        font-size: 1.6rem;
+        font-family: "SF-Pro-Display-Regular_light";
+    }
+
+    & input {
+        background-color: transparent !important;
+        border: 1px solid #b3b3b3;
+        border-left: 0 !important;
+        border-radius: 0 !important;
+        border-right: 0 !important;
+        border-top: 0 !important;
+        outline: none;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box;
+        font-size: 16px;
+        height: 60px;
+        line-height: 1.33;
+        margin: 0;
+        padding: 0 20px;
+        width: 100%;
+
+        &::placeholder {
+            opacity: 0.5;
+        }
+    }
+}

@@ -1,0 +1,78 @@
+.header {
+  position: sticky;
+  top: 0px;
+  transition: top .2s ease-in-out;
+  left: 0px;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 100%;
+  height: 55px;
+  background-color: #454545;
+  &-hidden {
+    top: -55px;
+    transition: top .3s ease-in-out;
+  }
+}
+
+.logo {
+  justify-self: end;
+  align-self: center;
+  cursor: pointer;
+  user-select: none;
+  width: 120px;
+}
+
+.nav-bar {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  align-self: center;
+  justify-self: center;
+  color: white;
+}
+
+.nav {
+  &-item {
+    font-family: "SF-Pro-Display-Regular_light";
+    letter-spacing: 1px;
+    font-size: 1rem;
+    user-select: none;
+    cursor: pointer;
+    &:hover {
+      // color: rgba(255, 255, 255, 0.73);
+      color: #aab984;
+    }
+  }
+  &-bucket-search {
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 15px;
+    & > i {
+      color: white;
+    }
+    &-shop-block {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      gap: 10px;
+      & span {
+        background-color: #3c3c3c;
+        border-radius: 1000px;
+        padding: 2px 6px;
+        color: white;
+        color: gray;
+        font-family: "Arial";
+        user-select: none;
+      }
+      & i {
+        color: white;
+      }
+    }
+  }
+}
+
+

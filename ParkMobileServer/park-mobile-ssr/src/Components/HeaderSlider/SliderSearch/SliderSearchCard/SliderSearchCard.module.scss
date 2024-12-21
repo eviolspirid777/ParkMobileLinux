@@ -1,0 +1,36 @@
+.slider-search-card {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    cursor: pointer;
+
+    & img {
+        width: 90px;
+    }
+
+    &-info {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-evenly;
+
+        & span {
+            font-family: "SF-Pro-Display-Regular";
+        }
+
+        & strong {
+            font-family: "SF-Pro-Display-Heavy";
+            font-weight: 100;
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    .slider-search-card {
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        gap: 10px;
+
+        & img {
+            width: 70px;
+        }
+    }
+}
