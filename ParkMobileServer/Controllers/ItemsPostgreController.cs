@@ -11,6 +11,7 @@ using ParkMobileServer.Entities.TradeIn;
 using ParkMobileServer.Mappers.BrandMapper;
 using ParkMobileServer.Mappers.CategoryMapper;
 using ParkMobileServer.Mappers.ItemsMapper;
+using ParkMobileServer.Entities;
 
 namespace ParkMobileServer.Controllers
 {
@@ -31,6 +32,7 @@ namespace ParkMobileServer.Controllers
 		}
 		#region BaseFunctionsToCompeteDB
 
+		[Authorize]
         [HttpPost("test")]
         public async Task<bool> PushTestData()
         {
@@ -117,7 +119,7 @@ namespace ParkMobileServer.Controllers
 			var mappedItems = brandMapper.MapToDTO(items);
 			return Ok(mappedItems);
 		}
-		//[Authorize]
+		[Authorize]
 		[HttpPost("CreateBrand")]
 		public async Task<IActionResult> CreateBrand([FromBody] ItemBrand brand)
 		{
@@ -131,7 +133,9 @@ namespace ParkMobileServer.Controllers
 
 			return Ok();
 		}
-		[HttpPost("CreateBaseBrands")]
+
+        [Authorize]
+        [HttpPost("CreateBaseBrands")]
 		public async Task<IActionResult> CreateBaseBrands()
 		{
 			await _postgreSQLDbContext.ItemBrands.AddRangeAsync(
@@ -163,7 +167,7 @@ namespace ParkMobileServer.Controllers
 			return Ok(mappedItems);
 		}
 
-		//[Authorize]
+		[Authorize]
 		[HttpPost("CreateCategory")]
 		public async Task<IActionResult> CreateCategory([FromBody] ItemCategory category)
 		{
@@ -178,6 +182,7 @@ namespace ParkMobileServer.Controllers
 			return Ok();
 		}
 
+        [Authorize]
         [HttpPost("CreateBaseCategories")]
         public async Task<IActionResult> CreateBaseCategories()
         {
@@ -717,10 +722,10 @@ namespace ParkMobileServer.Controllers
 			await _telegramBot.SendTelephoneRecallAlert(tel);
 			return Ok();
 		}
-		#endregion
-		#region ImageFunctions
-
-		[HttpPost("updatePhoto")]
+        #endregion
+        #region ImageFunctions
+        [Authorize]
+        [HttpPost("updatePhoto")]
 		public async Task<IActionResult> UpdatePhoto([FromForm] IFormFile image)
 		{
 			if (image == null || image.Length == 0)
@@ -787,63 +792,43 @@ namespace ParkMobileServer.Controllers
                 return NotFound();
             }
 
-            // Убедитесь, что тип изображения корректен
             var imageContentType = "image/jpeg"; // или другой тип, который у вас
             return File(item.Image, imageContentType); // Используйте метод File для отправки изображения
         }
 
+		[Authorize]
 		[HttpPost("upload")]
-		public async Task<IActionResult> UploadData([FromForm] IFormFile image)
-		{
-			if (image == null || image.Length == 0)
-			{
-				return BadRequest("Image is required");
-			}
+        public async Task<IActionResult> Upload(IFormFileCollection files, [FromForm] string sliderName)
+        {
+            if (files == null || files.Count == 0)
+                return BadRequest("No files uploaded.");
 
-			// Получение данных из FormData
-			//var form = await Request.ReadFormAsync();
-			//var price = form["price"];
-			//var tag = form["tag"];
-			//var category = form["category"];
-			//var description = form["description"];
-			//var brand = form["brand"];
-			//var stock = form["stock"];
+            var slider = new Slider { Name = sliderName, Images = new List<SliderImage>() };
 
-			//if (!Enum.TryParse(category, true, out ItemCategory itemCategory))
-			//{
-			//	return BadRequest($"Invalid category type! {category}");
-			//}
+            foreach (var file in files)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var imageBytes = memoryStream.ToArray();
 
-			//if (!Enum.TryParse(brand, true, out ItemBrand itemBrand))
-			//{
-			//	return BadRequest($"Invalid category type! {brand}");
-			//}
+                    slider.Images.Add(new SliderImage { ImageData = imageBytes });
+                }
+            }
 
+            _postgreSQLDbContext.Sliders.Add(slider);
+            await _postgreSQLDbContext.SaveChangesAsync();
 
-			// Преобразование IFormFile в byte[]
-			using (var memoryStream = new MemoryStream())
-			{
-				await image.CopyToAsync(memoryStream);
-				var imageBytes = memoryStream.ToArray();
+            return Ok(new { sliderId = slider.Id });
+        }
 
-				// Создание уникального ID
-				//var item = new ItemEntity
-				//{
-				//	Image = imageBytes,
-				//	Price = price.ToString(),
-				//	Name = tag.ToString(),
-				//	Category = itemCategory,
-				//	Description = description.ToString(),
-				//	ItemBrand = itemBrand,
-				//	Stock = Int32.Parse(stock.ToString())
-				//};
-
-				//_postgreSQLDbContext.ItemEntities.Add(item);
-				//await _postgreSQLDbContext.SaveChangesAsync();
-				//return CreatedAtAction(nameof(GetItem), new { id = item.Id }, item);
-				return Ok();
-			}
-		}
+        [HttpGet("sliderImages")]
+        public async Task<IActionResult> GetSliderImages()
+        {
+            var images = await _postgreSQLDbContext.SliderImages.ToListAsync();
+			//var imageUrls = images.Select(image => $"http://localhost:3001/api/ItemsPostgre/sliderImage/{image.Id}").ToList();
+			var imageUrls = images.Where(image => image.ImageData != null);
+            return Ok(imageUrls);
+        }
 		#endregion
-	}
-}
+	}}

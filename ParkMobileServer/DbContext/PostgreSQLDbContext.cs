@@ -2,6 +2,7 @@
 using ParkMobileServer.Entities.Items;
 using ParkMobileServer.Entities.Orders;
 using ParkMobileServer.Entities.Users;
+using ParkMobileServer.Entities;
 
 namespace ParkMobileServer.DbContext
 {
@@ -32,6 +33,10 @@ namespace ParkMobileServer.DbContext
 							.HasOne(oi => oi.Product)
 							.WithMany()
 							.HasForeignKey(oi => oi.ProductId);
+            modelBuilder.Entity<Slider>()
+                .HasMany(s => s.Images)
+                .WithOne(i => i.Slider)
+                .HasForeignKey(i => i.SliderId);
         }
         public DbSet<ItemEntity> ItemEntities { get; set; } = null!;
         public DbSet<ItemCategory> ItemCategories { get; set; } = null!;
@@ -39,5 +44,7 @@ namespace ParkMobileServer.DbContext
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<OrderItemEntity> OrderItems { get; set; } = null!;
 		public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Slider> Sliders { get; set; } = null!;
+        public DbSet<SliderImage> SliderImages { get; set; } = null!;
     }
 }

@@ -6,22 +6,22 @@ import { Tiles } from "@/Components/Tiles/Tiles";
 import { PopularItems } from "@/Components/PopularItems/PopularItems";
 import { SwiperList } from "@/Components/Swiper/Swiper";
 import { UnderSwiperCards } from "@/Components/UnderSwiperCards/UnderSwiperCards";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; 
 import Media from "react-media";
 import { TilesMobile } from "@/Components/Tiles/TilesMobile/TilesMobile";
 
 const Home = () => {
   const queryClient = new QueryClient();
 
-  //TODO: Исправь баг в корзине с неправильным отображением цены у товара и баг в корзине ОФОРМИТЬ ЗАКАЗ(итоговая цена)
-  //TODO: Верни [Autorize] к энд-поинтам на беке
-  //TODO: перепиши на тг Эмиля запросы!!
-  //TODO: В тг Эмиль написал что исправить
-  //TODO: артикул товара к карточке прикрепи
+  //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно)
+  //TODO: Исправь баг в корзине с неправильным отображением цены у товара и баг в корзине ОФОРМИТЬ ЗАКАЗ(итоговая цена) +
+  //TODO: перепиши на тг Эмиля запросы!! +
+  //TODO: В тг Эмиль написал что исправить +
+  //TODO: артикул товара к карточке прикрепи +
+  //TODO: Верни [Autorize] к энд-поинтам на беке +
 
 
   //TODO: ReadMore.js: https://jedfoster.com/Readmore.js/  для подробнее...
-  //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно)
   //TODO: Добавить заявку на ремонт в мобильную версию
   //TODO: Большую кнопку (отправить заявку) на трейд-ин. И там шаги с заполнением + отправка сообщения в тг +
   //TODO: Заявка на ремонт(модалка с названием товара и описанием проблемы) +

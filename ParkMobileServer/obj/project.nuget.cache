@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "J2HDzG+J7g8=",
+  "dgSpecHash": "NMwDx2x2H/w=",
   "success": true,
-  "projectFilePath": "F:\\projects\\ParkMobileDeploy\\ParkMobileServer\\ParkMobileServer.csproj",
+  "projectFilePath": "F:\\projects\\ParkMobileLinuxDEPLOY\\ParkMobileServer\\ParkMobileServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\eviol\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\eviol\\.nuget\\packages\\entityframework\\6.5.1\\entityframework.6.5.1.nupkg.sha512",
@@ -16,6 +16,7 @@
     "C:\\Users\\eviol\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.20\\microsoft.entityframeworkcore.analyzers.7.0.20.nupkg.sha512",
     "C:\\Users\\eviol\\.nuget\\packages\\microsoft.entityframeworkcore.design\\7.0.20\\microsoft.entityframeworkcore.design.7.0.20.nupkg.sha512",
     "C:\\Users\\eviol\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.20\\microsoft.entityframeworkcore.relational.7.0.20.nupkg.sha512",
+    "C:\\Users\\eviol\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\7.0.14\\microsoft.entityframeworkcore.tools.7.0.14.nupkg.sha512",
     "C:\\Users\\eviol\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\eviol\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
     "C:\\Users\\eviol\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",

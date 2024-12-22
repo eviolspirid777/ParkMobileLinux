@@ -92,7 +92,7 @@ export const ProductModal: FC<ProductModalProps> = ({
             <header>
               <h3>{CardData?.name}</h3>
               <title>{CardData?.brandName}</title>
-              <article>АРТИКУЛ</article>
+              <article>АРТИКУЛ: {CardData?.article}</article>
             </header>
             <div className={styles["item-container-data-prices"]}>
               <strong className={CardData?.discountPrice && styles["discount"]}>

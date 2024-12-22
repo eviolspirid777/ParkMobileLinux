@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\projects\\ParkMobileDeploy\\ParkMobileServer\\ParkMobileServer.csproj": {}
+    "F:\\projects\\ParkMobileLinuxDEPLOY\\ParkMobileServer\\ParkMobileServer.csproj": {}
   },
   "projects": {
-    "F:\\projects\\ParkMobileDeploy\\ParkMobileServer\\ParkMobileServer.csproj": {
+    "F:\\projects\\ParkMobileLinuxDEPLOY\\ParkMobileServer\\ParkMobileServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\projects\\ParkMobileDeploy\\ParkMobileServer\\ParkMobileServer.csproj",
+        "projectUniqueName": "F:\\projects\\ParkMobileLinuxDEPLOY\\ParkMobileServer\\ParkMobileServer.csproj",
         "projectName": "ParkMobileServer",
-        "projectPath": "F:\\projects\\ParkMobileDeploy\\ParkMobileServer\\ParkMobileServer.csproj",
+        "projectPath": "F:\\projects\\ParkMobileLinuxDEPLOY\\ParkMobileServer\\ParkMobileServer.csproj",
         "packagesPath": "C:\\Users\\eviol\\.nuget\\packages\\",
-        "outputPath": "F:\\projects\\ParkMobileDeploy\\ParkMobileServer\\obj\\",
+        "outputPath": "F:\\projects\\ParkMobileLinuxDEPLOY\\ParkMobileServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -76,6 +76,12 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[7.0.20, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.14, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",

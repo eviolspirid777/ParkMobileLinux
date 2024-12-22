@@ -4,6 +4,7 @@ import { TradeInType } from "@/Store/TradeInStore";
 import { CardItemType, CardType, RecivedCardDataType } from "@/Types/CardType";
 import { RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
+import { SliderResponse } from "@/Types/SliderResponse";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
@@ -12,6 +13,8 @@ export type AuthorizationType = {userName: string, password: string}
 //TODO: Все билдится но не работают запросы в докере. В чем может быть проблема?
 const AUTORIZATIONS_PATH = `http://45.142.44.239:3001/api/Autorization`
 const POSTGRE_ITEMS_PATH = `http://45.142.44.239:3001/api/ItemsPostgre`
+// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
+// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
 
 class ApiClient {
     client: AxiosInstance;
@@ -116,6 +119,16 @@ class ApiClient {
             `${POSTGRE_ITEMS_PATH}/GetItem/${id}`
         );
         return response.data;
+    }
+
+    async GetSliderData() {
+        const response = await this.client.get<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/sliderImages`);
+        return response.data
+    }
+
+    async PostSliderData(form: FormData) {
+        const response =  await this.client.postForm(`${POSTGRE_ITEMS_PATH}/upload`, form)
+        return response
     }
 
     async PostCall(number: string) {

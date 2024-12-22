@@ -95,7 +95,7 @@ namespace ParkMobileServer.TelegramBot
 				var url = $"https://api.telegram.org/bot{_botToken}/sendMessage";
 				//Me: 481227813
 				//Emil: 643139754
-				foreach (var element in new[] { "481227813"})
+				foreach (var element in new[] { "481227813" })
 				{
 					var json = JsonConvert.SerializeObject(new
 					{
