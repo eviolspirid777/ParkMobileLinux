@@ -127,7 +127,7 @@ class ApiClient {
     }
 
     async PostSliderData(form: FormData) {
-        const response =  await this.client.postForm(`${POSTGRE_ITEMS_PATH}/upload`, form)
+        const response =  await this.authClient.postForm(`${POSTGRE_ITEMS_PATH}/upload`, form)
         return response
     }
 
