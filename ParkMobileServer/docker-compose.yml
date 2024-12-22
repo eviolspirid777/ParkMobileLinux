@@ -37,10 +37,6 @@ services:
       - "3000:3000"
     depends_on:
       - web
-    environment:
-      - NEXT_PUBLIC_API_URL=http://aspnet-api:3001
-    networks:
-      - app-network # Подключение к общей сети
 
 volumes:
   postgres-data:

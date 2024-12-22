@@ -10,8 +10,8 @@ export type AuthorizationType = {userName: string, password: string}
 
 // Use the service name defined in docker-compose.yml
 //TODO: Все билдится но не работают запросы в докере. В чем может быть проблема?
-const AUTORIZATIONS_PATH = `https://45.142.44.239:3001/api/Autorization`
-const POSTGRE_ITEMS_PATH = `https://45.142.44.239:3001/api/ItemsPostgre`
+const AUTORIZATIONS_PATH = `http://45.142.44.239:3001/api/Autorization`
+const POSTGRE_ITEMS_PATH = `http://45.142.44.239:3001/api/ItemsPostgre`
 
 class ApiClient {
     client: AxiosInstance;
