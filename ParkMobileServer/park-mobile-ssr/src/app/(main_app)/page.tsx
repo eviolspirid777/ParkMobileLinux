@@ -13,6 +13,13 @@ import { TilesMobile } from "@/Components/Tiles/TilesMobile/TilesMobile";
 const Home = () => {
   const queryClient = new QueryClient();
 
+  //TODO: Исправь баг в корзине с неправильным отображением цены у товара и баг в корзине ОФОРМИТЬ ЗАКАЗ(итоговая цена)
+  //TODO: Верни [Autorize] к энд-поинтам на беке
+  //TODO: перепиши на тг Эмиля запросы!!
+  //TODO: В тг Эмиль написал что исправить
+  //TODO: артикул товара к карточке прикрепи
+
+
   //TODO: ReadMore.js: https://jedfoster.com/Readmore.js/  для подробнее...
   //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно)
   //TODO: Добавить заявку на ремонт в мобильную версию
