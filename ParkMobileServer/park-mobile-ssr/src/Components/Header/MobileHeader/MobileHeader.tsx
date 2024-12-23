@@ -7,6 +7,8 @@ import { useAtom } from "jotai";
 import { Drawer } from "antd";
 import { useRouter } from "next/navigation";
 
+import Image from "next/image";
+
 import { MobileHeaderCatalog } from "./MobileHeaderBlocks/Catalog/MobileHeaderCatalog";
 import { MobileHeaderAbout } from "./MobileHeaderBlocks/About/MobileHeaderAbout";
 import { MobileHeaderHelp } from "./MobileHeaderBlocks/Help/MobileHeaderHelp";
@@ -99,10 +101,12 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
               <span className={`${styles["line"]} ${styles["line3"]}`}></span>
             </div>
             <div className={styles["logo-container"]}>
-              <img
+              <Image
                 src={"/images/Logo/Logo.svg"}
                 alt="Логотип"
                 className={styles["image"]}
+                height={50}
+                width={50}
                 onClick={handleMainMenuRoute}
                 draggable="false"
               />
@@ -159,7 +163,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                     <TelegramIcon />
                   </a>
                   <a href="https://wa.me/79337772777">
-                    <img
+                    <Image
                       src={"/images/AboutContacts/WhatssApp.png"}
                       height={46}
                       width={46}

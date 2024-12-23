@@ -14,6 +14,8 @@ import { useAtom } from "jotai";
 import { shopBucketAtom } from "@/Store/ShopBucket";
 import { useGetItemById } from "@/hooks/useGetItemById";
 
+import Image from "next/image"
+
 export const PopularItems = () => {
   const { popularItemsList } = useGetPopularItems();
 
@@ -106,10 +108,7 @@ export const PopularItems = () => {
                 className={styles["popular-items-block-item"]}
                 onClick={handleOpenCard.bind(null, item.id ?? -1)}
               >
-                {/* <div className={styles["popular-items-block-item-gurantee"]}>
-                  Гарантия
-                </div> */}
-                <img src={`data:image/jpeg;base64,${item.image}`} alt="" />
+                <Image src={`data:image/jpeg;base64,${item.image}`} alt="" width={100} height={100} quality={100}/>
                 <div className={styles["popular-items-block-price-block"]}>
                   <span className={styles["popular-items-block-item-tag"]}>
                     {item.name}

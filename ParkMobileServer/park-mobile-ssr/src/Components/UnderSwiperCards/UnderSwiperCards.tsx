@@ -4,6 +4,8 @@ import styles from "./UnderSwiperCards.module.scss";
 import { animateScroll as scroll } from "react-scroll";
 import { categoryAtom } from "@/Store/FiltersStore";
 
+import Image from "next/image";
+
 export const UnderSwiperCards = () => {
   const [, setCategories] = useAtom(categoryAtom);
 
@@ -51,7 +53,7 @@ export const UnderSwiperCards = () => {
           className={styles["cards-block-item"]}
           onClick={handleToCategory.bind(null, item.category)}
         >
-          <img src={item.image} alt="" />
+          <Image src={item.image} alt="" width={150} height={150} layout="responsive"/>
           <div className={styles["cards-block-price-block"]}>
             <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
             <span className={styles["cards-block-item-price"]}>

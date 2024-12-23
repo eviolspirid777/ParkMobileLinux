@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { useAtom } from "jotai";
 import { categoryAtom } from "@/Store/FiltersStore";
 import { animateScroll as scroll } from "react-scroll";
+import Image from "next/image"
 
 type TileItem = {
   title: string;
@@ -150,7 +151,7 @@ export const Tiles = () => {
           >
             {el.description}
           </span>
-          <img src={el.img} alt="" />
+          <Image src={el.img} alt="" width={500} height={500} layout="responsive"/>
           <div
             className={styles["card-item-block-button-block"]}
             ref={(el) => {

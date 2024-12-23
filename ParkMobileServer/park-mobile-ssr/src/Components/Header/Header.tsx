@@ -6,6 +6,7 @@ import React from "react";
 import { ContentType } from "@/Types/SliderContentType";
 import { useAtom } from "jotai";
 import { shopBucketAtom } from "@/Store/ShopBucket";
+import Image from "next/image"
 
 type HeaderProps = {
   mouseEnter: (
@@ -117,9 +118,11 @@ export const Header: FC<HeaderProps> = ({
         isHeaderHidden ? styles["header-hidden"] : ""
       }`}
     >
-      <img
+      <Image
         src={"/images/Logo/Logo.svg"}
         alt=""
+        width={50}
+        height={50}
         className={styles["logo"]}
         onClick={handleMainMenuRoute}
         draggable="false"

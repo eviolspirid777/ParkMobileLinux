@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./NotFound.module.scss";
+import Image from "next/image";
 
 export default function NotFound() {
   return (
@@ -15,7 +16,7 @@ export default function NotFound() {
         </div>
         <Link href="/">На главную</Link>
       </div>
-      <img src="/images/ErrorImages/Cow.webp" />
+      <Image src="/images/ErrorImages/Cow.webp" alt="" width={500} height={500}/>
     </div>
   );
 }

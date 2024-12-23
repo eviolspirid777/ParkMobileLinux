@@ -22,6 +22,7 @@ import { FormItemChange } from "../MenuPage";
 import { useUpdatePhoto } from "@/hooks/useUpdatePhoto";
 import { CardTypeAdmin } from "@/Types/CardTypeAdmin";
 import { useGetItemsAdmin } from "@/hooks/useGetItemsAdmin";
+import Image from "next/image"
 // import { AggregationColor } from "antd/es/color-picker/color";
 
 type BrandAndOptions = {
@@ -197,10 +198,12 @@ export const ModalWindow: FC<ModalWindowProps> = ({
                 onChange={handleChange}
               >
                 {selectedItem?.image ? (
-                  <img
+                  <Image
                     src={`data:image/jpeg;base64,${selectedItem?.image}`}
                     alt=""
                     width={300}
+                    height={300}
+                    layout="responsive"
                   />
                 ) : (
                   uploadButton

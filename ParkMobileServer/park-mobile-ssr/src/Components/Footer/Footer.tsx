@@ -5,6 +5,7 @@ import { TelegramIcon } from "./Telegram";
 import { animateScroll as scroll } from "react-scroll";
 import { useAtom } from "jotai";
 import { categoryAtom } from "@/Store/FiltersStore";
+import Image from "next/image";
 
 export const Footer = () => {
   const pathName = usePathname();
@@ -106,7 +107,7 @@ export const Footer = () => {
             наших лучших предложениях
           </span>
           <div className={styles["reqesits"]}>
-            <img src={"/images/requisits/reqesits.png"} alt="" />
+            <Image src={"/images/requisits/reqesits.png"} alt="" width={150} height={150} layout="responsive"/>
           </div>
         </div>
       </div>

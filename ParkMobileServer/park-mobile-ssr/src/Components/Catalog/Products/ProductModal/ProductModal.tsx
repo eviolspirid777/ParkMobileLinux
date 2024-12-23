@@ -5,6 +5,7 @@ import styles from "./ProductModal.module.scss";
 import MarkdownRenderer from "@/Components/MarkDown/MarkDownRenderer";
 import { FC, useEffect, useState } from "react";
 import { CardItemType } from "@/Types/CardType";
+import Image from "next/image";
 
 type OpenProductCard = {
   state: boolean;
@@ -79,13 +80,18 @@ export const ProductModal: FC<ProductModalProps> = ({
       >
         <div className={styles["item-container"]}>
           <div className={styles["item-container-image"]}>
-            <img
+            <Image
               src={
                 CardData && CardData.image
                   ? `data:image/jpeg;base64,${CardData.image}`
                   : ""
               }
               alt=""
+              width={500}
+              height={500}
+              quality={100}
+              priority
+              layout="relative"
             />
           </div>
           <div className={styles["item-container-data"]}>

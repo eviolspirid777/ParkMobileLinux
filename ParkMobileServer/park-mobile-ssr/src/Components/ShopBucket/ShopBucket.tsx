@@ -11,7 +11,7 @@ import {
   RadioChangeEvent,
 } from "antd";
 import styles from "./ShopBucket.module.scss";
-import { FC, useCallback, useState } from "react";
+import { FC, useState } from "react";
 import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { useAtom } from "jotai";
 import { deliveryOptions } from "./DeliveryTypes/ShopBucketDeliveryOptions";
@@ -19,6 +19,7 @@ import Media from "react-media";
 import { ShopBucketMobile } from "./ShopBucket/ShopBucketMobile";
 import { apiClient } from "@/api/ApiClient";
 import { useForm } from "antd/es/form/Form";
+import Image from "next/image"
 
 type ShopBucketType = {
   handleShopBag: () => void;
@@ -134,12 +135,11 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     debouncedFetchSuggestions(value);
   };
 
-  const debouncedFetchSuggestions = useCallback(
+  const debouncedFetchSuggestions = 
     debounce(async (searchTerm: string) => {
       await fetchSuggestions(searchTerm);
-    }, 1000),
-    []
-  );
+    }, 1000);
+  ;
 
   const handlePayment = (event: RadioChangeEvent) => {
     if (event.target.value === "card") {
@@ -194,10 +194,11 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                 <main>
                   {shopBucket.map((el, index) => (
                     <div key={index} className={styles["item-block"]}>
-                      <img
+                      <Image
                         src={`data:image/jpeg;base64,${el.image}`}
                         alt=""
                         width={60}
+                        height={60}
                       />
                       <div className={styles["item-block-info"]}>
                         {Object.entries(el).map(([k, v]) => {
@@ -458,10 +459,11 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                       <main>
                         {shopBucket.map((el, index) => (
                           <div key={index} className={styles["item-block"]}>
-                            <img
+                            <Image
                               src={`data:image/jpeg;base64,${el.image}`}
                               alt=""
                               width={60}
+                              height={60}
                             />
                             <div className={styles["item-block-info"]}>
                               {Object.entries(el).map(([k, v]) => {

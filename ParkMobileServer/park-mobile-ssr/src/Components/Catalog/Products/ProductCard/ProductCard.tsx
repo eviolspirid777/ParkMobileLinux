@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./ProductCard.module.scss";
 import { CardType } from "@/Types/CardType";
+import Image from "next/image";
 
 type ProductCardProps = {
   card: CardType;
@@ -28,11 +29,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ card, onClick }) => {
   return (
     <div className={styles["product-card"]} onClick={onClick}>
       {image && (
-        <img
+        <Image
           src={image}
           alt=""
           width={window.screen.width > 1024 ? 300 : 180}
           height={window.screen.width > 1024 ? 300 : 180}
+          layout="responsive"
         />
       )}
       <div className={styles["product-card-text-block"]}>

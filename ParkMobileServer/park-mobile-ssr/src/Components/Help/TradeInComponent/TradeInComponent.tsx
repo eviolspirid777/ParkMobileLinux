@@ -47,15 +47,6 @@ export const TradeInComponent = () => {
             решили обновить, получить при этом выгоду себе и принести пользу
             окружающей среде.
           </span>
-          {/* <h4>Выберите технику, которую вы хотите сдать</h4>
-          <div className={styles["images-block"]}>
-            {imagesBlock.map(([name, photo], key) => (
-              <div key={key} className={styles["images-block-card"]}>
-                <img src={photo} alt="" />
-                <span>{name as ReactNode}</span>
-              </div>
-            ))}
-          </div> */}
           <button
             className={styles["submit-button"]}
             onClick={setOpen.bind(this, true)}

@@ -2,7 +2,7 @@ import styles from "./DeliveryComponent.module.scss";
 import { AccordionComponent } from "@/Shared/Components/Accordion/AccordionComponent";
 import { Metadata } from "next";
 
-import Img from "next/image";
+import Image from "next/image";
 import sdek from "./Images/SDEK.png";
 
 export const metadata: Metadata = {
@@ -132,7 +132,7 @@ export const DeliveryComponent = () => {
             </div>
           </div>
           <div className={styles["delivery-block-russia-delivery-image-grid"]}>
-            <Img src={sdek} alt="" width="170" />
+            <Image src={sdek} alt="" width="170" />
           </div>
         </div>
         <div className={styles["delivery-block-faq"]}>

@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
   // output: "export",
   images: {
     unoptimized: true,
+  },
+  experimental: {
+    dynamicIO: true
   }
 };
 

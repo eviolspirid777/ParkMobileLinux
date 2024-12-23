@@ -14,6 +14,7 @@ import { useGetItemsAdmin } from "@/hooks/useGetItemsAdmin";
 import { CardTypeAdmin } from "@/Types/CardTypeAdmin";
 import { AggregationColor } from "antd/es/color-picker/color";
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import Image from "next/image";
 
 export type FormItemChange = {
   article: string;
@@ -48,7 +49,7 @@ const columns: TableColumnsType<DataType> = [
     key: "image",
     width: 100,
     render: (image: string) => (
-      <img src={`data:image/jpeg;base64,${image}`} width={70} />
+      <Image src={`data:image/jpeg;base64,${image}`} alt="" width={50} height={40} layout="responsive" />
     ),
     align: "center",
   },

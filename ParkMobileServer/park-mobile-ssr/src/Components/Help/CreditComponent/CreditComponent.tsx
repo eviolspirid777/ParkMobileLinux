@@ -1,6 +1,8 @@
 import { ConfigProvider, Steps } from "antd";
 import styles from "./CreditComponent.module.scss";
 
+import Image from "next/image"
+
 export const CreditComponent = () => {
   const imagesLogos = [
     "/images/Banks/HomeKredit.png",
@@ -101,7 +103,7 @@ export const CreditComponent = () => {
               data-number={key}
               className={styles["image-container"]}
             >
-              <img src={el} alt="" width={250} />
+              <Image src={el} alt="" width={250} height={250} layout="responsive"/>
             </div>
           ))}
         </div>

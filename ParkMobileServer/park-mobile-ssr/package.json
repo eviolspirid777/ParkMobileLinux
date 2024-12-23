@@ -15,12 +15,13 @@
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.2",
     "@pbe/react-yandex-maps": "^1.2.5",
+    "@tanstack/react-query": "^5.59.16",
     "antd": "^5.22.2",
     "axios": "^1.7.7",
     "gsap": "^3.12.5",
     "jotai": "^2.10.2",
     "lodash": "^4.17.21",
-    "next": "^15.0.3",
+    "next": "^15.1.1-canary.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
@@ -32,8 +33,7 @@
     "sass": "^1.83.0",
     "sass-loader": "^16.0.3",
     "scss": "^0.2.4",
-    "swiper": "^11.1.14",
-    "@tanstack/react-query": "^5.59.16"
+    "swiper": "^11.1.14"
   },
   "devDependencies": {
     "@tanstack/react-query": "^5.59.16",

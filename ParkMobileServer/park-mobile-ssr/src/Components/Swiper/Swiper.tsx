@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -7,23 +8,22 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import styles from "./Swiper.module.scss";
-import { apiClient } from "@/api/ApiClient";
-
+import { fetchImages } from "./fetchImages";
+import Image from "next/image";
 
 export const SwiperList = () => {
   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const data = await apiClient.GetSliderData();
-        setImages(data.map(el => el.imageData));
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      }
-    };
-
-    fetchImages();
+    const cachedImages = localStorage.getItem("cachedImages");
+    if (cachedImages) {
+      setImages(JSON.parse(cachedImages));
+    } else {
+      fetchImages().then((fetchedImages) => {
+        setImages(fetchedImages);
+        localStorage.setItem("cachedImages", JSON.stringify(fetchedImages));
+      });
+    }
   }, []);
 
   return (
@@ -40,9 +40,13 @@ export const SwiperList = () => {
     >
       {images.map((image, index) => (
         <SwiperSlide key={index}>
-          <img
+          <Image
             className={styles["image-container"]}
             src={`data:image/jpeg;base64,${image}`}
+            alt=""
+            width={1200}
+            height={300}
+            layout="relative"
           />
         </SwiperSlide>
       ))}
