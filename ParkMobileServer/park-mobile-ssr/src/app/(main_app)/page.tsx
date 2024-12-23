@@ -8,11 +8,15 @@ import { UnderSwiperCards } from "@/Components/UnderSwiperCards/UnderSwiperCards
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; 
 import Media from "react-media";
 import { TilesMobile } from "@/Components/Tiles/TilesMobile/TilesMobile";
+// import { Suspense } from "react";
+// import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
 
 const Home = () => {
   const queryClient = new QueryClient();
 
-  //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно)
+  //TODO: Убери layout у Image (next/image) и замени его на sizes. ЭТО РУДИМЕНТ!
+
+  //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно) +
   //TODO: Исправь баг в корзине с неправильным отображением цены у товара и баг в корзине ОФОРМИТЬ ЗАКАЗ(итоговая цена) +
   //TODO: перепиши на тг Эмиля запросы!! +
   //TODO: В тг Эмиль написал что исправить +
@@ -66,19 +70,21 @@ const Home = () => {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <SwiperList />
-        <UnderSwiperCards />
-        <PopularItems />
-        <Media
-          queries={{
-            telephone: "(max-width: 1024px)",
-            computer: "(min-width: 1025px)",
-          }}
-        >
-          {(matches) => <>{matches.computer ? <Tiles /> : <TilesMobile />}</>}
-        </Media>
-        <UnderTilesLogos />
-        <Catalog />
+        {/* <Suspense fallback={<LoadingComponent/>}> */}
+          <SwiperList />
+          <UnderSwiperCards />
+          <PopularItems />
+          <Media
+            queries={{
+              telephone: "(max-width: 1024px)",
+              computer: "(min-width: 1025px)",
+            }}
+          >
+            {(matches) => <>{matches.computer ? <Tiles /> : <TilesMobile />}</>}
+          </Media>
+          <UnderTilesLogos />
+          <Catalog />
+        {/* </Suspense> */}
       </QueryClientProvider>
     </>
   );
