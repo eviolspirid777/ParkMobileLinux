@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import styles from "./Categories.module.scss";
 import { useState } from "react";
 import { useAddCategory } from "@/hooks/useAddCategory";
+import { useForm } from "antd/es/form/Form";
 
 type DataType = {
   name: string;
@@ -28,11 +29,11 @@ const columns: TableColumnsType<DataType> = [
 ];
 
 export const CategoriesPage = () => {
+  const [form] = useForm();
   useGetCategories();
   const { mutateAsync } = useAddCategory();
 
   const [categories] = useAtom(categoriesAtom);
-  console.log(categories);
 
   const [open, setOpen] = useState(false);
 
@@ -45,11 +46,12 @@ export const CategoriesPage = () => {
   };
 
   const handleFinish = async (values: { name: string }) => {
-    console.log(values);
     await mutateAsync(values.name);
     closeModal();
+    form.resetFields();
   };
-
+  //emielbezgans
+  //Pass: EmilBezgans2002!
   return (
     <div className={styles["categories-container"]}>
       <Button onClick={openModal}>Добавить категорию</Button>
@@ -66,7 +68,7 @@ export const CategoriesPage = () => {
         footer={null}
         centered
       >
-        <Form onFinish={handleFinish}>
+        <Form onFinish={handleFinish} form={form}>
           <Form.Item name="name" label="Название категории">
             <Input placeholder="Категория" />
           </Form.Item>

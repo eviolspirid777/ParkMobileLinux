@@ -9,10 +9,8 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-// Use the service name defined in docker-compose.yml
-//TODO: Все билдится но не работают запросы в докере. В чем может быть проблема?
-const AUTORIZATIONS_PATH = `http://45.142.44.239:3001/api/Autorization`
-const POSTGRE_ITEMS_PATH = `http://45.142.44.239:3001/api/ItemsPostgre`
+const AUTORIZATIONS_PATH = `http://80.64.24.12:3001/api/Autorization`
+const POSTGRE_ITEMS_PATH = `http://80.64.24.12:3001/api/ItemsPostgre`
 // const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
 // const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
 
@@ -177,7 +175,7 @@ class ApiClient {
     }
 
     async PostBrand(name: string) {
-        const response = await this.client.post(`${POSTGRE_ITEMS_PATH}/CreateBrand`, {name})
+        const response = await this.authClient.post(`${POSTGRE_ITEMS_PATH}/CreateBrand`, {name})
         return response.data
     }
 
@@ -187,7 +185,7 @@ class ApiClient {
     }
 
     async PostCategory(name: string) {
-        const response = await this.client.post(`${POSTGRE_ITEMS_PATH}/CreateCategory`, {name})
+        const response = await this.authClient.post(`${POSTGRE_ITEMS_PATH}/CreateCategory`, {name})
         return response.data
     }
 }

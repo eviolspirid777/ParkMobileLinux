@@ -1,5 +1,4 @@
 "use client";
-import { InputFileComponent } from "@/Components/InputFileComponent/InputFileComponent";
 import { Catalog } from "@/Components/Catalog/Catalog";
 import { UnderTilesLogos } from "@/Components/UnderTilesLogos/UnderTilesLogos";
 import { Tiles } from "@/Components/Tiles/Tiles";
@@ -80,8 +79,6 @@ const Home = () => {
         </Media>
         <UnderTilesLogos />
         <Catalog />
-        {/* TODO:Удали меня! Не ЗАБУДЬ! */}
-        <InputFileComponent />
       </QueryClientProvider>
     </>
   );

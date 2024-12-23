@@ -5,6 +5,14 @@ using ParkMobileServer.DbContext;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+/*
+ * Команды для развертывания докера на серваке
+sudo apt update
+sudo apt install docker.io
+sudo systemctl start docker
+sudo systemctl enable docker
+ */
+
 //https://cp.sprintbox.ru/customer/boxes/list
 //ssh root@45.142.44.239
 //pass: 94monizi

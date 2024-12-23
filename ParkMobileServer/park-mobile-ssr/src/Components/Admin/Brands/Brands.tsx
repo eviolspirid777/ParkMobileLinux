@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import styles from "./Brands.module.scss";
 import { useState } from "react";
 import { useAddBrand } from "@/hooks/useAddBrand";
+import { useForm } from "antd/es/form/Form";
 
 type DataType = {
   name: string;
@@ -28,6 +29,7 @@ const columns: TableColumnsType<DataType> = [
 ];
 
 export const BrandsPage = () => {
+  const [form] = useForm();
   useGetBrands();
 
   const [brands] = useAtom(brandsAtom);
@@ -45,9 +47,9 @@ export const BrandsPage = () => {
   };
 
   const handleFinish = async (values: { name: string }) => {
-    console.log(values);
     await mutateAsync(values.name);
     closeModal();
+    form.resetFields();
   };
 
   return (
@@ -62,7 +64,7 @@ export const BrandsPage = () => {
         footer={null}
         centered
       >
-        <Form onFinish={handleFinish}>
+        <Form onFinish={handleFinish} form={form}>
           <Form.Item name="name" label="Название брэнда">
             <Input placeholder="Брэнд" />
           </Form.Item>
