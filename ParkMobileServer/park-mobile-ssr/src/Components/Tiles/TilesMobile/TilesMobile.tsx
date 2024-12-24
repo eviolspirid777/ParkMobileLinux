@@ -28,28 +28,28 @@ export const TilesMobile = () => {
 
   const tilesItems = [
     {
-      image: "images/TilesImages/AppleWatchTile/appleWatchTileReviewed.png",
+      image: "images/TilesImages/AppleWatchTile/appleWatchTileReviewed.webp",
       header: "Apple Watch",
       text: "Умнее. Ярче. Могущественнее",
       color: "white",
       action: () => handleCategory("Watch"),
     },
     {
-      image: "images/TilesImages/MacBookTile/macBookReviewed.png",
+      image: "images/TilesImages/MacBookTile/macBookReviewed.webp",
       header: "MacBook Pro",
       text: "Сногсшибательный. Вскружит голову.",
       color: "black",
       action: () => handleCategory("Mac"),
     },
     {
-      image: "images/TilesImages/AirpodsTile/PodsTileReviewed.png",
+      image: "images/TilesImages/AirpodsTile/PodsTileReviewed.webp",
       header: "AirPods Pro",
       text: "Никаких проводов. Только магия звука.",
       color: "white",
       action: () => handleCategory("Airpods"),
     },
     {
-      image: "images/TilesImages/IpadTile/ipadTileReviewed.png",
+      image: "images/TilesImages/IpadTile/ipadTileReviewed.webp",
       header: "iPad",
       text: "Твой следующий компьютер - не компьютер.",
       color: "black",

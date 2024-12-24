@@ -5,14 +5,14 @@ import Image from "next/image"
 
 export const CreditComponent = () => {
   const imagesLogos = [
-    "/images/Banks/HomeKredit.png",
-    "/images/Banks/RenessanceCredit.png",
-    "/images/Banks/MTS.png",
-    "/images/Banks/OTP_bank.png",
-    "/images/Banks/PochtaBank.png",
-    "/images/Banks/Russkiy_Standart.png",
-    "/images/Banks/SovKomBank.png",
-    "/images/Banks/Tinkoff.png",
+    "/images/Banks/HomeKredit.webp",
+    "/images/Banks/RenessanceCredit.webp",
+    "/images/Banks/MTS.webp",
+    "/images/Banks/OTP_bank.webp",
+    "/images/Banks/PochtaBank.webp",
+    "/images/Banks/Russkiy_Standart.webp",
+    "/images/Banks/SovKomBank.webp",
+    "/images/Banks/Tinkoff.webp",
   ];
 
   return (

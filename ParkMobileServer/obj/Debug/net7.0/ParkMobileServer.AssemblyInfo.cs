@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ParkMobileServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d11229d6dff086104f051e8b1824224cd4875e8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bb211b650d2c46319f98ccf19734038854d160a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ParkMobileServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ParkMobileServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -113,7 +113,7 @@ export const AboutContacts = () => {
                     <TelegramIcon />
                   </a>
                   <a href="https://wa.me/79337772777">
-                    <Image src={"/images/AboutContacts/WhatssApp.png"} alt="" height={500} width={500}/>
+                    <Image src={"/images/AboutContacts/WhatssApp.webp"} alt="" height={500} width={500}/>
                   </a>
                 </div>
               </div>
@@ -148,7 +148,7 @@ export const AboutContacts = () => {
                 <button onClick={handleCallRequest}>Заказать звонок</button>
               </div>
             </div>
-            <Image src={"/images/AboutContacts/Phone_demo.png"} alt="" height={350} width={350}/>
+            <Image src={"/images/AboutContacts/Phone_demo.webp"} alt="" height={350} width={350}/>
           </div>
         </div>
       </YMaps>

@@ -9,19 +9,19 @@ export const UnderTilesLogos = () => {
 
   const images = [
     {
-      image: "/images/ItemsLogos/apple.png",
+      image: "/images/ItemsLogos/apple.webp",
       link: "Apple",
     },
     {
-      image: "/images/ItemsLogos/dyson.png",
+      image: "/images/ItemsLogos/dyson.webp",
       link: "Dyson",
     },
     {
-      image: "/images/ItemsLogos/samsung.png",
+      image: "/images/ItemsLogos/samsung.webp",
       link: "Samsung",
     },
     {
-      image: "/images/ItemsLogos/sony.png",
+      image: "/images/ItemsLogos/sony.webp",
       link: "Gaming",
     },
   ];

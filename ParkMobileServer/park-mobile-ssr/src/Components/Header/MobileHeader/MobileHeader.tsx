@@ -164,7 +164,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                   </a>
                   <a href="https://wa.me/79337772777">
                     <Image
-                      src={"/images/AboutContacts/WhatssApp.png"}
+                      src={"/images/AboutContacts/WhatssApp.webp"}
                       height={46}
                       width={46}
                       alt=""

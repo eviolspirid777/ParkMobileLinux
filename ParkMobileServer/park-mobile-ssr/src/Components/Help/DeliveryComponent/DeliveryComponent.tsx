@@ -3,7 +3,7 @@ import { AccordionComponent } from "@/Shared/Components/Accordion/AccordionCompo
 import { Metadata } from "next";
 
 import Image from "next/image";
-import sdek from "./Images/SDEK.png";
+import sdek from "./Images/SDEK.webp";
 
 export const metadata: Metadata = {
   title: "Доставка ParkMobile",

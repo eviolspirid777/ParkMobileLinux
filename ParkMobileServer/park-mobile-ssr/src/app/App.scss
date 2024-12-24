@@ -1,5 +1,4 @@
 @import "../Styles/fonts.scss";
-@import "/node_modules/antd/dist/antd.css";
 
 /**
  * Modern CSS Reset Tweaks
@@ -612,16 +611,19 @@ body {
 @font-face {
     font-family: "SF-Pro-Display-Regular";
     src: url("../assets/Fonts/SF-Pro-Display-Regular.otf");
+    font-display: swap;
 }
 
 @font-face {
     font-family: "SF-Pro-Display-Regular_light";
     src: url("../assets/Fonts/SF-Pro-Display-Light.otf");
+    font-display: swap;
 }
 
 @font-face {
     font-family: "SF-Pro-Display-Heavy";
     src: url("../assets/Fonts/SF-Pro-Display-Heavy.otf");
+    font-display: swap;
 }
 
 * {
