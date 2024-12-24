@@ -1,10 +1,10 @@
 import { useAtom } from "jotai";
 import styles from "./UnderSwiperCards.module.scss";
 
-import { animateScroll as scroll } from "react-scroll";
 import { categoryAtom } from "@/Store/FiltersStore";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export const UnderSwiperCards = () => {
   const [, setCategories] = useAtom(categoryAtom);
@@ -37,30 +37,27 @@ export const UnderSwiperCards = () => {
   ];
 
   const handleToCategory = (category: string) => {
-    scroll.scrollTo(window.screen.width > 1024 ? 3200 : 4200, {
-      duration: 700,
-      smooth: true,
-    });
-
     setCategories(category);
   };
 
   return (
     <div className={styles["cards-block"]}>
       {items.map((item, i) => (
-        <div
-          key={i}
-          className={styles["cards-block-item"]}
-          onClick={handleToCategory.bind(null, item.category)}
-        >
-          <Image src={item.image} alt="" width={150} height={150} layout="responsive"/>
-          <div className={styles["cards-block-price-block"]}>
-            <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
-            <span className={styles["cards-block-item-price"]}>
-              От {item.price} ₽
-            </span>
+        <Link key={i} href="/#catalog" style={{textDecoration: "none", color: "black"}}>
+          <div
+            key={i}
+            className={styles["cards-block-item"]}
+            onClick={handleToCategory.bind(null, item.category)}
+          >
+            <Image src={item.image} alt="" width={150} height={150} layout="responsive"/>
+            <div className={styles["cards-block-price-block"]}>
+              <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
+              <span className={styles["cards-block-item-price"]}>
+                От {item.price} ₽
+              </span>
+            </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );

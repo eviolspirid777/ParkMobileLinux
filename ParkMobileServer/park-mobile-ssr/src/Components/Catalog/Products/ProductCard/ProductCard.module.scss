@@ -62,11 +62,12 @@
   .product-card {
     position: relative;
     display: grid;
-    grid-template-rows: 13fr 1fr 1fr;
+    grid-template-rows: 8fr 1fr 1fr;
     padding: 0px 10px;
     height: fit-content;
     width: 190px;
-    height: 450px;
+    height: 300px;
+    gap: 5px;
     cursor: pointer;
 
     & img {
@@ -77,6 +78,7 @@
     &-text-block {
       display: flex;
       flex-flow: column nowrap;
+      padding-top: 1%;
 
       &-tag {
         font-family: "SF-Pro-Display-Regular";
@@ -88,9 +90,14 @@
       &-price {
         text-align: center;
         font-family: "SF-Pro-Display-Regular";
-        padding-top: 20px;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
+        &-block {
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 0px;
+          padding-top: 1%;
+        }
       }
 
       &-tile {

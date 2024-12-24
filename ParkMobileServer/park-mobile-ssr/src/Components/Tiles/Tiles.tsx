@@ -4,8 +4,8 @@ import styles from "./Tiles.module.scss";
 import { useEffect, useRef } from "react";
 import { useAtom } from "jotai";
 import { categoryAtom } from "@/Store/FiltersStore";
-import { animateScroll as scroll } from "react-scroll";
 import Image from "next/image"
+import Link from "next/link";
 
 type TileItem = {
   title: string;
@@ -123,11 +123,6 @@ export const Tiles = () => {
   }, []);
 
   const handleCategory = (category: string) => {
-    scroll.scrollTo(window.screen.width > 1024 ? 3200 : 4200, {
-      duration: 50,
-      smooth: true,
-    });
-
     setCategories(category);
   };
 
@@ -159,18 +154,22 @@ export const Tiles = () => {
             }}
             data-buttons={el.key}
           >
-            <button
-              data-button="подробнее"
-              onClick={handleCategory.bind(null, el.category)}
-            >
-              Подробнее
-            </button>
-            <button
-              data-button="купить"
-              onClick={handleCategory.bind(null, el.category)}
-            >
-              Купить
-            </button>
+            <Link href="/#catalog">
+              <button
+                data-button="подробнее"
+                onClick={handleCategory.bind(null, el.category)}
+              >
+                Подробнее
+              </button>
+            </Link>
+            <Link href="/#catalog">
+              <button
+                data-button="купить"
+                onClick={handleCategory.bind(null, el.category)}
+              >
+                Купить
+              </button>
+            </Link>
           </div>
         </div>
       ))}

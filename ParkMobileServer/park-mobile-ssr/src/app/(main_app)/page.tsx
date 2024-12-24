@@ -8,29 +8,22 @@ import { UnderSwiperCards } from "@/Components/UnderSwiperCards/UnderSwiperCards
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; 
 import Media from "react-media";
 import { TilesMobile } from "@/Components/Tiles/TilesMobile/TilesMobile";
-// import { Suspense } from "react";
-// import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
 
 const Home = () => {
   const queryClient = new QueryClient();
-
-  //TODO: Убери layout у Image (next/image) и замени его на sizes. ЭТО РУДИМЕНТ!
-
+  
+  //TODO: Убери layout у Image (next/image) и замени его на sizes. ЭТО РУДИМЕНТ! +
   //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно) +
   //TODO: Исправь баг в корзине с неправильным отображением цены у товара и баг в корзине ОФОРМИТЬ ЗАКАЗ(итоговая цена) +
   //TODO: перепиши на тг Эмиля запросы!! +
   //TODO: В тг Эмиль написал что исправить +
   //TODO: артикул товара к карточке прикрепи +
   //TODO: Верни [Autorize] к энд-поинтам на беке +
-
-
-  //TODO: ReadMore.js: https://jedfoster.com/Readmore.js/  для подробнее...
-  //TODO: Добавить заявку на ремонт в мобильную версию
+  //TODO: Добавить заявку на ремонт в мобильную версию +
   //TODO: Большую кнопку (отправить заявку) на трейд-ин. И там шаги с заполнением + отправка сообщения в тг +
   //TODO: Заявка на ремонт(модалка с названием товара и описанием проблемы) +
   //TODO: Заявка на трейд-ин(перекидывает на модалку с шагами) и заявка на ремонт(простая форма) +
   //TODO: В мобильной версии следлать слайдер вместо четырех плашек этих +
-
   //TODO: Убрать надпись ГАРАНТИЯ +
   //TODO: Сделать вариант добавления тайлика ГАРАНТИЯ (ЭТО УБИРАЕМ) +
   //TODO: сделать вариант навигации при выборе категории в header +
@@ -41,14 +34,12 @@ const Home = () => {
   //TODO: Сделать возможность добавления товара в корзину +
   //TODO: Добавить возможность выбора и добавления в корзину ПОПУЛЯРНЫХ ТОВАРОВ +
   //TODO: Сделать возможность выбора options у товара ???
-
   //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно)
   //TODO: Добавить возможность редактирования популярных товаров +
   //TODO: Сделать возможность добавления/удаления брендов в админке +
   //TODO: Добавить поиск товаров в таблицу редактирования товаров !?!?!?!
   //TODO: Добавить выборку options у товаров ???
   //TODO: Добавить возможность добавления options у товаров ???
-
   /*TODO:
   9)Добавить обработку клика по товарам в категории +
   7)Реализовать цену со скидкой +
@@ -57,7 +48,6 @@ const Home = () => {
   6)Клик по категориям в футере +!
   1)Если выбрано СДЭК, то мы убираем наличными при получении(его убрать) и добавляем вместо него ПЕРЕВОД +!
   4)Сделать по 2 раздела вот этих с apple watch, macbook pro !!!НЕ РЕАЛИЗУЕМО!!!
-  
   О компании +++++
   14)Почему мобильной версии не отображается изображение +
   10)Карта в мобильной версии посередине +
@@ -70,21 +60,19 @@ const Home = () => {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        {/* <Suspense fallback={<LoadingComponent/>}> */}
-          <SwiperList />
-          <UnderSwiperCards />
-          <PopularItems />
-          <Media
-            queries={{
-              telephone: "(max-width: 1024px)",
-              computer: "(min-width: 1025px)",
-            }}
-          >
-            {(matches) => <>{matches.computer ? <Tiles /> : <TilesMobile />}</>}
-          </Media>
-          <UnderTilesLogos />
-          <Catalog />
-        {/* </Suspense> */}
+        <SwiperList />
+        <UnderSwiperCards />
+        <PopularItems />
+        <Media
+          queries={{
+            telephone: "(max-width: 1024px)",
+            computer: "(min-width: 1025px)",
+          }}
+        >
+          {(matches) => <>{matches.computer ? <Tiles /> : <TilesMobile />}</>}
+        </Media>
+        <UnderTilesLogos />
+        <Catalog />
       </QueryClientProvider>
     </>
   );

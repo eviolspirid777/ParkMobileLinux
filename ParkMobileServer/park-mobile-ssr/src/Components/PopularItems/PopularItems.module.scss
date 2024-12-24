@@ -94,7 +94,7 @@
     padding: 50px 0px 0px 0px;
     display: flex;
     flex-flow: column nowrap;
-    gap: 70px;
+    gap: 40px;
 
     &-none {
       padding: 450px 150px 400px 150px;
@@ -104,6 +104,7 @@
       width: 100%;
       display: flex;
       flex-flow: row wrap;
+      height: 350px;
 
       &-item {
         display: grid;
@@ -159,5 +160,11 @@
         gap: 10px;
       }
     }
+  }
+
+  .popular-items-block-price-block-prices {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 3px;
   }
 }

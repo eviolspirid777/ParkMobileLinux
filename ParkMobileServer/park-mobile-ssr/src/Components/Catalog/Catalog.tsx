@@ -50,7 +50,7 @@ export const Catalog = () => {
   }, [storeCategory]);
 
   return (
-    <div className={styles["catalog-block"]}>
+    <div id="catalog" className={styles["catalog-block"]}>
       <CatalogHeader />
       <Categories />
       {/* <FilterTile itemsCount={items?.count} /> */}
