@@ -146,7 +146,7 @@ export const Tiles = () => {
           >
             {el.description}
           </span>
-          <Image src={el.img} alt="" width={500} height={500} layout="responsive"/>
+          <Image src={el.img} alt={el.title} width={500} height={500} layout="responsive"/>
           <div
             className={styles["card-item-block-button-block"]}
             ref={(el) => {

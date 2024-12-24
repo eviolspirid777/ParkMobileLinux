@@ -31,7 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ card, onClick }) => {
       {image && (
         <Image
           src={image}
-          alt=""
+          alt="product_card"
           width={window.screen.width > 1024 ? 300 : 180}
           height={window.screen.width > 1024 ? 300 : 180}
           layout="responsive"

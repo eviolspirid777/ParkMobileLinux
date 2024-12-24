@@ -61,7 +61,7 @@ export const SliderMenu: FC<SliderMenuProps> = ({
             >
               <Image
                 src={item.image}
-                alt=""
+                alt={item.name}
                 height={70}
                 width={70}
                 className={

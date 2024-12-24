@@ -14,7 +14,7 @@ export const SliderSearchCard: FC<SliderSearchCardType> = ({
 }) => {
   return (
     <div className={styles["slider-search-card"]} onClick={onClick && onClick.bind(this, card)}>
-      <Image src={`data:image/jpeg;base64,${card.image}`} alt="" width={70} height={70}/>
+      <Image src={`data:image/jpeg;base64,${card.image}`} alt={card.name} width={70} height={70}/>
       <div className={styles["slider-search-card-info"]}>
         <span>{card.name}</span>
         <strong>{card.price} ₽</strong>

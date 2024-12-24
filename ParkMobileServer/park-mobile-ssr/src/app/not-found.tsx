@@ -16,7 +16,7 @@ export default function NotFound() {
         </div>
         <Link href="/">На главную</Link>
       </div>
-      <Image src="/images/ErrorImages/Cow.webp" alt="" width={500} height={500}/>
+      <Image src="/images/ErrorImages/Cow.webp" alt="Cow" width={500} height={500}/>
     </div>
   );
 }

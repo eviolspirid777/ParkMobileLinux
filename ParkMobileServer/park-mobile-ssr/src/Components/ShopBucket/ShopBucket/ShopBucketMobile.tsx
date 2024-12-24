@@ -65,7 +65,7 @@ export const ShopBucketMobile: FC<ShopBucketMobileProps> = ({
     <main className={styles["main-cls"]}>
       {shopBucket.map((el, index) => (
         <div key={index} className={styles["item-block"]}>
-          <Image src={`data:image/jpeg;base64,${el.image}`} alt="" width={80} height={80}/>
+          <Image src={`data:image/jpeg;base64,${el.image}`} alt={el.name} width={80} height={80}/>
           <div className={styles["item-data-container"]}>
             <div className={styles["item-block-info"]}>
               <strong>{el.name}</strong>

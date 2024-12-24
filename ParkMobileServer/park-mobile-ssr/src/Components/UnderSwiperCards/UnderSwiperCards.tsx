@@ -49,7 +49,7 @@ export const UnderSwiperCards = () => {
             className={styles["cards-block-item"]}
             onClick={handleToCategory.bind(null, item.category)}
           >
-            <Image src={item.image} alt="" width={150} height={150} layout="responsive"/>
+            <Image src={item.image} alt={item.tag} width={150} height={150} layout="responsive"/>
             <div className={styles["cards-block-price-block"]}>
               <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
               <span className={styles["cards-block-item-price"]}>

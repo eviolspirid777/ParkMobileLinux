@@ -108,7 +108,7 @@ export const PopularItems = () => {
                 className={styles["popular-items-block-item"]}
                 onClick={handleOpenCard.bind(null, item.id ?? -1)}
               >
-                <Image src={`data:image/jpeg;base64,${item.image}`} alt="" width={60} height={60} quality={100}/>
+                <Image src={`data:image/jpeg;base64,${item.image}`} alt={item.name} width={60} height={60} quality={100}/>
                 <div className={styles["popular-items-block-price-block"]}>
                   <span className={styles["popular-items-block-item-tag"]}>
                     {item.name}

@@ -132,7 +132,7 @@ export const DeliveryComponent = () => {
             </div>
           </div>
           <div className={styles["delivery-block-russia-delivery-image-grid"]}>
-            <Image src={sdek} alt="" width="170" />
+            <Image src={sdek} alt="sdek" width="170" />
           </div>
         </div>
         <div className={styles["delivery-block-faq"]}>

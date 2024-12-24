@@ -43,7 +43,7 @@ export const SwiperList = () => {
           <Image
             className={styles["image-container"]}
             src={`data:image/jpeg;base64,${image}`}
-            alt=""
+            alt="swiper_image"
             width={1200}
             height={300}
             layout="relative"

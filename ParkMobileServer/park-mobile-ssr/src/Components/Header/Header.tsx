@@ -120,7 +120,7 @@ export const Header: FC<HeaderProps> = ({
     >
       <Image
         src={"/images/Logo/Logo.svg"}
-        alt=""
+        alt="logo"
         width={50}
         height={50}
         className={styles["logo"]}

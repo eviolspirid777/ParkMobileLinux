@@ -86,7 +86,7 @@ export const ProductModal: FC<ProductModalProps> = ({
                   ? `data:image/jpeg;base64,${CardData.image}`
                   : ""
               }
-              alt=""
+              alt="product_card"
               width={500}
               height={500}
               quality={100}

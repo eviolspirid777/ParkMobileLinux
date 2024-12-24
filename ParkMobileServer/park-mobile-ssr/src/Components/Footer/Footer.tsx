@@ -107,7 +107,7 @@ export const Footer = () => {
             наших лучших предложениях
           </span>
           <div className={styles["reqesits"]}>
-            <Image src={"/images/requisits/reqesits.webp"} alt="" width={150} height={150} layout="responsive"/>
+            <Image src={"/images/requisits/reqesits.webp"} alt="requesits" width={150} height={150} layout="responsive"/>
           </div>
         </div>
       </div>

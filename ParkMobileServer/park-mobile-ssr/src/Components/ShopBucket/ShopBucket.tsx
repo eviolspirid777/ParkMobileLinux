@@ -196,7 +196,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                     <div key={index} className={styles["item-block"]}>
                       <Image
                         src={`data:image/jpeg;base64,${el.image}`}
-                        alt=""
+                        alt={el.name}
                         width={60}
                         height={60}
                       />
@@ -461,7 +461,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                           <div key={index} className={styles["item-block"]}>
                             <Image
                               src={`data:image/jpeg;base64,${el.image}`}
-                              alt=""
+                              alt={el.name}
                               width={60}
                               height={60}
                             />

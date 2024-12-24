@@ -36,7 +36,7 @@ export const UnderTilesLogos = () => {
         <Image
           src={image.image}
           key={key}
-          alt=""
+          alt={`image_${key}`}
           height="300"
           width="300"
           onClick={handleRoute.bind(null, image.link)}

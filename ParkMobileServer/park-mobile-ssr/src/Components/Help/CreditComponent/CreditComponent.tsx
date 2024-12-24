@@ -103,7 +103,7 @@ export const CreditComponent = () => {
               data-number={key}
               className={styles["image-container"]}
             >
-              <Image src={el} alt="" width={250} height={250} layout="responsive"/>
+              <Image src={el} alt="credit-companies" width={250} height={250} layout="responsive"/>
             </div>
           ))}
         </div>
