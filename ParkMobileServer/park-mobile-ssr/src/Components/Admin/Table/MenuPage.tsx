@@ -1,6 +1,6 @@
 "use client";
-import { Button, Table, TableColumnsType } from "antd";
-import { useEffect, useState } from "react";
+import { Button, Input, Table, TableColumnsType } from "antd";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import styles from "./Menu.module.scss";
 import { useAtom } from "jotai";
@@ -11,7 +11,7 @@ import { useGetCategories } from "@/hooks/useGetCategories";
 import { useGetBrands } from "@/hooks/useGetBrands";
 import { ModalWindow } from "./ModalWindow/ModalWindow";
 import { useGetItemsAdmin } from "@/hooks/useGetItemsAdmin";
-import { CardTypeAdmin } from "@/Types/CardTypeAdmin";
+import { CardTypeAdmin, RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
 import { AggregationColor } from "antd/es/color-picker/color";
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Image from "next/image";
@@ -32,6 +32,7 @@ export type FormItemChange = {
 };
 
 type DataType = {
+  id?: number | string;
   key: number;
   image: string;
   name: string;
@@ -68,7 +69,6 @@ const columns: TableColumnsType<DataType> = [
     dataIndex: "isPopular",
     key: "isPopular",
     render: (isPopular: boolean) => {
-      console.log(isPopular)
       return isPopular ? <CheckCircleOutlined style={{ color: 'green' }} /> : <CloseCircleOutlined style={{ color: 'red' }} />
     },
     align: "center"
@@ -99,12 +99,34 @@ const columns: TableColumnsType<DataType> = [
 export const MenuPage = () => {
   const { itemsList, itemsListIsSuccess, refetchItemsList } =
     useGetItemsAdmin();
-  useEffect(() => {
-    console.log(itemsList)
-  }, [itemsList])
+    
   const { deleteItem } = useDeleteItem();
   useGetCategories();
   useGetBrands();
+
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [filteredData, setFilteredData] = useState<RecivedCardDataAdminType>();
+  useEffect(() => {
+    setFilteredData(itemsList)
+  }, [itemsList, itemsListIsSuccess])
+
+  useEffect(() => {
+    if (searchValue && itemsList) {
+      setFilteredData({
+        ...itemsList,
+        items: itemsList.items.filter(item =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.article.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      });
+    } else {
+      setFilteredData(itemsList);
+    }
+  }, [searchValue, itemsList]);
+
+  const onSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
 
   const [categories] = useAtom(categoriesAtom);
   const categoriesOptions = categories?.map((el) => ({
@@ -118,14 +140,9 @@ export const MenuPage = () => {
   }));
 
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState(itemsList?.items);
-  useEffect(() => {
-    if (itemsList?.items) {
-      setItems(itemsList?.items);
-    }
-  }, [itemsList]);
 
   const [selectedItem, setSelectedItem] = useState<CardTypeAdmin | null>();
+
   useEffect(() => {
     if (selectedItem) {
       setSelectedItem(
@@ -136,8 +153,9 @@ export const MenuPage = () => {
 
   useEffect(() => {
     if (itemsList) {
-      setItems(
-        itemsList.items.map((el) => {
+      setFilteredData({
+        count: itemsList.count,
+        items: itemsList.items.map((el) => {
           return {
             key: el.id!,
             name: el.name!,
@@ -148,13 +166,15 @@ export const MenuPage = () => {
             isPopular: el.isPopular!,
             isNewItem: el.isNewItem!,
           };
-        })
+        }) 
+      }
       );
     }
   }, [itemsList]);
 
-  const handleRowClick = (record: CardTypeAdmin | null) => {
-    setSelectedItem(record);
+  const handleRowClick = (record: DataType) => {
+    const selected = filteredData?.items.find((item) => item.id === record.id) ?? null;
+    setSelectedItem(selected);
     setOpen(true);
   };
 
@@ -178,6 +198,10 @@ export const MenuPage = () => {
 
   return (
     <div className={styles["menu-items-list"]}>
+      <Input.Search
+        placeholder="Поиск"
+        onChange={onSearchChange}
+      />
       <Button
         className={styles["menu-items-list-button"]}
         onClick={handleAddItem}
@@ -185,14 +209,11 @@ export const MenuPage = () => {
         Добавить товар
       </Button>
       <Table
-        key={`${itemsListIsSuccess}`}
+        key={`${itemsListIsSuccess}-${filteredData?.items.length}`}
         columns={columns}
-        dataSource={items}
+        dataSource={filteredData?.items}
         onRow={(record) => ({
-          onClick: handleRowClick.bind(
-            this,
-            itemsList?.items.find((item) => item.id! === +record.key) ?? null
-          ),
+          onClick: () => handleRowClick(record),
         })}
       />
       <ModalWindow
