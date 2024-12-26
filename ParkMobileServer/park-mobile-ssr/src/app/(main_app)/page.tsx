@@ -11,6 +11,8 @@ import { TilesMobile } from "@/Components/Tiles/TilesMobile/TilesMobile";
 
 const Home = () => {
   const queryClient = new QueryClient();
+
+  //TODO: fa-(solid,regular, thin, sharp)
   
   //TODO: Убери layout у Image (next/image) и замени его на sizes. ЭТО РУДИМЕНТ! +
   //TODO: Сделать возможность загрузки фоток в слайдер(ну это уже необязательно) +
