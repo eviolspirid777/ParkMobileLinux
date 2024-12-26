@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Modal, Tooltip } from "antd";
 import { createPortal } from "react-dom";
 
 import styles from "./ProductModal.module.scss";
@@ -27,6 +27,33 @@ export const ProductModal: FC<ProductModalProps> = ({
 }) => {
   const [isClient, setIsClient] = useState(false);
 
+  const convertToIntlFormat = (number: string | number | undefined) => {
+    let convertedNumber = number;
+    if(typeof convertedNumber === "string") {
+      convertedNumber = parseInt(convertedNumber);
+    }
+    if(convertedNumber !== undefined) {
+      return Intl.NumberFormat("ru-RU").format(convertedNumber)
+    }
+  }
+
+  const computedCarDataNewPriceWithPercent = () => {
+    const number = CardData?.discountPrice ? Math.round(parseInt(CardData.discountPrice) * 1.06) : Math.round(parseInt(CardData?.price ?? "") * 1.06);
+    return convertToIntlFormat(number);
+  }
+
+  const renderToolTipContent = () =>
+    <div className={styles["tooltip-content"]}>
+      <div>
+        <strong>{CardData?.discountPrice ? convertToIntlFormat(CardData.discountPrice) : convertToIntlFormat(CardData?.price)} ₽</strong>
+        <label>Цена действительна при оформлении заказа и оплате наличными денежными средствами</label>
+      </div>
+      <div>
+        <strong>{computedCarDataNewPriceWithPercent()} ₽</strong>
+        <label>Цена в розничных магазинах без оформления заказа на сайте и при оформлении онлайн кредита</label>
+      </div>
+    </div>
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -38,9 +65,9 @@ export const ProductModal: FC<ProductModalProps> = ({
       document.body.style.overflow = "hidden";
     }
     const handleResize = () => {
-      const modalElement = document.querySelector(".ant-modal-body"); // Получаем элемент модального окна
+      const modalElement = document.querySelector(".ant-modal-body");
       if (modalElement) {
-        const height = modalElement.clientHeight; // Получаем высоту модального окна
+        const height = modalElement.clientHeight;
         setModalHeight(height);
       }
     };
@@ -102,11 +129,29 @@ export const ProductModal: FC<ProductModalProps> = ({
             </header>
             <div className={styles["item-container-data-prices"]}>
               <strong className={CardData?.discountPrice && styles["discount"]}>
-                {CardData?.price} ₽
+                {convertToIntlFormat(CardData?.price)} ₽
               </strong>
               {CardData?.discountPrice && (
-                <strong>{CardData?.discountPrice} ₽</strong>
+                <strong>{convertToIntlFormat(CardData?.discountPrice)} ₽</strong>
               )}
+            </div>
+            <div className={styles["item-container-data-price-in-online"]}>
+              <span>Цена в магазине:</span>
+              <strong>{computedCarDataNewPriceWithPercent()} ₽</strong>
+              <Tooltip
+                title={renderToolTipContent}
+                color="white"
+                overlayStyle={{
+                  minWidth:"600px",
+                  padding:"3%"
+                }}
+                overlayInnerStyle={{
+                  color:"black",
+                  border:"1px solid #87a08b"
+                }}
+              >
+                <i className="fa-regular fa-circle-question" style={{opacity:"0.5"}}/>
+              </Tooltip>
             </div>
             <button onClick={handleAddToBucket}>Купить</button>
             <div className={styles["credit"]}>

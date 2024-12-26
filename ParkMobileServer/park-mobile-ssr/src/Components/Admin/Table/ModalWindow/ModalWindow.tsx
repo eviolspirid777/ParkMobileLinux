@@ -301,8 +301,8 @@ export const ModalWindow: FC<ModalWindowProps> = ({
                 ]}
               />
             </Form.Item>
-            <Form.Item label="Брэнд" name="brandId">
-              <Select placeholder="Брэнд" options={brandsOptions} />
+            <Form.Item label="Бренд" name="brandId">
+              <Select placeholder="Бренд" options={brandsOptions} />
             </Form.Item>
             <Form.Item label="Категория" name="categoryId">
               <Select placeholder="Категория" options={categoriesOptions} />

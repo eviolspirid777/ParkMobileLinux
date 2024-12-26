@@ -29,7 +29,7 @@ export const navLinks: MenuProps["items"] = [
       {
         key: "brands",
         icon: <i className="fa-solid fa-table" />,
-        label: "Брэнды",
+        label: "Бренды",
       },
       {
         key: "categories",

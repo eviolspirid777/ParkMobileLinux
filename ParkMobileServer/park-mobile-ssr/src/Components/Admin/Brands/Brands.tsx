@@ -54,7 +54,7 @@ export const BrandsPage = () => {
 
   return (
     <div className={styles["brands-container"]}>
-      <Button onClick={openModal}>Добавить брэнд</Button>
+      <Button onClick={openModal}>Добавить бренд</Button>
       <Table columns={columns} dataSource={brands} />
       <Modal
         open={open}
@@ -65,8 +65,8 @@ export const BrandsPage = () => {
         centered
       >
         <Form onFinish={handleFinish} form={form}>
-          <Form.Item name="name" label="Название брэнда">
-            <Input placeholder="Брэнд" />
+          <Form.Item name="name" label="Название бренда">
+            <Input placeholder="Бренд" />
           </Form.Item>
           <Form.Item
             style={{

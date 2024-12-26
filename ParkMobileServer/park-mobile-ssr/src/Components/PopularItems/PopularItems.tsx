@@ -98,9 +98,6 @@ export const PopularItems = () => {
           }
           className="mySwiper"
           slidesPerView={isClient && window.screen.width > 1024 ? 5 : 2}
-          style={{
-            paddingTop: "3%",
-          }}
         >
           {popularItemsList?.map((item, index) => (
             <SwiperSlide key={index}>

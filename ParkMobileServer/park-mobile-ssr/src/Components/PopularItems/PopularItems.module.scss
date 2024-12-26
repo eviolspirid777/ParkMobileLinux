@@ -6,12 +6,12 @@
 }
 
 .popular-items {
-  padding: 100px 100px 200px 100px;
+  padding: 100px 100px 100px 100px;
   display: flex;
   flex-flow: column nowrap;
   gap: 70px;
 
-  &-none {
+&-none {
       padding: 450px 150px 400px 150px;
   }
 
@@ -23,8 +23,10 @@
     &-item {
       display: grid;
       position: relative;
-      grid-template-rows: 4fr 1fr;
+      grid-template-rows: 1fr 1fr;
       cursor: pointer;
+      margin: 2%;
+      min-height: 100%;
       &-gurantee {
         position:absolute;
         top:0px;
