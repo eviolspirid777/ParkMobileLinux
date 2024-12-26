@@ -54,7 +54,7 @@ export const UnderSwiperCards = () => {
             <div className={styles["cards-block-price-block"]}>
               <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
               <span className={styles["cards-block-item-price"]}>
-                От {convertToIntlFormat(item.price)} ₽
+                От {item.price} ₽
               </span>
             </div>
           </div>
