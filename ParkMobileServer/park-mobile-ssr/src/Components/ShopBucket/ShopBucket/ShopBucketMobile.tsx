@@ -4,6 +4,7 @@ import { FC, useEffect } from "react";
 import styles from "./ShopBucketMobile.module.scss";
 import { DataType } from "@/Store/ShopBucket";
 import Image from "next/image";
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 type ShopBucketMobileProps = {
   shopBucket: (
@@ -84,7 +85,7 @@ export const ShopBucketMobile: FC<ShopBucketMobileProps> = ({
               </div>
               <div className={styles["item-block-price"]}>
                 <span className={el.discountPrice && styles["discount"]}>
-                  {el.price} ₽
+                  {convertToIntlFormat(el.price)} ₽
                 </span>
                 {el.discountPrice && <span>{el.discountPrice} ₽</span>}
               </div>

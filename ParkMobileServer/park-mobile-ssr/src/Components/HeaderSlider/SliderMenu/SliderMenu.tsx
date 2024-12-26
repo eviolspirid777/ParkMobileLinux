@@ -4,6 +4,7 @@ import { CardType } from "@/Types/CardType";
 import Link from "next/link";
 
 import Image from "next/image";
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 
 type SliderMenuProps = {
@@ -91,7 +92,7 @@ export const SliderMenu: FC<SliderMenuProps> = ({
                     ]
                   }
                 >
-                  {item.price} ₽
+                  {convertToIntlFormat(item.price)} ₽
                 </span>
               </div>
             </div>

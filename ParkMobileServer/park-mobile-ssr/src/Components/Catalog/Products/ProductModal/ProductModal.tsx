@@ -6,6 +6,7 @@ import MarkdownRenderer from "@/Components/MarkDown/MarkDownRenderer";
 import { FC, useEffect, useState } from "react";
 import { CardItemType } from "@/Types/CardType";
 import Image from "next/image";
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 type OpenProductCard = {
   state: boolean;
@@ -26,16 +27,6 @@ export const ProductModal: FC<ProductModalProps> = ({
   handleAddToBucket,
 }) => {
   const [isClient, setIsClient] = useState(false);
-
-  const convertToIntlFormat = (number: string | number | undefined) => {
-    let convertedNumber = number;
-    if(typeof convertedNumber === "string") {
-      convertedNumber = parseInt(convertedNumber);
-    }
-    if(convertedNumber !== undefined) {
-      return Intl.NumberFormat("ru-RU").format(convertedNumber)
-    }
-  }
 
   const computedCarDataNewPriceWithPercent = () => {
     const number = CardData?.discountPrice ? Math.round(parseInt(CardData.discountPrice) * 1.06) : Math.round(parseInt(CardData?.price ?? "") * 1.06);

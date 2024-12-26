@@ -5,6 +5,7 @@ import { categoryAtom } from "@/Store/FiltersStore";
 
 import Image from "next/image";
 import Link from "next/link";
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 export const UnderSwiperCards = () => {
   const [, setCategories] = useAtom(categoryAtom);
@@ -53,7 +54,7 @@ export const UnderSwiperCards = () => {
             <div className={styles["cards-block-price-block"]}>
               <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
               <span className={styles["cards-block-item-price"]}>
-                От {item.price} ₽
+                От {convertToIntlFormat(item.price)} ₽
               </span>
             </div>
           </div>

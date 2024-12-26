@@ -20,6 +20,7 @@ import { ShopBucketMobile } from "./ShopBucket/ShopBucketMobile";
 import { apiClient } from "@/api/ApiClient";
 import { useForm } from "antd/es/form/Form";
 import Image from "next/image"
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 type ShopBucketType = {
   handleShopBag: () => void;
@@ -238,7 +239,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                         <span
                           className={el.discountPrice && styles["discount"]}
                         >
-                          {el.price} ₽
+                          {convertToIntlFormat(el.price)} ₽
                         </span>
                         {el.discountPrice && <span>{el.discountPrice} ₽</span>}
                       </div>
@@ -506,7 +507,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                               <span
                                 className={el.discountPrice && styles["discount"]}
                               >
-                                {el.price} ₽
+                                {convertToIntlFormat(el.price)} ₽
                               </span>
                                 {el.discountPrice && <span>{el.discountPrice} ₽</span>}
                               </span>

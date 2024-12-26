@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./ProductCard.module.scss";
 import { CardType } from "@/Types/CardType";
 import Image from "next/image";
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 type ProductCardProps = {
   card: CardType;
@@ -52,11 +53,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ card, onClick }) => {
             card.discountPrice && styles["discount"]
           }`}
         >
-          {card.price} ₽
+          {convertToIntlFormat(card.price)} ₽
         </span>
         {card.discountPrice && (
           <span className={styles["product-card-text-block-price"]}>
-            {card.discountPrice} ₽
+            {convertToIntlFormat(card.discountPrice)} ₽
           </span>
         )}
       </div>

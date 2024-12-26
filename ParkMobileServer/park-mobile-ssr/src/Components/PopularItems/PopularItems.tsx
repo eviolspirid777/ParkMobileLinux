@@ -15,6 +15,7 @@ import { shopBucketAtom } from "@/Store/ShopBucket";
 import { useGetItemById } from "@/hooks/useGetItemById";
 
 import Image from "next/image"
+import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 export const PopularItems = () => {
   const { popularItemsList } = useGetPopularItems();
@@ -118,13 +119,13 @@ export const PopularItems = () => {
                         item.discountPrice && styles["discount"]
                       }`}
                     >
-                      {item.price} ₽
+                      {convertToIntlFormat(item.price)} ₽
                     </span>
                     {item.discountPrice && (
                       <span
                         className={styles["popular-items-block-item-price"]}
                       >
-                        {item.discountPrice} ₽
+                        {convertToIntlFormat(item.discountPrice)} ₽
                       </span>
                     )}
                   </div>
