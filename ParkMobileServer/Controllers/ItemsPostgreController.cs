@@ -556,7 +556,28 @@ namespace ParkMobileServer.Controllers
             int? brandId = null;
 			int count = 0;
 
-			if(!string.IsNullOrWhiteSpace(category))
+			if (category != null && category == "New")
+			{
+				var newItems = await _postgreSQLDbContext
+									.ItemEntities
+									.Where(item => item.IsNewItem == true)
+									.Skip(skip)
+									.Take(take)
+									.ToListAsync();
+				count = await _postgreSQLDbContext
+									.ItemEntities
+									.Where(item => item.IsNewItem == true)
+									.CountAsync();
+
+				var mappedItems = newItems.Select(item => ItemMapper.MapToDto(item, item.ItemBrandId, item.CategoryId)).ToList();
+
+                return Ok(new ItemsEntityList
+                {
+                    count = count,
+                    items = mappedItems,
+                });
+            }
+			if (!string.IsNullOrWhiteSpace(category))
 			{
                 categoryId = (await _postgreSQLDbContext
                                 .ItemCategories

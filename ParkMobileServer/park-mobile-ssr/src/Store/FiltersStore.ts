@@ -14,7 +14,7 @@ export const categoryDictionary = new Map([
     ["Гейминг", "Gaming"],
     ["Красота и здоровье", "Health"],
     ["TV и Дом", "Tv"],
-    ["Популярное", ""]
+    ["Новинки", "New"]
 ])
 
 export const categoryAtom = atom<string>();

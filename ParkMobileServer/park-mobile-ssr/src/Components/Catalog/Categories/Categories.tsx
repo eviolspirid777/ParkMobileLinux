@@ -27,7 +27,7 @@ export const Categories: FC<CategoriesProps> = ({
     "Гейминг",
     "Красота и здоровье",
     "TV и Дом",
-    "Популярное",
+    "Новинки",
   ];
   const [selectedValue, setSelectedValue] = useState(categoriesItems[0]);
   const [categories, setCategories] = useAtom(categoryAtom);

@@ -27,10 +27,14 @@ type ShopBucketType = {
   open: boolean;
 };
 
+const translationKeyDictionary = new Map([
+  ["article", "артикул"]
+])
+
 export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [childDrawer, setChildDrawer] = useState(false);
   const [paymentType, setPaymentType] = useState("cash");
-  const [deliveryType, setDeliveryType] = useState("");
+  const [deliveryType, setDeliveryType] = useState<"sdek-delivery" | "krasnodar-self-delivery" | "krasnodar-delivery">();
   const [cityOptions, setCityOptions] = useState<
     { label: string; value: string }[]
   >([]);
@@ -38,6 +42,10 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [form] = useForm();
 
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+
+  const parsKey = (k: string) => {
+    return translationKeyDictionary.get(k);
+  }
 
   const handleChildrenDrawer = () => {
     setChildDrawer((previous) => !previous);
@@ -203,13 +211,13 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                       />
                       <div className={styles["item-block-info"]}>
                         {Object.entries(el).map(([k, v]) => {
-                          if (!["id", "price", "image", "count"].includes(k)) {
+                          if (!["id", "price", "image", "count", "discountPrice"].includes(k)) {
                             if (k === "name") {
                               return <strong key={k}>{v}</strong>;
                             }
                             return (
                               <div key={k}>
-                                {k}: {v}
+                                {parsKey(k) ?? k}: {v}
                               </div>
                             );
                           }
@@ -392,8 +400,8 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                         </Space>
                       </Radio.Group>
                     </Form.Item>
-                    {deliveryOptions.get(deliveryType)
-                      ? deliveryOptions.get(deliveryType)!()
+                    {deliveryOptions.get(deliveryType as keyof typeof deliveryType)
+                      ? deliveryOptions.get(deliveryType as keyof typeof deliveryType)!()
                       : null}
                   </div>
                   <div
@@ -430,7 +438,13 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                           </Radio>
                           <Radio value="card">
                             <div className={styles["delivery-item-block"]}>
-                              <strong>Qr-кодом при получении</strong>
+                              <strong>
+                                {
+                                  deliveryType === "krasnodar-self-delivery" ?
+                                  "Оплата картой (Visa, MasterCard, Мир)" :
+                                  "Qr-кодом"
+                                }
+                              </strong>
                             </div>
                           </Radio>
                         </Space>
@@ -469,14 +483,14 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                             <div className={styles["item-block-info"]}>
                               {Object.entries(el).map(([k, v]) => {
                                 if (
-                                  !["id", "price", "image", "count"].includes(k)
+                                  !["id", "price", "image", "count", "discountPrice"].includes(k)
                                 ) {
                                   if (k === "name") {
                                     return <strong key={k}>{v}</strong>;
                                   }
                                   return (
                                     <div key={k}>
-                                      {k}: {v}
+                                      {parsKey(k) ?? k}: {v}
                                     </div>
                                   );
                                 }
@@ -504,11 +518,11 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                             </div>
                             <div>
                               <span className={styles["item-block-price"]}>
-                              <span
-                                className={el.discountPrice && styles["discount"]}
-                              >
-                                {convertToIntlFormat(el.price)} ₽
-                              </span>
+                                <span
+                                  className={el.discountPrice && styles["discount"]}
+                                >
+                                  {convertToIntlFormat(el.price)} ₽
+                                </span>
                                 {el.discountPrice && <span>{el.discountPrice} ₽</span>}
                               </span>
                             </div>

@@ -660,14 +660,6 @@ body {
     align-items: center;
 }
 
-@media (max-width: 1024px) {
-    .swiper-slide {
-        & img {
-            object-fit: contain !important;
-        }
-    }
-}
-
 .swiper-button-next,
 .swiper-button-prev {
     background: none;
@@ -762,6 +754,12 @@ body {
 }
 
 @media (max-width: 1024px) {
+    .swiper-slide {
+        & img {
+            object-fit: contain !important;
+        }
+    }
+
     .custom-steps {
         .ant-steps-item-title {
             font-family: "SF-Pro-Display-Regular" !important;
@@ -782,7 +780,7 @@ body {
 
     div.popular-items {
         & div.mySwiper {
-            height: 290px;
+            height: 325px !important;
         }
     }
 }

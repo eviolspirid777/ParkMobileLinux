@@ -1,4 +1,4 @@
-import { Modal, Tooltip } from "antd";
+import { Modal, notification, Tooltip } from "antd";
 import { createPortal } from "react-dom";
 
 import styles from "./ProductModal.module.scss";
@@ -26,11 +26,44 @@ export const ProductModal: FC<ProductModalProps> = ({
   openProductCard,
   handleAddToBucket,
 }) => {
+  const [api, contextHolder] = notification.useNotification();
   const [isClient, setIsClient] = useState(false);
+
+  const [isRendered, setIsRendered] = useState(false);
+  useEffect(() => {
+    setIsRendered(true);
+  }, [])
 
   const computedCarDataNewPriceWithPercent = () => {
     const number = CardData?.discountPrice ? Math.round(parseInt(CardData.discountPrice) * 1.06) : Math.round(parseInt(CardData?.price ?? "") * 1.06);
     return convertToIntlFormat(number);
+  }
+
+  const handleAddItem = () => {
+    handleAddToBucket();
+
+    api.destroy();
+
+    api.open({
+      message: "",
+      description: (
+        <div className={styles["information-title"]}>
+          <strong>{CardData?.name} в корзине!</strong>
+          <span>Перейдите в корзину для оформления заказа.</span>
+        </div>
+      ),
+      style: {
+        padding: "3%",
+        border: "1px solid #87a08b",
+        borderRadius: "5px"
+      },
+      placement: "bottomRight",
+      closable: false,
+      duration: 4,
+      type: "success",
+      // showProgress: true,
+      pauseOnHover: true,
+    })
   }
 
   const renderToolTipContent = () =>
@@ -82,6 +115,7 @@ export const ProductModal: FC<ProductModalProps> = ({
 
   return createPortal(
     <div>
+      {contextHolder}
       <Modal
         open={openProductCard.state}
         onCancel={closeModal}
@@ -133,8 +167,8 @@ export const ProductModal: FC<ProductModalProps> = ({
                 title={renderToolTipContent}
                 color="white"
                 overlayStyle={{
-                  minWidth:"600px",
-                  padding:"3%"
+                  minWidth: (isRendered && window.screen.width >= 1024) ? "600px" : "auto",
+                  margin:"0% 3%"
                 }}
                 overlayInnerStyle={{
                   color:"black",
@@ -144,7 +178,7 @@ export const ProductModal: FC<ProductModalProps> = ({
                 <i className="fa-regular fa-circle-question" style={{opacity:"0.5"}}/>
               </Tooltip>
             </div>
-            <button onClick={handleAddToBucket}>Купить</button>
+            <button onClick={handleAddItem}>Купить</button>
             <div className={styles["credit"]}>
               <span>Доступно</span>
               <a>в кредит</a>

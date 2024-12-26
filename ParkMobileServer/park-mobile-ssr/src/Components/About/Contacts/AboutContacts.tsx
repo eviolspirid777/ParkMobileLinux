@@ -109,7 +109,7 @@ export const AboutContacts = () => {
               <div className={styles["contacts"]}>
                 <a href="tel:79337772777">+7 933 777 27-77</a>
                 <div>
-                  <a href="https://t.me/@ParkMobile23">
+                  <a href="https://t.me/parkmobile_krasnodar">
                     <TelegramIcon />
                   </a>
                   <a href="https://wa.me/79337772777">

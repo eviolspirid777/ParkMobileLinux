@@ -80,6 +80,11 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
     setSearchMenuOpen((previous) => !previous);
   };
 
+  const handleContacts = () => {
+    naviagate.push("/about/contacts");
+    handleMenuToggle();
+  }
+
   return (
     <>
       <nav>
@@ -146,7 +151,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                 </a>
               </li>
               <li>
-                <a href="#" onClick={console.log}>
+                <a href="#" onClick={handleContacts}>
                   Контакты
                 </a>
               </li>
@@ -159,7 +164,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
               <div className={styles["menu-items-contact-block"]}>
                 <a href="tel:89337772777">+7 933 777‑27‑77</a>
                 <div className={styles["menu-items-contact-block-social"]}>
-                  <a href="https://t.me/@ParkMobile23">
+                  <a href="https://t.me/parkmobile_krasnodar">
                     <TelegramIcon />
                   </a>
                   <a href="https://wa.me/79337772777">

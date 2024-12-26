@@ -13,17 +13,15 @@ import Image from "next/image";
 
 export const SwiperList = () => {
   const [images, setImages] = useState<string[]>([]);
+  
+  useEffect(() => {
+    console.log(images)
+  }, [images])
 
   useEffect(() => {
-    const cachedImages = localStorage.getItem("cachedImages");
-    if (cachedImages) {
-      setImages(JSON.parse(cachedImages));
-    } else {
-      fetchImages().then((fetchedImages) => {
-        setImages(fetchedImages);
-        localStorage.setItem("cachedImages", JSON.stringify(fetchedImages));
-      });
-    }
+    fetchImages().then((fetchedImages) => {
+      setImages(fetchedImages);
+    });
   }, []);
 
   return (
