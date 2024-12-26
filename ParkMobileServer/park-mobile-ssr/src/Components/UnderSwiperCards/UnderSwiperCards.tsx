@@ -5,7 +5,6 @@ import { categoryAtom } from "@/Store/FiltersStore";
 
 import Image from "next/image";
 import Link from "next/link";
-import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 export const UnderSwiperCards = () => {
   const [, setCategories] = useAtom(categoryAtom);
