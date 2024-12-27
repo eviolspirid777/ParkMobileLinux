@@ -13,7 +13,6 @@ const Home = () => {
   const queryClient = new QueryClient();
 
   //TODO: fa-(solid,regular, thin, sharp)
-
   //TODO: Redis прикрути(жрет оперативу)
   
   /*

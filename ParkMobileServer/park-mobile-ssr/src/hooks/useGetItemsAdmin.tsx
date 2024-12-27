@@ -8,7 +8,7 @@ export const useGetItemsAdmin = () => {
     isSuccess: itemsListIsSuccess,
   } = useQuery({
     queryKey: ["itemsListAdmin"],
-    queryFn: () => apiClient.GetItemsAdmin(0, 100),
+    queryFn: () => apiClient.GetItemsAdmin(0, 1000),
   });
   return {
     itemsList,

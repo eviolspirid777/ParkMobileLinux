@@ -140,7 +140,6 @@ export const MenuPage = () => {
   }));
 
   const [open, setOpen] = useState(false);
-
   const [selectedItem, setSelectedItem] = useState<CardTypeAdmin | null>();
 
   useEffect(() => {
@@ -173,8 +172,35 @@ export const MenuPage = () => {
   }, [itemsList]);
 
   const handleRowClick = (record: DataType) => {
-    const selected = filteredData?.items.find((item) => item.id === record.id) ?? null;
-    setSelectedItem(selected);
+    let selected: CardTypeAdmin;
+    if(record.key && filteredData) {
+      selected = filteredData.items.find((item) => item.key === record.key) ??
+      {
+        key: 0,
+        article: "",
+        count: 0,
+        image: "",
+        isNewItem: false,
+        isPopular: false,
+        name: "",
+        price: ""
+      };
+      setSelectedItem(selected);
+    }
+    else if(record.id && filteredData) {
+      selected = filteredData.items.find((item) => item.id === record.id) ??
+      {
+        key: 0,
+        article: "",
+        count: 0,
+        image: "",
+        isNewItem: false,
+        isPopular: false,
+        name: "",
+        price: ""
+      };
+      setSelectedItem(selected);
+    }
     setOpen(true);
   };
 
