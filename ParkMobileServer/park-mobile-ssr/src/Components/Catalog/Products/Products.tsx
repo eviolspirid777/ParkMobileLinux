@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { ProductModal } from "./ProductModal/ProductModal";
 import { useGetItemById } from "@/hooks/useGetItemById";
+import { ConfigProvider, Pagination } from "antd";
 
 // import Image from "next/image";
 
@@ -152,17 +153,28 @@ export const Products: FC<ProductsType> = ({
             ))}
         </div>
         <div className={styles["product-pagination-block"]}>
-          {state.pages.map((el) => (
-            <div
-              key={el}
-              className={`${styles["product-pagination-block-item"]} ${
-                state.currentPage === el ? styles.selected : ""
-              }`}
-              onClick={() => handlePageClick(el)}
-            >
-              {el}
-            </div>
-          ))}
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "white",
+                colorBgContainer: "#87a08b",
+              },
+              components: {
+                Pagination: {
+                  itemBg: "#fff",
+                },
+              },
+            }}
+          >
+            <Pagination
+              current={state.currentPage}
+              total={itemsCount}
+              showLessItems
+              pageSize={16}
+              onChange={handlePageClick}
+              showSizeChanger={false}
+            />
+          </ConfigProvider>
         </div>
       </div>
       <ProductModal

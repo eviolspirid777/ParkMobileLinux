@@ -1,6 +1,7 @@
 "use client";
 import { Button, Input, Table, TableColumnsType } from "antd";
 import { ChangeEvent, useEffect, useState } from "react";
+import { debounce } from "lodash";
 
 import styles from "./Menu.module.scss";
 import { useAtom } from "jotai";
@@ -16,7 +17,6 @@ import { AggregationColor } from "antd/es/color-picker/color";
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Image from "next/image";
 import { currentPageAtom, pageSizeAtom, searchKeyWordAtom } from "@/Store/AdminItems";
-import { debounce } from "lodash";
 
 export type FormItemChange = {
   article: string;
@@ -109,15 +109,19 @@ export const MenuPage = () => {
   useGetCategories();
   useGetBrands();
 
-  const [, setSearchKeyWord] = useAtom(searchKeyWordAtom);
+  const [searchKeyWord, setSearchKeyWord] = useAtom(searchKeyWordAtom);
   const [filteredData, setFilteredData] = useState<RecivedCardDataAdminType>();
   useEffect(() => {
     setFilteredData(itemsList)
   }, [itemsList, itemsListIsSuccess])
 
-  const onSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    debounce(setSearchKeyWord.bind(this, event.target.value), 500);
-  };
+  const onSearchChange = debounce((event: ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyWord(event.target.value);
+  }, 300);
+
+  useEffect(() => {
+    console.log(searchKeyWord)
+  }, [searchKeyWord])
 
   const [categories] = useAtom(categoriesAtom);
   const categoriesOptions = categories?.map((el) => ({

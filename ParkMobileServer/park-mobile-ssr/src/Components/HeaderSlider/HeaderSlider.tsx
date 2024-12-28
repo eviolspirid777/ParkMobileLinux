@@ -16,6 +16,7 @@ import { shopBucketAtom } from "@/Store/ShopBucket";
 import { TradeInModal } from "../Help/TradeInComponent/TradeInModal/TradeInModal";
 import { RepairModal } from "../Help/RepairModal/RepairModal";
 import { RepairRequestType, useAddRepairRequest } from "@/hooks/useAddRepairRequest";
+import { ConfigProvider, Pagination } from "antd";
 
 type HeaderSliderProps = {
   isContentVisible: boolean;
@@ -102,7 +103,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
     }
   };
 
-  const [pages, setPages] = useState<number[]>([]);
+  const [, setPages] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [skip, setSkip] = useState(0);
   const take = 20;
@@ -175,19 +176,28 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
             })}
           />
           {inputValue && searchedItems && (
-            <div className={styles["pagination-block"]}>
-              {pages.map((el) => (
-                <div
-                  key={el}
-                  className={`${styles["pagination-block-item"]} ${
-                    currentPage === el ? styles.selected : ""
-                  }`}
-                  onClick={() => handlePageClick(el)}
-                >
-                  {el}
-                </div>
-              ))}
-            </div>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: "white",
+                  colorBgContainer: "#87a08b",
+                },
+                components: {
+                  Pagination: {
+                    itemBg: "#fff",
+                  },
+                },
+              }}
+            >
+              <Pagination
+                current={currentPage}
+                total={searchedItems.count}
+                showLessItems
+                pageSize={16}
+                onChange={handlePageClick}
+                showSizeChanger={false}
+              />
+            </ConfigProvider>
           )}
         </div>
       </div>

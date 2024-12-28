@@ -11,6 +11,7 @@ import { SearchItemShortType } from "@/Types/SearchItemShortType";
 import { useAtom } from "jotai";
 import { shopBucketAtom } from "@/Store/ShopBucket";
 import { debounce } from "lodash";
+import { ConfigProvider, Pagination } from "antd";
 
 type MobileSearchMenuProps = {
   isOpened: boolean;
@@ -74,7 +75,7 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
     }
   };
 
-  const [pages, setPages] = useState<number[]>([]);
+  const [, setPages] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [skip, setSkip] = useState(0);
   const take = 5;
@@ -170,17 +171,28 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
         />
         {inputValue && searchedItems && (
           <div className={styles["pagination-block"]}>
-            {pages.map((el) => (
-              <div
-                key={el}
-                className={`${styles["pagination-block-item"]} ${
-                  currentPage === el ? styles.selected : ""
-                }`}
-                onClick={() => handlePageClick(el)}
-              >
-                {el}
-              </div>
-            ))}
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: "white",
+                  colorBgContainer: "#87a08b",
+                },
+                components: {
+                  Pagination: {
+                    itemBg: "#fff",
+                  },
+                },
+              }}
+            >
+              <Pagination
+                current={currentPage}
+                total={searchedItems.count}
+                showLessItems
+                pageSize={16}
+                onChange={handlePageClick}
+                showSizeChanger={false}
+              />
+            </ConfigProvider>
           </div>
         )}
       </div>

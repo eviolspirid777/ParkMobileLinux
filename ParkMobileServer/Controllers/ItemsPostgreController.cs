@@ -560,13 +560,13 @@ namespace ParkMobileServer.Controllers
 			{
 				var newItems = await _postgreSQLDbContext
 									.ItemEntities
-									.Where(item => item.IsNewItem == true && item.Name.Contains(name))
+									.Where(item => item.IsNewItem == true && item.Name.ToLower().Contains(name.ToLower()))
 									.Skip(skip)
 									.Take(take)
 									.ToListAsync();
 				count = await _postgreSQLDbContext
 									.ItemEntities
-									.Where(item => item.IsNewItem == true && item.Name.Contains(name))
+									.Where(item => item.IsNewItem == true && item.Name.ToLower().Contains(name.ToLower()))
 									.CountAsync();
 
 				var mappedItems = newItems.Select(item => ItemMapper.MapToDto(item, item.ItemBrandId, item.CategoryId)).ToList();
@@ -595,8 +595,8 @@ namespace ParkMobileServer.Controllers
             var query = _postgreSQLDbContext.ItemEntities.AsQueryable();
             if (categoryId.HasValue)
             {
-                query = query.Where(item => item.CategoryId == categoryId.Value);
-				count = query.Where(item => item.CategoryId == categoryId.Value).Count();
+                query = query.Where(item => item.CategoryId == categoryId.Value && item.Name.ToLower().Contains(name.ToLower()));
+				count = query.Where(item => item.CategoryId == categoryId.Value && item.Name.ToLower().Contains(name.ToLower())).Count();
                 if (count == 0)
                 {
                     return Ok(new ItemsEntityList
@@ -609,8 +609,8 @@ namespace ParkMobileServer.Controllers
 
             if (brandId.HasValue)
             {
-                query = query.Where(item => item.ItemBrandId == brandId.Value);
-				count = query.Where(item => item.ItemBrandId == brandId.Value).Count();
+                query = query.Where(item => item.ItemBrandId == brandId.Value && item.Name.ToLower().Contains(name.ToLower()));
+				count = query.Where(item => item.ItemBrandId == brandId.Value && item.Name.ToLower().Contains(name.ToLower())).Count();
 				if( count == 0)
 				{
 					return Ok(new ItemsEntityList
