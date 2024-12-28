@@ -214,10 +214,7 @@ export const MenuPage = () => {
   };
 
   const handleTableChange = (pagination: number) => {
-    console.log(pagination)
     setCurrentPage(pagination);
-    // setPageSize(pagination);
-    // refetchItemsList();
   };
 
   return (

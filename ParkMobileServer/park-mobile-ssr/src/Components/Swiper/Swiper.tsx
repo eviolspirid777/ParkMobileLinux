@@ -13,10 +13,6 @@ import Image from "next/image";
 
 export const SwiperList = () => {
   const [images, setImages] = useState<string[]>([]);
-  
-  useEffect(() => {
-    console.log(images)
-  }, [images])
 
   useEffect(() => {
     fetchImages().then((fetchedImages) => {

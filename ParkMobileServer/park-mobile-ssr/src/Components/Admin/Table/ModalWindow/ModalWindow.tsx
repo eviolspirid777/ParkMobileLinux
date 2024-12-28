@@ -69,17 +69,6 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   );
 
   const handleFinishForm = async (newItem: FormItemChange) => {
-    console.log(newItem)
-    //POST
-    // const options = {
-    //   type: newItem.optionName ?? "",
-    //   value:
-    //     typeof newItem.optionValue === "string"
-    //       ? newItem.optionValue
-    //       : `#${newItem.optionValue.toHex()}`,
-    // };
-
-    // const _options = JSON.stringify(options);
 
     if (selectedItem) {
       const mappedItem: CardItemDTO = {
