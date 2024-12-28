@@ -51,9 +51,10 @@ namespace ParkMobileServer.TelegramBot
 				{
 					foreach (var update in updates.result)
 					{
-						//Me: 481227813
-						//Emil: 643139754
-						if (update.message != null && update.message.chat.id == 643139754 )
+                        //Me: 481227813
+                        //Emil: 643139754
+                        //ParkMobile: 6043448408
+                        if (update.message != null && update.message.chat.id == 643139754 )
 						{
 							offset = update.update_id;
 							return update.message.text;
@@ -71,9 +72,10 @@ namespace ParkMobileServer.TelegramBot
 			{
 				var url = $"https://api.telegram.org/bot{_botToken}/sendMessage";
 
-				//Me: 481227813
-				//Emil: 643139754
-				foreach (var element in new[] { "643139754"}) // Замените на получение chat_id по userId
+                //Me: 481227813
+                //Emil: 643139754
+                //ParkMobile: 6043448408
+                foreach (var element in new[] { "643139754", "6043448408" }) // Замените на получение chat_id по userId
 				{
 					var json = JsonConvert.SerializeObject(new
 					{
@@ -95,7 +97,7 @@ namespace ParkMobileServer.TelegramBot
 				var url = $"https://api.telegram.org/bot{_botToken}/sendMessage";
 				//Me: 481227813
 				//Emil: 643139754
-				foreach (var element in new[] { "643139754" })
+				foreach (var element in new[] { "643139754", "6043448408" })
 				{
 					var json = JsonConvert.SerializeObject(new
 					{

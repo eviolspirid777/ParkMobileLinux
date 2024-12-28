@@ -15,6 +15,8 @@ import { CardTypeAdmin, RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
 import { AggregationColor } from "antd/es/color-picker/color";
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Image from "next/image";
+import { currentPageAtom, pageSizeAtom, searchKeyWordAtom } from "@/Store/AdminItems";
+import { debounce } from "lodash";
 
 export type FormItemChange = {
   article: string;
@@ -97,6 +99,9 @@ const columns: TableColumnsType<DataType> = [
 ];
 
 export const MenuPage = () => {
+  const [currentPage, setCurrentPage] = useAtom(currentPageAtom)
+  const [pageSize, ] = useAtom(pageSizeAtom)
+
   const { itemsList, itemsListIsSuccess, refetchItemsList } =
     useGetItemsAdmin();
     
@@ -104,28 +109,14 @@ export const MenuPage = () => {
   useGetCategories();
   useGetBrands();
 
-  const [searchValue, setSearchValue] = useState<string>("");
+  const [, setSearchKeyWord] = useAtom(searchKeyWordAtom);
   const [filteredData, setFilteredData] = useState<RecivedCardDataAdminType>();
   useEffect(() => {
     setFilteredData(itemsList)
   }, [itemsList, itemsListIsSuccess])
 
-  useEffect(() => {
-    if (searchValue && itemsList) {
-      setFilteredData({
-        ...itemsList,
-        items: itemsList.items.filter(item =>
-          item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-          item.article.toLowerCase().includes(searchValue.toLowerCase())
-        )
-      });
-    } else {
-      setFilteredData(itemsList);
-    }
-  }, [searchValue, itemsList]);
-
   const onSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
+    debounce(setSearchKeyWord.bind(this, event.target.value), 500);
   };
 
   const [categories] = useAtom(categoriesAtom);
@@ -222,6 +213,13 @@ export const MenuPage = () => {
     }, 2000);
   };
 
+  const handleTableChange = (pagination: number) => {
+    console.log(pagination)
+    setCurrentPage(pagination);
+    // setPageSize(pagination);
+    // refetchItemsList();
+  };
+
   return (
     <div className={styles["menu-items-list"]}>
       <Input.Search
@@ -238,6 +236,14 @@ export const MenuPage = () => {
         key={`${itemsListIsSuccess}-${filteredData?.items.length}`}
         columns={columns}
         dataSource={filteredData?.items}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: itemsList?.count,
+          onChange: handleTableChange,
+          showSizeChanger: false,
+          pageSizeOptions: [],
+        }}
         onRow={(record) => ({
           onClick: () => handleRowClick(record),
         })}

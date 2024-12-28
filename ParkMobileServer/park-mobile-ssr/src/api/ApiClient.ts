@@ -84,14 +84,15 @@ class ApiClient {
         return response.data
     }
 
-    async GetItemsAdmin(skip: number, take: number, category: string = "", brand: string = "") {
+    async GetItemsAdmin(skip: number, take: number, category: string = "", brand: string = "", searchKeyWord: string = "") {
         const response = await this.client.get<RecivedCardDataAdminType>(
             `${POSTGRE_ITEMS_PATH}/GetItems`, {
                 params: {
                     skip: skip,
                     take: take,
                     category: category,
-                    brand: brand
+                    brand: brand,
+                    name: searchKeyWord
                 }
             });
         return response.data;

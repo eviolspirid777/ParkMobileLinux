@@ -550,7 +550,7 @@ namespace ParkMobileServer.Controllers
 		}
 
 		[HttpGet("GetItems")]
-		public async Task<IActionResult> GetItems(string? category, string? brand, int skip, int take)
+		public async Task<IActionResult> GetItems(string? category, string? brand, int skip, int take, string name = "")
 		{
             int? categoryId = null;
             int? brandId = null;
@@ -560,13 +560,13 @@ namespace ParkMobileServer.Controllers
 			{
 				var newItems = await _postgreSQLDbContext
 									.ItemEntities
-									.Where(item => item.IsNewItem == true)
+									.Where(item => item.IsNewItem == true && item.Name.Contains(name))
 									.Skip(skip)
 									.Take(take)
 									.ToListAsync();
 				count = await _postgreSQLDbContext
 									.ItemEntities
-									.Where(item => item.IsNewItem == true)
+									.Where(item => item.IsNewItem == true && item.Name.Contains(name))
 									.CountAsync();
 
 				var mappedItems = newItems.Select(item => ItemMapper.MapToDto(item, item.ItemBrandId, item.CategoryId)).ToList();
