@@ -109,7 +109,7 @@ export const MenuPage = () => {
   useGetCategories();
   useGetBrands();
 
-  const [searchKeyWord, setSearchKeyWord] = useAtom(searchKeyWordAtom);
+  const [, setSearchKeyWord] = useAtom(searchKeyWordAtom);
   const [filteredData, setFilteredData] = useState<RecivedCardDataAdminType>();
   useEffect(() => {
     setFilteredData(itemsList)
@@ -118,10 +118,6 @@ export const MenuPage = () => {
   const onSearchChange = debounce((event: ChangeEvent<HTMLInputElement>) => {
     setSearchKeyWord(event.target.value);
   }, 300);
-
-  useEffect(() => {
-    console.log(searchKeyWord)
-  }, [searchKeyWord])
 
   const [categories] = useAtom(categoriesAtom);
   const categoriesOptions = categories?.map((el) => ({
@@ -182,14 +178,10 @@ export const MenuPage = () => {
         name: "",
         price: "",
       };
-      console.group("HELLO")
-      console.log(itemsList);
-      console.log(selected)
-      console.groupEnd()
       setSelectedItem(selected);
     }
     else if(record.id && filteredData) {
-      selected = filteredData.items.find((item) => item.id === record.id) ??
+      selected = filteredData.items.find((item) => item.key === record.key) ??
       {
         key: 0,
         article: "",
@@ -200,10 +192,6 @@ export const MenuPage = () => {
         name: "",
         price: ""
       };
-      console.group("HELLO")
-      console.log(itemsList);
-      console.log(selected)
-      console.groupEnd()
       setSelectedItem(selected);
     }
     setOpen(true);
@@ -260,7 +248,7 @@ export const MenuPage = () => {
         })}
       />
       <ModalWindow
-        key={`${selectedItem?.id}`}
+        key={`${selectedItem?.key}`}
         brandsOptions={brandsOptions!}
         categoriesOptions={categoriesOptions!}
         closeModal={handleCloseModal}
