@@ -159,6 +159,8 @@ export const MenuPage = () => {
             image: el.image!,
             isPopular: el.isPopular!,
             isNewItem: el.isNewItem!,
+            brandId: el.brandId,
+            categoryId: el.categoryId
           };
         }) 
       }
@@ -178,8 +180,12 @@ export const MenuPage = () => {
         isNewItem: false,
         isPopular: false,
         name: "",
-        price: ""
+        price: "",
       };
+      console.group("HELLO")
+      console.log(itemsList);
+      console.log(selected)
+      console.groupEnd()
       setSelectedItem(selected);
     }
     else if(record.id && filteredData) {
@@ -194,6 +200,10 @@ export const MenuPage = () => {
         name: "",
         price: ""
       };
+      console.group("HELLO")
+      console.log(itemsList);
+      console.log(selected)
+      console.groupEnd()
       setSelectedItem(selected);
     }
     setOpen(true);
