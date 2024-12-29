@@ -49,6 +49,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   categoriesOptions,
   handleDelete,
 }) => {
+  console.log(selectedItem)
   const { refetchItemsList } = useGetItemsAdmin();
   const { updatePhoto } = useUpdatePhoto();
 
@@ -69,7 +70,6 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   );
 
   const handleFinishForm = async (newItem: FormItemChange) => {
-
     if (selectedItem) {
       const mappedItem: CardItemDTO = {
         id: selectedItem?.id ?? 0,
@@ -134,7 +134,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
 
         const formData = new FormData();
         formData.append("image", blob);
-        formData.append("id", selectedItem?.id?.toString() ?? "");
+        formData.append("id", selectedItem?.key?.toString() ?? "");
         updatePhoto(formData);
       } finally {
         setLoading(false);
@@ -174,7 +174,13 @@ export const ModalWindow: FC<ModalWindowProps> = ({
       <Form
         form={form}
         layout="vertical"
-        initialValues={selectedItem ? selectedItem : {}}
+        initialValues={selectedItem ? 
+          {
+            ...selectedItem,
+            stock: selectedItem.count,
+            
+          } :
+          {}}
         onFinish={handleFinishForm}
       >
         <div className={styles["form-grid-block"]}>

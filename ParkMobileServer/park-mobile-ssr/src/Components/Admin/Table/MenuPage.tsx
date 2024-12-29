@@ -99,11 +99,18 @@ const columns: TableColumnsType<DataType> = [
 ];
 
 export const MenuPage = () => {
+  //TODO: исправь баг с сохранением файла
+  //TODO: исправь баг с сохранением изображения к карточке
+  //TODO: некоторые поля не попадают в модальное окно(цена со скидкой, описание, и кол-во на складе)
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom)
   const [pageSize, ] = useAtom(pageSizeAtom)
 
   const { itemsList, itemsListIsSuccess, refetchItemsList } =
     useGetItemsAdmin();
+
+  useEffect(() => {
+    console.log(itemsList)
+  }, [itemsList])
     
   const { deleteItem } = useDeleteItem();
   useGetCategories();
@@ -152,6 +159,8 @@ export const MenuPage = () => {
             article: el.article!,
             count: el.stock!,
             price: el.price!,
+            discountPrice: el.discountPrice,
+            description: el.description,
             image: el.image!,
             isPopular: el.isPopular!,
             isNewItem: el.isNewItem!,

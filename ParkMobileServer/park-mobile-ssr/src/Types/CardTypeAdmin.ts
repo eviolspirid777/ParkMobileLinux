@@ -4,6 +4,8 @@ export type CardTypeAdmin = {
     article: string,
     count: number,
     price: string,
+    discountPrice?: string,
+    description?: string,
     image: string;
     stock?: number;
     id?: number;
