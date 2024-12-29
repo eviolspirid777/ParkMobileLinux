@@ -310,7 +310,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
             <Popconfirm
               title="Удалить"
               description="Вы уверены, что хотите удалить товар?"
-              onConfirm={handleDelete.bind(this, selectedItem?.id ?? -1)}
+              onConfirm={handleDelete.bind(this, selectedItem?.key ?? -1)}
               okText="Да"
               cancelText="Нет"
             >
