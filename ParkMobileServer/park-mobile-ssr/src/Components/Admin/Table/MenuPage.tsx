@@ -107,10 +107,6 @@ export const MenuPage = () => {
 
   const { itemsList, itemsListIsSuccess, refetchItemsList } =
     useGetItemsAdmin();
-
-  useEffect(() => {
-    console.log(itemsList)
-  }, [itemsList])
     
   const { deleteItem } = useDeleteItem();
   useGetCategories();

@@ -49,7 +49,6 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   categoriesOptions,
   handleDelete,
 }) => {
-  console.log(selectedItem)
   const { refetchItemsList } = useGetItemsAdmin();
   const { updatePhoto } = useUpdatePhoto();
 
@@ -72,7 +71,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   const handleFinishForm = async (newItem: FormItemChange) => {
     if (selectedItem) {
       const mappedItem: CardItemDTO = {
-        id: selectedItem?.id ?? 0,
+        id: selectedItem?.key ?? 0,
         name: newItem.name,
         price: newItem.price,
         stock: newItem.stock,
@@ -178,7 +177,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
           {
             ...selectedItem,
             stock: selectedItem.count,
-            
+
           } :
           {}}
         onFinish={handleFinishForm}

@@ -836,5 +836,25 @@ namespace ParkMobileServer.Controllers
 			var imageUrls = images.Where(image => image.ImageData != null);
             return Ok(imageUrls);
         }
+
+		[HttpDelete("sliderImage/{id}")]
+		public async Task<IActionResult> DeleteSliderImage(int id)
+		{
+			var _itemToDelete = await _postgreSQLDbContext
+											.SliderImages
+											.FindAsync(id);
+			var _itemNameToDelete = await _postgreSQLDbContext
+											.Sliders
+											.FindAsync(id);
+			if(_itemToDelete == null || _itemNameToDelete == null) 
+			{
+				return NotFound();
+			}
+
+            _postgreSQLDbContext.SliderImages.Remove(_itemToDelete);
+			_postgreSQLDbContext.Sliders.Remove(_itemNameToDelete);
+			await _postgreSQLDbContext.SaveChangesAsync();
+			return Ok();
+		}
 		#endregion
 	}}

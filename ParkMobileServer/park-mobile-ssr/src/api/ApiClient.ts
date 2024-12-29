@@ -125,6 +125,11 @@ class ApiClient {
         return response.data
     }
 
+    async DeleteSliderData(id: number) {
+        const response = await this.authClient.delete(`${POSTGRE_ITEMS_PATH}/sliderImage/${id}`);
+        return response;
+    }
+
     async PostSliderData(form: FormData) {
         const response =  await this.authClient.postForm(`${POSTGRE_ITEMS_PATH}/upload`, form)
         return response
