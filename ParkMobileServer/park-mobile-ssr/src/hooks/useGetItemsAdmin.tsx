@@ -10,28 +10,24 @@ import { useEffect, useState } from "react";
 export const useGetItemsAdmin = () => {
   const [skip, setSkip] = useState(0);
   const [currentPage, ] = useAtom(currentPageAtom)
-  const [searchKeyWord, setSearchKeyWord] = useAtom(searchKeyWordAtom);
+  const [searchKeyWord, ] = useAtom(searchKeyWordAtom);
 
   const {
     data: itemsList,
     refetch: refetchItemsList,
     isSuccess: itemsListIsSuccess,
   } = useQuery({
-    queryKey: ["itemsListAdmin"],
-    queryFn: () => apiClient.GetItemsAdmin(skip, 10,"","", searchKeyWord),
+    queryKey: ["itemsListAdmin", skip, searchKeyWord],
+    queryFn: () => apiClient.GetItemsAdmin(skip, 10, "", "", searchKeyWord),
   });
 
   useEffect(() => {
-    setSearchKeyWord("")
-  }, [itemsListIsSuccess])
-
-  useEffect(() => {
-    setSkip(currentPage === 1 ? 0 : currentPage * 10)
+    setSkip(currentPage === 1 ? 0 : (currentPage - 1) * 10)
   }, [currentPage])
 
   useEffect(() => {
-    refetchItemsList()
-  }, [skip, searchKeyWord])
+    refetchItemsList();
+  }, [searchKeyWord]);
 
   return {
     itemsList,
