@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=80 next start",
     "lint": "next lint",
     "firebaseDeploy": "firebase deploy",
     "export": "next build && next export",
