@@ -34,6 +34,11 @@ export const Catalog = () => {
     refetchOnWindowFocus: false,
   });
 
+  useEffect(() => {
+    setSkip(0);
+    setCurrentPage(1)
+  }, [storeCategory])
+
   const handleOnPageChange = (newSkip: number, newPage: number) => {
     scroll.scrollTo(window.screen.width > 1024 ? 3600 : 4300, {
       duration: 700,
