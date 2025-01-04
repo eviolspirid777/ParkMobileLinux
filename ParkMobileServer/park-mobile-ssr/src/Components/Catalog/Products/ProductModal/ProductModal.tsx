@@ -59,7 +59,7 @@ export const ProductModal: FC<ProductModalProps> = ({
       },
       placement: "bottomRight",
       closable: false,
-      duration: 4,
+      duration: 2,
       type: "success",
       // showProgress: true,
       pauseOnHover: true,
