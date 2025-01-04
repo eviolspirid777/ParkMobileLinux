@@ -69,7 +69,7 @@ export const Header: FC<HeaderProps> = ({
     {
       navTitle: "Гейминг",
       titles: [
-        "Sony Playstation",
+        "Sony",
         "Xbox",
         "Nintendo",
         "Steam Deck",

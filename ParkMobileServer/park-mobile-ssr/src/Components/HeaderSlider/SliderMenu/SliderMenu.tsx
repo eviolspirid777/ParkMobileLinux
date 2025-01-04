@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import Image from "next/image";
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
+import { subCategoryDictionary } from "@/Store/FiltersStore";
 
 
 type SliderMenuProps = {
@@ -24,7 +25,7 @@ export const SliderMenu: FC<SliderMenuProps> = ({
   handleDeviceFix,
   handleTradeIn
 }) => {
-
+  console.log(titles)
   return (
     <>
       <div className={styles["blur-block-content-visible-titles"]}>
@@ -32,7 +33,7 @@ export const SliderMenu: FC<SliderMenuProps> = ({
         <Link
           key={index}
           className={styles["blur-block-content-visible-titles-link"]}
-          href={`/categories/${category}/${el}`}
+          href={`/categories/${category}/${subCategoryDictionary.get(el.toLowerCase()) ?? el}`}
         >
           {el}
         </Link>)}
