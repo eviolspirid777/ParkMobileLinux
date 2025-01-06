@@ -273,7 +273,7 @@ namespace ParkMobileServer.Controllers
 						case "tv":
 						{
                             brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "Tv")).Id;
+                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "tv")).Id;
                             query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
                             break;
 						}
