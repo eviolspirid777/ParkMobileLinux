@@ -184,6 +184,35 @@
     overflow: auto;
     max-height: 525px;
 
+    & strong {
+        font-weight: 900;
+    }
+
+    & h1, h2, h3, h4, h5 {
+        display: inline;
+        font-family: "SF-Pro-Display-Regular";
+    }
+
+    & h1 {
+        font-size: 1.5rem;
+    }
+
+    & h2 {
+        font-size: 1.35rem;
+    }
+
+    & h3 {
+        font-size: 1.25rem;
+    }
+
+    & h4 {
+        font-size: 1.15rem;
+    }
+
+    & h5 {
+        font-size: 1rem;
+    }
+
     & p {
         & strong {}
 
@@ -192,11 +221,11 @@
         }
     }
 
-    & ol {
+    & ol, ul {
         display: flex;
         flex-flow: column wrap;
         gap: 5px;
-        list-style-type: decimal;
+        list-style-type: disc;
         padding-left: 15px;
 
         & li {
