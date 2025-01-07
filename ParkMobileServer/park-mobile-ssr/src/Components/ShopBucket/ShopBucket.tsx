@@ -34,7 +34,7 @@ const translationKeyDictionary = new Map([
 export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [childDrawer, setChildDrawer] = useState(false);
   const [paymentType, setPaymentType] = useState("cash");
-  const [deliveryType, setDeliveryType] = useState<"sdek-delivery" | "krasnodar-self-delivery" | "krasnodar-delivery">();
+  const [deliveryType, setDeliveryType] = useState<"sdek-delivery" | "krasnodar-self-delivery" | "krasnodar-delivery">("krasnodar-self-delivery");
   const [cityOptions, setCityOptions] = useState<
     { label: string; value: string }[]
   >([]);
@@ -342,30 +342,33 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                 <div className={styles["submit-shopping-block-data-delivery"]}>
                   <strong>Доставка</strong>
                   <div>
-                    <div>
-                      <Form.Item
-                        name="city"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Пожалуйста, выберите город!",
-                          },
-                        ]}
-                      >
-                        <Select
-                          options={cityOptions}
-                          showSearch
-                          onSearch={handleChange}
-                          filterOption={() => true}
-                          placeholder="Укажите адрес доставки"
-                          style={{ height: "38px" }}
-                        />
-                      </Form.Item>
-                      {/* TODO: Здесь будет адрес вручения */}
-                      <label></label>
-                    </div>
+                    { deliveryType !== "krasnodar-self-delivery" &&
+                      <div>
+                        <Form.Item
+                          name="city"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Пожалуйста, выберите город!",
+                            },
+                          ]}
+                        >
+                          <Select
+                            options={cityOptions}
+                            showSearch
+                            onSearch={handleChange}
+                            filterOption={() => true}
+                            placeholder="Укажите адрес доставки"
+                            style={{ height: "38px" }}
+                          />
+                        </Form.Item>
+                        {/* TODO: Здесь будет адрес вручения */}
+                        <label></label>
+                      </div>
+                    }
                     <Form.Item
                       name="deliveryType"
+                      initialValue={"krasnodar-self-delivery"}
                       rules={[
                         {
                           required: true,
@@ -400,8 +403,8 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                         </Space>
                       </Radio.Group>
                     </Form.Item>
-                    {deliveryOptions.get(deliveryType as keyof typeof deliveryType)
-                      ? deliveryOptions.get(deliveryType as keyof typeof deliveryType)!()
+                    {deliveryOptions.get(deliveryType)
+                      ? deliveryOptions.get(deliveryType)!()
                       : null}
                   </div>
                   <div
