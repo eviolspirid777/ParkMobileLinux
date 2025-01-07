@@ -9,10 +9,10 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-const AUTORIZATIONS_PATH = `https://80.64.24.12:3001/api/Autorization`
-const POSTGRE_ITEMS_PATH = `https://80.64.24.12:3001/api/ItemsPostgre`
-// const AUTORIZATIONS_PATH = `https://localhost:3001/api/Autorization`
-// const POSTGRE_ITEMS_PATH = `https://localhost:3001/api/ItemsPostgre`
+const AUTORIZATIONS_PATH = `http://80.64.24.12:3001/api/Autorization`
+const POSTGRE_ITEMS_PATH = `http://80.64.24.12:3001/api/ItemsPostgre`
+// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
+// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
 
 class ApiClient {
     client: AxiosInstance;
