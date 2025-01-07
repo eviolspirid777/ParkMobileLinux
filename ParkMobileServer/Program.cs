@@ -37,7 +37,7 @@ namespace ParkMobileServer
 				return new TelegramBot.TelegramBot(botToken);
 			});
 
-			builder.WebHost.UseUrls("https://*:3001");
+			builder.WebHost.UseUrls("http://*:3001");
 
             //builder.Services.AddHttpsRedirection(options =>
             //{
@@ -80,7 +80,7 @@ namespace ParkMobileServer
 						.AllowAnyMethod()
 						.AllowAnyHeader());
 
-			app.UseHttpsRedirection();
+			//app.UseHttpsRedirection();
 
 			app.UseAuthentication();
 			app.UseAuthorization();
