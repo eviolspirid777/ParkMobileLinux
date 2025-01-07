@@ -10,7 +10,6 @@ COPY --from=build /app/.next ./.next
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/public ./public
 COPY --from=build /app/next.config.ts ./
-ENV PORT 80
 RUN npm install --omit=dev
-EXPOSE 80
+EXPOSE 3000
 CMD ["npm", "start"]
