@@ -8,9 +8,14 @@ import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 type ProductCardProps = {
   card: CardType;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  disabled?: boolean
 };
 
-export const ProductCard: React.FC<ProductCardProps> = ({ card, onClick }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({
+  card,
+  onClick,
+  disabled
+}) => {
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,7 +33,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ card, onClick }) => {
   }, [card.image, card]);
 
   return (
-    <div className={styles["product-card"]} onClick={onClick}>
+    <div
+      className={`${styles["product-card"]} ${disabled && styles["disabled"]}`}
+      onClick={onClick}
+    >
       {image && (
         <Image
           src={image}

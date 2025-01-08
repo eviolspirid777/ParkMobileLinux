@@ -58,6 +58,11 @@
   text-decoration: line-through;
 }
 
+.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 @media (max-width: 1024px) {
   .product-card {
     position: relative;

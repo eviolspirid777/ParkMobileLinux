@@ -120,6 +120,13 @@
             padding-left: 30px;
             padding-right: 30px;
             cursor: pointer;
+            &:disabled {
+                // opacity: 0.5;
+                background-color: #fff;
+                border: 2px solid #87a08b;
+                color: #87a08b;
+                font-size: 1rem;
+            }
         }
 
         & div.credit {

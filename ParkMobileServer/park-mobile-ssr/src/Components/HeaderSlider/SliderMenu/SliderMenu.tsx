@@ -25,7 +25,6 @@ export const SliderMenu: FC<SliderMenuProps> = ({
   handleDeviceFix,
   handleTradeIn
 }) => {
-  console.log(titles)
   return (
     <>
       <div className={styles["blur-block-content-visible-titles"]}>

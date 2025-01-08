@@ -178,7 +178,12 @@ export const ProductModal: FC<ProductModalProps> = ({
                 <i className="fa-regular fa-circle-question" style={{opacity:"0.5"}}/>
               </Tooltip>
             </div>
-            <button onClick={handleAddItem}>Купить</button>
+            <button
+              onClick={handleAddItem}
+              disabled={(CardData?.stock && CardData?.stock > 0) ? false : true}
+            >
+              {(CardData?.stock && CardData?.stock > 0) ? "Купить" : "Нет в наличии"}
+            </button>
             <div className={styles["credit"]}>
               <span>Доступно</span>
               <a>в кредит</a>
