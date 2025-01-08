@@ -430,7 +430,7 @@ namespace ParkMobileServer.Controllers
 						}
 						case "accessories":
 						{
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "accessories")).Id;
+                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaimingaccessories")).Id;
                             query = query.Where(queryItem => queryItem.CategoryId == categoryId);
                             break;
 						}

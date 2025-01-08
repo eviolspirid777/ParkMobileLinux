@@ -1,6 +1,7 @@
 .slider-search-card {
     display: grid;
     grid-template-columns: 1fr 3fr;
+    gap: 20px;
     cursor: pointer;
 
     & img {
@@ -14,6 +15,7 @@
 
         & span {
             font-family: "SF-Pro-Display-Regular";
+            max-width: 260px;
         }
 
         & strong {
