@@ -430,7 +430,7 @@ namespace ParkMobileServer.Controllers
 						}
 						case "accessories":
 						{
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
+                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "accessories")).Id;
                             query = query.Where(queryItem => queryItem.CategoryId == categoryId);
                             break;
 						}
@@ -439,7 +439,10 @@ namespace ParkMobileServer.Controllers
 			}
 
 			var itemsCount = await query.CountAsync();
-			var items = await query.ToListAsync();
+			var items = await query
+								.Skip(searchCategoryRequest.Skip)
+								.Take(searchCategoryRequest.Take)
+								.ToListAsync();
 
 			if(items.Count > 0)
 			{
