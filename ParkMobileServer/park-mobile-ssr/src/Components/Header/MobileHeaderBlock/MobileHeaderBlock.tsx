@@ -58,11 +58,13 @@ export const MobileHeaderBlock = () => {
         handleShopBag={handleShopBag}
       />
       <TradeInModal
-        handleClose={setTradeInOpen.bind(this, false)}
+        key={`${tradeInOpen}`}
+        handleClose={setTradeInOpen.bind(null, false)}
         open={tradeInOpen}
       />
       <RepairModal
-        handleClose={setDeviceFixOpen.bind(this, false)}
+        key={`${deviceFixOpen}`}
+        handleClose={setDeviceFixOpen.bind(null, false)}
         submitData={handleSubmitData}
         open={deviceFixOpen}
       />

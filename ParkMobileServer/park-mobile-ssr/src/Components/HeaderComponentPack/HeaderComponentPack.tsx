@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 import { animateScroll as scroll } from "react-scroll";
 
 import { ShopBucket } from "../ShopBucket/ShopBucket";
-import { MobileHeader } from "../Header/MobileHeader/MobileHeader";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { searchedItemsAtom } from "@/Store/SearchedItemsStore";
 import { useAtom } from "jotai";
+import { MobileHeaderBlock } from "../Header/MobileHeaderBlock/MobileHeaderBlock";
 
 export type ReducerAction = {
   type?: ContentType;
@@ -126,11 +126,7 @@ export const HeaderComponentPack = () => {
                 </>
               ) : (
                 <>
-                  <MobileHeader
-                    handleMainMenuRoute={handleMainMenu}
-                    handleShopBag={handleShopBag}
-                  />
-                  <ShopBucket open={open} handleShopBag={handleShopBag} />
+                  <MobileHeaderBlock />
                 </>
               )}
             </>
