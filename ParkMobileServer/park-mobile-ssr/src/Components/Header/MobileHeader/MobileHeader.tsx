@@ -18,11 +18,15 @@ import { MobileSearchMenu } from "./MobileSearchMenu/MobileSearchMenu";
 type MobileHeaderProps = {
   handleMainMenuRoute: () => void;
   handleShopBag: () => void;
+  setTradeInOpen: (state: boolean) => void;
+  setDeviceFixOpen: (state: boolean) => void;
 };
 
 export const MobileHeader: FC<MobileHeaderProps> = ({
   handleMainMenuRoute,
   handleShopBag,
+  setDeviceFixOpen,
+  setTradeInOpen,
 }) => {
   const [shopBucket] = useAtom(shopBucketAtom);
   const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -155,12 +159,28 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                   Контакты
                 </a>
               </li>
-              <div className={styles["menu-items-description"]}>
+              <li>
+                <a
+                  className={styles["request"]}
+                  onClick={setTradeInOpen.bind(null, true)}
+                >
+                  Заявка на Трейд-Ин
+                </a>
+              </li>
+              <li>
+                <a
+                  className={styles["request"]}
+                  onClick={setDeviceFixOpen.bind(null, true)}
+                >
+                  Заявка на ремонт
+                </a>
+              </li>
+              {/* <div className={styles["menu-items-description"]}>
                 Магазин цифровой техники Park Mobile — ведущий поставщик
                 оригинальной техники в Краснодаре. Мы рады предложить вам
                 продукцию топовых марок, включая Apple, Dyson, Samsung, DJI,
                 Xiaomi и многие другие.
-              </div>
+              </div> */}
               <div className={styles["menu-items-contact-block"]}>
                 <a href="tel:89337772777">+7 933 777‑27‑77</a>
                 <div className={styles["menu-items-contact-block-social"]}>

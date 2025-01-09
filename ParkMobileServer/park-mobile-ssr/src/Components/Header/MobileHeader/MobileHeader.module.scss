@@ -50,6 +50,8 @@
             justify-content: center;
             gap: 20px;
             & a[href="tel:89337772777"] {
+                align-self: flex-start;
+                margin-top: 2%;
                 width: fit-content;
                 text-align: center;
                 letter-spacing: 1px;
@@ -58,8 +60,8 @@
                 border-radius: 5px;
                 color: white;
                 font-family: "SF-Pro-Display-Regular_light";
-                font-size: 1.2rem;
-                padding: 20px 25px;
+                font-size: 1.1rem;
+                padding: 15px 20px;
             }
             & a[href="https://wa.me/79337772777"] {
                 border-radius: 10px;
@@ -256,4 +258,9 @@
         }
         }
     }
+}
+
+.request {
+    font-size: 1.2rem !important;
+    opacity: 0.8;
 }
