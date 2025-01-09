@@ -1,5 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
 import styles from "./Header.module.scss";
 import { FC } from "react";
 import React from "react";
@@ -79,7 +78,6 @@ export const Header: FC<HeaderProps> = ({
   ];
 
   const [shopBucket] = useAtom(shopBucketAtom);
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
 
   const handleMouseEnter = (
     type: ContentType,
@@ -89,34 +87,9 @@ export const Header: FC<HeaderProps> = ({
     mouseEnter(type, titles, subTitles);
   };
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const threshold = 420;
-
-      if (scrollPosition >= threshold) {
-        setIsHeaderHidden(true);
-      } else {
-        setIsHeaderHidden(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, {
-      signal: controller.signal,
-    });
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
   return (
     <header
-      className={`${styles["header"]} ${
-        isHeaderHidden ? styles["header-hidden"] : ""
-      }`}
+      className={`${styles["header"]}`}
     >
       <Image
         src={"/images/Logo/Logo.svg"}
