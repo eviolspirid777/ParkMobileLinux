@@ -120,7 +120,7 @@
             padding-left: 30px;
             padding-right: 30px;
             cursor: pointer;
-            &:disabled {
+            &[data-unstocked="true"] {
                 // opacity: 0.5;
                 background-color: #fff;
                 border: 2px solid #87a08b;

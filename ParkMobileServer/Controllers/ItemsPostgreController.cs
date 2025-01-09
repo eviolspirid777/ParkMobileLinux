@@ -12,6 +12,7 @@ using ParkMobileServer.Mappers.BrandMapper;
 using ParkMobileServer.Mappers.CategoryMapper;
 using ParkMobileServer.Mappers.ItemsMapper;
 using ParkMobileServer.Entities;
+using ParkMobileServer.Entities.OrderItem;
 
 namespace ParkMobileServer.Controllers
 {
@@ -735,6 +736,19 @@ namespace ParkMobileServer.Controllers
             await _telegramBot.SendMessageAsync(message);
             return Ok("Заявка на ремонт отправлена!");
         }
+
+		[HttpPost("OrderItemRequest")]
+		public async Task<IActionResult> PostOrderItemRequest(OrderItemRequest request)
+		{
+			var message = "ЗАЯВКА НА ЗАКАЗ ТОВАРА!\n\n" +
+									 $"Имя клиента: {request.Name}\n" +
+									 $"Телефон клиента: {request.Telephone}\n\n" +
+								 	 $"Товар под заказ: {request.ItemName}\n" +
+									 $"Артикул товара: {request.Article}";
+
+			await _telegramBot.SendMessageAsync(message);
+			return Ok();
+		}
 
         [HttpPost("TelephoneCall/{tel}")]
 		public async Task <IActionResult> PostTelephoneAlert(string tel)

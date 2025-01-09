@@ -3,6 +3,7 @@ import { RepairRequestType } from "@/hooks/useAddRepairRequest";
 import { TradeInType } from "@/Store/TradeInStore";
 import { CardItemType, CardType, RecivedCardDataType } from "@/Types/CardType";
 import { RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
+import { OrderItem } from "@/Types/OrderItem";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
 import { SliderResponse } from "@/Types/SliderResponse";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
@@ -137,6 +138,11 @@ class ApiClient {
 
     async PostCall(number: string) {
         const response = await this.client.post(`${POSTGRE_ITEMS_PATH}/TelephoneCall/${number}`)
+        return response.data;
+    }
+
+    async PostOrderItem(item: OrderItem) {
+        const response = await this.client.post(`${POSTGRE_ITEMS_PATH}/OrderItemRequest`, item)
         return response.data;
     }
 

@@ -7,6 +7,9 @@ import { FC, useEffect, useState } from "react";
 import { CardItemType } from "@/Types/CardType";
 import Image from "next/image";
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
+import { OrderForm } from "./OrderForm/OrderForm";
+import { OrderItem } from "@/Types/OrderItem";
+import { usePostOrderItem } from "@/hooks/usePostOrderItem";
 
 type OpenProductCard = {
   state: boolean;
@@ -28,6 +31,11 @@ export const ProductModal: FC<ProductModalProps> = ({
 }) => {
   const [api, contextHolder] = notification.useNotification();
   const [isClient, setIsClient] = useState(false);
+  const [openOrderForm, setOpenOrderForm] = useState(false);
+
+  const {
+    postOrderItemAsync,
+  } = usePostOrderItem();
 
   const [isRendered, setIsRendered] = useState(false);
   useEffect(() => {
@@ -113,6 +121,12 @@ export const ProductModal: FC<ProductModalProps> = ({
     }
   };
 
+  const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">) => {
+    const sendData = {...values, itemName: CardData?.name, article: CardData?.article};
+    await postOrderItemAsync(sendData)
+    setOpenOrderForm(false);
+  }
+
   return createPortal(
     <div>
       {contextHolder}
@@ -179,10 +193,10 @@ export const ProductModal: FC<ProductModalProps> = ({
               </Tooltip>
             </div>
             <button
-              onClick={handleAddItem}
-              disabled={(CardData?.stock && CardData?.stock > 0) ? false : true}
+              onClick={(CardData?.stock && CardData?.stock > 0) ? handleAddItem : setOpenOrderForm.bind(null, true)}
+              data-unstocked={(CardData?.stock && CardData?.stock > 0) ? false : true}
             >
-              {(CardData?.stock && CardData?.stock > 0) ? "Купить" : "Нет в наличии"}
+              {(CardData?.stock && CardData?.stock > 0) ? "Купить" : "Заказать"}
             </button>
             <div className={styles["credit"]}>
               <span>Доступно</span>
@@ -201,6 +215,12 @@ export const ProductModal: FC<ProductModalProps> = ({
           </div>
         </div>
       </Modal>
+      <OrderForm
+        key={`${openOrderForm}`}
+        open={openOrderForm}
+        handleClose={setOpenOrderForm.bind(this,false)}
+        submitData={handleSubmitData}
+      />
     </div>,
     document.body
   );

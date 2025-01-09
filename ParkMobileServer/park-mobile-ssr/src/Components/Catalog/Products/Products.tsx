@@ -145,11 +145,10 @@ export const Products: FC<ProductsType> = ({
               <ProductCard
                 key={index}
                 card={el}
-                onClick={el.stock > 0 ? setOpenProductCard.bind(this, {
+                onClick={setOpenProductCard.bind(this, {
                   state: true,
                   id: el.id ?? null,
-                }) : () => {}}
-                disabled={el.stock > 0 ? false : true}
+                })}
               />
             ))}
         </div>
