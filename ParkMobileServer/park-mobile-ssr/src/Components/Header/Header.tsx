@@ -1,6 +1,6 @@
 "use client";
 import styles from "./Header.module.scss";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import React from "react";
 import { ContentType } from "@/Types/SliderContentType";
 import { useAtom } from "jotai";
@@ -77,7 +77,20 @@ export const Header: FC<HeaderProps> = ({
     },
   ];
 
-  const [shopBucket] = useAtom(shopBucketAtom);
+  const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+
+  useEffect(() => {
+    const localShopBucket = localStorage.getItem("shopBucket");
+    if(localShopBucket) {
+      const shopBucket = JSON.parse(localShopBucket);
+      setShopBucket(shopBucket)
+    }
+  }, [])
+
+  useEffect(() => {
+    const _shopBucket = JSON.stringify(shopBucket);
+    localStorage.setItem("shopBucket", _shopBucket);
+  }, [shopBucket])
 
   const handleMouseEnter = (
     type: ContentType,

@@ -169,6 +169,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
 
       await apiClient.OrderData(values);
       setShopBucket([]);
+      localStorage.removeItem("shopBucket");
     } catch (error) {
       console.error(error);
     } finally {
