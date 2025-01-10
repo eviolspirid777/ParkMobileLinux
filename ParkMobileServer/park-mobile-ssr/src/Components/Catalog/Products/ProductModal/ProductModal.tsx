@@ -1,4 +1,4 @@
-import { Modal, notification, Tooltip } from "antd";
+import { Modal, notification, Skeleton, Tooltip } from "antd";
 import { createPortal } from "react-dom";
 
 import styles from "./ProductModal.module.scss";
@@ -146,63 +146,97 @@ export const ProductModal: FC<ProductModalProps> = ({
       >
         <div className={styles["item-container"]}>
           <div className={styles["item-container-image"]}>
-            <Image
-              src={
-                CardData && CardData.image
-                  ? `data:image/jpeg;base64,${CardData.image}`
-                  : ""
-              }
-              alt="product_card"
-              width={500}
-              height={500}
-              quality={100}
-              priority
-              layout="relative"
-            />
+            {
+              CardData?.image ? 
+              <Image
+                src={
+                  CardData && CardData.image
+                    ? `data:image/jpeg;base64,${CardData.image}`
+                    : ""
+                }
+                alt="product_card"
+                width={500}
+                height={500}
+                quality={100}
+                priority
+                layout="relative"
+              /> :
+              <Skeleton.Image
+                active
+                style={{
+                  width:"400px",
+                  height: "400px"
+                }}
+              />
+            }
           </div>
           <div className={styles["item-container-data"]}>
             <header>
-              <h3>{CardData?.name}</h3>
-              <title>{CardData?.brandName}</title>
-              <article>АРТИКУЛ: {CardData?.article}</article>
+              {
+                CardData ? 
+                <>
+                  <h3>{CardData?.name}</h3>
+                  <title>{CardData?.brandName}</title>
+                  <article>АРТИКУЛ: {CardData?.article}</article>
+                </> :
+                <Skeleton active/>
+              }
             </header>
             <div className={styles["item-container-data-prices"]}>
-              <strong className={CardData?.discountPrice && styles["discount"]}>
-                {convertToIntlFormat(CardData?.price)} ₽
-              </strong>
-              {CardData?.discountPrice && (
-                <strong>{convertToIntlFormat(CardData?.discountPrice)} ₽</strong>
-              )}
+              {
+                CardData ?
+                <>
+                  <strong className={CardData?.discountPrice && styles["discount"]}>
+                    {convertToIntlFormat(CardData?.price)} ₽
+                  </strong>
+                  {CardData?.discountPrice && (
+                    <strong>{convertToIntlFormat(CardData?.discountPrice)} ₽</strong>
+                  )}
+                </> :
+                <Skeleton.Button active />
+              }
             </div>
             <div className={styles["item-container-data-price-in-online"]}>
-              <span>Цена в магазине:</span>
-              <strong>{computedCarDataNewPriceWithPercent()} ₽</strong>
-              <Tooltip
-                title={renderToolTipContent}
-                color="white"
-                overlayStyle={{
-                  minWidth: (isRendered && window.screen.width >= 1024) ? "600px" : "auto",
-                  margin:"0% 3%"
-                }}
-                overlayInnerStyle={{
-                  color:"black",
-                  border:"1px solid #87a08b"
-                }}
-              >
-                <i className="fa-regular fa-circle-question" style={{opacity:"0.5"}}/>
-              </Tooltip>
+              {
+                CardData ? 
+                <>
+                  <span>Цена в магазине:</span>
+                  <strong>{computedCarDataNewPriceWithPercent()} ₽</strong>
+                  <Tooltip
+                    title={renderToolTipContent}
+                    color="white"
+                    overlayStyle={{
+                      minWidth: (isRendered && window.screen.width >= 1024) ? "600px" : "auto",
+                      margin:"0% 3%"
+                    }}
+                    overlayInnerStyle={{
+                      color:"black",
+                      border:"1px solid #87a08b"
+                    }}
+                  >
+                    <i className="fa-regular fa-circle-question" style={{opacity:"0.5"}}/>
+                  </Tooltip>
+                </> :
+                <Skeleton.Button active />
+              }
             </div>
-            <button
-              onClick={(CardData?.stock && CardData?.stock > 0) ? handleAddItem : setOpenOrderForm.bind(null, true)}
-              data-unstocked={(CardData?.stock && CardData?.stock > 0) ? false : true}
-            >
-              {(CardData?.stock && CardData?.stock > 0) ? "Купить" : "Заказать"}
-            </button>
-            <div className={styles["credit"]}>
-              <span>Доступно</span>
-              <a>в кредит</a>
-              <span>от {handleCreditPrice(CardData?.price)} ₽/мес.</span>
-            </div>
+            {
+              CardData ? 
+              <>
+                <button
+                  onClick={(CardData?.stock && CardData?.stock > 0) ? handleAddItem : setOpenOrderForm.bind(null, true)}
+                  data-unstocked={(CardData?.stock && CardData?.stock > 0) ? false : true}
+                >
+                  {(CardData?.stock && CardData?.stock > 0) ? "Купить" : "Заказать"}
+                </button>
+                <div className={styles["credit"]}>
+                  <span>Доступно</span>
+                  <a>в кредит</a>
+                  <span>от {handleCreditPrice(CardData?.price)} ₽/мес.</span>
+                </div>
+              </> :
+              <Skeleton />
+            }
             <div
               className={styles["MarkdownContent"]}
               style={{

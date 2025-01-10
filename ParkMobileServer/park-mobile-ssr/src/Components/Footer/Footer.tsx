@@ -21,12 +21,11 @@ export const Footer = () => {
   };
 
   const handleCategory = (category: string) => {
-    scroll.scrollTo(window.screen.width > 1024 ? 3200 : 4200, {
-      duration: 700,
-      smooth: true,
-    });
-
-    setCategories(category);
+    naviagate.push("/");
+    setTimeout(() => {
+      setCategories(category);
+      naviagate.push("#catalog")
+    }, 100)
   };
 
   return (
