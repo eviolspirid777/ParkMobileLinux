@@ -163,9 +163,13 @@ export const ProductModal: FC<ProductModalProps> = ({
               /> :
               <Skeleton.Image
                 active
-                style={{
+                style={window.screen.width > 1024 ? {
                   width:"400px",
                   height: "400px"
+                } : 
+                {
+                  width: "150px",
+                  height: "150px"
                 }}
               />
             }
@@ -240,7 +244,7 @@ export const ProductModal: FC<ProductModalProps> = ({
             <div
               className={styles["MarkdownContent"]}
               style={{
-                maxHeight: `${modalHeight - 500}px`,
+                maxHeight: `${window.screen.width > 1024 ? modalHeight - 200 : modalHeight - 500}px`,
                 overflow: "auto",
               }}
             >
