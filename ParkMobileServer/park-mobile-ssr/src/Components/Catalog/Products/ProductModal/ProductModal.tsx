@@ -30,7 +30,6 @@ export const ProductModal: FC<ProductModalProps> = ({
   handleAddToBucket,
 }) => {
   const [api, contextHolder] = notification.useNotification();
-  const [isClient, setIsClient] = useState(false);
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
   const {
@@ -86,10 +85,6 @@ export const ProductModal: FC<ProductModalProps> = ({
       </div>
     </div>
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   const [modalHeight, setModalHeight] = useState<number>(0);
 
   useEffect(() => {
@@ -138,7 +133,7 @@ export const ProductModal: FC<ProductModalProps> = ({
         footer={null}
         title={null}
         closeIcon={
-          isClient && window.screen.width > 1024 ? null : (
+          isRendered && window.screen.width > 1024 ? null : (
             <i className="fa-solid fa-xmark" />
           )
         }
@@ -163,7 +158,7 @@ export const ProductModal: FC<ProductModalProps> = ({
               /> :
               <Skeleton.Image
                 active
-                style={window.screen.width > 1024 ? {
+                style={(isRendered && window.screen.width > 1024) ? {
                   width:"400px",
                   height: "400px"
                 } : 
@@ -244,7 +239,7 @@ export const ProductModal: FC<ProductModalProps> = ({
             <div
               className={styles["MarkdownContent"]}
               style={{
-                maxHeight: `${window.screen.width > 1024 ? modalHeight - 200 : modalHeight - 500}px`,
+                maxHeight: `${(isRendered && window.screen.width > 1024) ? modalHeight - 200 : modalHeight - 500}px`,
                 overflow: "auto",
               }}
             >
