@@ -38,7 +38,7 @@ export const Catalog = () => {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {А
+  useEffect(() => {
     setSkip(0);
     setCurrentPage(1)
   }, [storeCategory])
