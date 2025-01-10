@@ -15,14 +15,12 @@ export const SliderSearch: FC<SliderSearchProps> = ({
   foundItemsCount,
 }) => {
   const items = [
-    "iPhone 16 PRO MAX 256 Гб",
-    "Apple Vision Pro 512 Гб",
-    "iPhone 14 PRO 128 Гб",
-    "MacBook PRO 14 2024 512 Гб",
-    "iPad PRO 16'' 2024 128 Гб",
+    "iPhone 16 PRO MAX",
+    "Apple Vision Pro",
+    "iPhone 14",
+    "MacBook PRO 14 2024",
+    "iPad PRO 2024",
   ];
-
-  const handleFamousItem = () => {};
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,6 +28,14 @@ export const SliderSearch: FC<SliderSearchProps> = ({
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
     onInputChange(event.target.value);
+  };
+
+  const handleFamousItem = (item: string) => {
+    setSearchValue(item);
+    onInputChange(item);
+    if(inputRef.current) {
+      inputRef.current.value = item;
+    }
   };
 
   useEffect(() => {
@@ -100,7 +106,10 @@ export const SliderSearch: FC<SliderSearchProps> = ({
         </h3>
         <ul className={styles["search-most-famous"]}>
           {items.map((el, index) => (
-            <li key={index} onClick={handleFamousItem}>
+            <li
+              key={index}
+              onClick={handleFamousItem.bind(this, el)}
+            >
               {el}
             </li>
           ))}
