@@ -8,10 +8,13 @@ import { Products } from "./Products/Products";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { categoryAtom, categoryDictionary } from "../../Store/FiltersStore";
-import { animateScroll as scroll } from "react-scroll";
 import { apiClient } from "@/api/ApiClient";
+import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
+import { useRouter } from "next/navigation";
 
 export const Catalog = () => {
+  const navigate = useRouter();
+
   const [storeCategory] = useAtom(categoryAtom);
 
   const [skip, setSkip] = useState(0);
@@ -23,6 +26,7 @@ export const Catalog = () => {
     data: items,
     refetch,
     isLoading: isLoadingAll,
+    isSuccess
   } = useQuery({
     queryKey: ["items", skip, take],
     queryFn: async () =>
@@ -34,17 +38,16 @@ export const Catalog = () => {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
+  useEffect(() => {А
     setSkip(0);
     setCurrentPage(1)
   }, [storeCategory])
 
-  const handleOnPageChange = (newSkip: number, newPage: number) => {
-    scroll.scrollTo(window.screen.width > 1024 ? 3600 : 4300, {
-      duration: 700,
-      smooth: true,
-    });
+  useEffect(() => {
+    navigate.push("#catalog")
+  }, [isSuccess])
 
+  const handleOnPageChange = (newSkip: number, newPage: number) => {
     setSkip(newSkip);
     setCurrentPage(newPage);
     refetch();
@@ -60,7 +63,7 @@ export const Catalog = () => {
       <Categories />
       {/* <FilterTile itemsCount={items?.count} /> */}
       {isLoadingAll ? (
-        <div style={{ height: "2040px", width: "1239px" }}>Loading...</div>
+        <LoadingComponent />
       ) : (
         <Products
           cards={items?.items}
