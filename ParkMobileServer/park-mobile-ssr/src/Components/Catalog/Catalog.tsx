@@ -26,7 +26,8 @@ export const Catalog = () => {
     data: items,
     refetch,
     isLoading: isLoadingAll,
-    isSuccess
+    isSuccess,
+    isFetching
   } = useQuery({
     queryKey: ["items", skip, take],
     queryFn: async () =>
@@ -39,18 +40,23 @@ export const Catalog = () => {
   });
 
   useEffect(() => {
+    if(currentPage !== 1) {
+      navigate.push("#catalog")
+    }
+  }, [isSuccess, isFetching])
+
+  useEffect(() => {
     setSkip(0);
     setCurrentPage(1)
   }, [storeCategory])
-
-  useEffect(() => {
-    navigate.push("#catalog")
-  }, [isSuccess])
 
   const handleOnPageChange = (newSkip: number, newPage: number) => {
     setSkip(newSkip);
     setCurrentPage(newPage);
     refetch();
+    if(newPage === 1) {
+      navigate.push("#catalog")
+    }
   };
 
   useEffect(() => {
