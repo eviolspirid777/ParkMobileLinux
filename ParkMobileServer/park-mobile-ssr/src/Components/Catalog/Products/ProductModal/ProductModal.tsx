@@ -32,23 +32,24 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
+  
   const {
     postOrderItemAsync,
   } = usePostOrderItem();
-
+  
   const [isRendered, setIsRendered] = useState(false);
   useEffect(() => {
     setIsRendered(true);
   }, [])
-
+  
   const computedCarDataNewPriceWithPercent = () => {
     const number = CardData?.discountPrice ? Math.round(parseInt(CardData.discountPrice) * 1.06) : Math.round(parseInt(CardData?.price ?? "") * 1.06);
     return convertToIntlFormat(number);
   }
-
+  
   const handleAddItem = () => {
     handleAddToBucket();
-
+    
     api.destroy();
 
     api.open({
@@ -72,7 +73,7 @@ export const ProductModal: FC<ProductModalProps> = ({
       pauseOnHover: true,
     })
   }
-
+  
   const renderToolTipContent = () =>
     <div className={styles["tooltip-content"]}>
       <div>
@@ -85,42 +86,42 @@ export const ProductModal: FC<ProductModalProps> = ({
       </div>
     </div>
 
-  const [modalHeight, setModalHeight] = useState<number>(0);
+const [modalHeight, setModalHeight] = useState<number>(0);
 
-  useEffect(() => {
-    if (openProductCard.state) {
-      document.body.style.overflow = "hidden";
-    }
-    const handleResize = () => {
-      const modalElement = document.querySelector(".ant-modal-body");
-      if (modalElement) {
-        const height = modalElement.clientHeight;
-        setModalHeight(height);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    // Получаем высоту при первом рендере
-    handleResize();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      document.body.style.overflow = "auto";
-    };
-  }, [openProductCard.state]); // Запускаем эффект при открытии/закрытии модального окна
-
-  const handleCreditPrice = (price: string | undefined | number) => {
-    if (typeof price == "string") {
-      const _price = Number((price as string).split(" ").join(""));
-      return ((_price * 1.31) / 36 + 1).toFixed();
+useEffect(() => {
+  if (openProductCard.state) {
+    document.body.style.overflow = "hidden";
+  }
+  const handleResize = () => {
+    const modalElement = document.querySelector(".ant-modal-body");
+    if (modalElement) {
+      const height = modalElement.clientHeight;
+      setModalHeight(height);
     }
   };
+  
+  window.addEventListener("resize", handleResize);
+  // Получаем высоту при первом рендере
+  handleResize();
+  
+  return () => {
+    window.removeEventListener("resize", handleResize);
+    document.body.style.overflow = "auto";
+  };
+}, [openProductCard.state]); // Запускаем эффект при открытии/закрытии модального окна
 
-  const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">) => {
-    const sendData = {...values, itemName: CardData?.name, article: CardData?.article};
-    await postOrderItemAsync(sendData)
-    setOpenOrderForm(false);
+const handleCreditPrice = (price: string | undefined | number) => {
+  if (typeof price == "string") {
+    const _price = Number((price as string).split(" ").join(""));
+    return ((_price * 1.31) / 36 + 1).toFixed();
   }
+};
+
+const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">) => {
+  const sendData = {...values, itemName: CardData?.name, article: CardData?.article};
+  await postOrderItemAsync(sendData)
+  setOpenOrderForm(false);
+}
 
   return createPortal(
     <div>
@@ -239,7 +240,7 @@ export const ProductModal: FC<ProductModalProps> = ({
             <div
               className={styles["MarkdownContent"]}
               style={{
-                maxHeight: `${(isRendered && window.screen.width > 1024) ? modalHeight - 200 : modalHeight - 500}px`,
+                maxHeight: `${(isRendered && window.innerWidth > 1024) ? modalHeight - 350 : modalHeight - 500}px`,
                 overflow: "auto",
               }}
             >
