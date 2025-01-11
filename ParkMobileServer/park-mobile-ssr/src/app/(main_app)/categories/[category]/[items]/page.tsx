@@ -109,7 +109,7 @@ const ItemPage = () => {
       className={styles["product-container"]}
     >
       <h4
-        style={filters.length === 0 ? {
+        style={Array.isArray(filters) && filters.length === 0 ? {
           marginBottom: "5%"
         } : {}}
       >
