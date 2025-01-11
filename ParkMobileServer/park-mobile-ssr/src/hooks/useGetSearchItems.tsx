@@ -10,17 +10,20 @@ export const useGetSearchItems = () => {
     data: searchedItems,
     isPending: isSearchedItemsPending,
     isSuccess: isSearchedItemsSuccess,
+    isError: isSearchedItemsError,
     mutateAsync: mutateSearchedItems,
   } = useMutation({
     mutationFn: async ({
       tag,
       skip,
       take,
+      fromSearch,
     }: {
       tag: string;
       skip: number;
       take: number;
-    }) => apiClient.GetSearchItems(tag, skip, take),
+      fromSearch?: boolean;
+    }) => apiClient.GetSearchItems(tag, skip, take, fromSearch),
     onSuccess: (data) => {
       setSearchedItemsFromStore(data.items);
     },
@@ -33,6 +36,7 @@ export const useGetSearchItems = () => {
     searchedItems,
     isSearchedItemsPending,
     isSearchedItemsSuccess,
+    isSearchedItemsError,
     mutateSearchedItems,
   };
 };

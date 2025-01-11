@@ -5,9 +5,10 @@ import { animateScroll as scroll } from "react-scroll";
 import { useQuery } from "@tanstack/react-query";
 
 import styles from "./ProductObertka.module.scss";
-import { createPortal } from "react-dom";
-import { Modal } from "antd";
 import { apiClient } from "@/api/ApiClient";
+import { CategoryFilters } from "@/Shared/FiltersData/Filters";
+import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
+import { useRouter } from "next/navigation";
 
 type ProductObertkaProps = {
   category: string;
@@ -23,10 +24,16 @@ const categoryDictionary = new Map([
 ]);
 
 export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
+  let filters: string[] = [];
+  
+  const navigate = useRouter();
+
+  if(category) {
+    filters = CategoryFilters.get(category as string) as string[]
+  }
+
   const [skip, setSkip] = useState(0);
   const [take] = useState(16);
-
-  const [open, setOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -57,36 +64,98 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     refetch();
   };
 
+  const handlePath = (path: string) => {
+    let _path = path;
+    if(_path === "Apple Watch") {
+      _path = "watches"
+    }
+    if(_path === "Apple TV") {
+      _path = "tv"
+    }
+    if(_path === "Смартфоны") {
+      _path = "phones"
+    }
+    switch (path) {
+      case "Apple Watch":
+        _path = "watches"
+        break;
+      case "Apple TV":
+        _path = "tv"
+        break;
+      case "Смартфоны":
+        _path = "phones"
+        break;
+      case "Наушники":
+        _path = "headphones";
+        break;
+      case "Умные часы":
+        _path = "watches"
+        break;
+      case "ТВ Приставки":
+        _path = "tv"
+        break;
+      case "Стайлеры":
+        _path = "styler"
+        break;
+      case "Фены":
+        _path = "hairdryer"
+        break;
+      case "Выпрямители":
+        _path = "rectifier"
+        break;
+      case "Пылесосы":
+        _path = "vacuumcleaner"
+        break;
+      case "Очистители воздуха":
+        _path = "airpurifiers"
+        break;
+      case "Яндекс Станции":
+        _path = "yandex"
+        break;
+      case "JBL":
+        _path = "jbl"
+        break;
+      case "Sony":
+        _path = "sony"
+        break;
+      case "Xbox":
+        _path = "microsoft"
+        break;
+      case "Nintendo":
+        _path = "nintendo"
+        break;
+      case "Steam Deck":
+        _path = "steam"
+        break;
+      case "Аксессуары":
+        _path = "accessories"
+        break;
+    }
+    navigate.push(`/categories/${category}/${_path}`)
+  }
+
   if (isLoadingAll || items?.count === 0) {
     return <div style={{ height: "320vh", width: "100%" }} />;
   }
 
   return (
     <div className={styles["product-container"]}>
-      <h4
-        onClick={setOpen.bind(null, true)}
-        onKeyDown={setOpen.bind(null, true)}
-      >
+      <h4>
         Каталог
       </h4>
+      {
+        filters.length > 0 &&
+        <ItemsCategories
+          categoriesItems={filters}
+          onSelect={handlePath}
+        />
+      }
       <Products
         cards={items?.items}
         itemsCount={items?.count}
         currentPage={currentPage}
         onPageChange={handleOnPageChange}
       />
-      {createPortal(
-        <Modal
-          open={open}
-          onCancel={setOpen.bind(null, false)}
-          onClose={setOpen.bind(null, false)}
-          style={{
-            width: "100vw",
-            height: "100vh",
-          }}
-        />,
-        document.body
-      )}
     </div>
   );
 };

@@ -8,11 +8,12 @@ import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { ProductModal } from "./ProductModal/ProductModal";
 import { useGetItemById } from "@/hooks/useGetItemById";
 import { ConfigProvider, Pagination } from "antd";
+import { SearchItemShortType } from "@/Types/SearchItemShortType";
 
 // import Image from "next/image";
 
 type ProductsType = {
-  cards?: CardType[];
+  cards?: CardType[] | SearchItemShortType[];
   itemsCount: number | undefined;
   currentPage: number;
   onPageChange: (skip: number, page: number) => void;

@@ -4,9 +4,10 @@ import styles from "./ProductCard.module.scss";
 import { CardType } from "@/Types/CardType";
 import Image from "next/image";
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
+import { SearchItemShortType } from "@/Types/SearchItemShortType";
 
 type ProductCardProps = {
-  card: CardType;
+  card: CardType | SearchItemShortType;
   onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   disabled?: boolean
 };
@@ -51,7 +52,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {card.name}
         </label>
         {
-          card.isNewItem &&
+          "isNewItem" in card && card.isNewItem &&
           <div className={styles["product-card-text-block-tile"]}>Новинка</div>
         }
       </div>

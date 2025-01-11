@@ -109,8 +109,8 @@ class ApiClient {
         return response.data;
     }
 
-    async GetSearchItems(tag: string, skip: number, take: number) {
-        const response = await this.client.post<SearchItemsResponseType>(`${POSTGRE_ITEMS_PATH}/GetItemsByName?skip=${skip}&take=${take}&name=${tag}`)
+    async GetSearchItems(tag: string, skip: number, take: number, fromSearch: boolean = true) {
+        const response = await this.client.post<SearchItemsResponseType>(`${POSTGRE_ITEMS_PATH}/GetItemsByName?skip=${skip}&take=${take}&name=${tag}&fromSearch=${fromSearch}`)
         return response.data;
     }
 

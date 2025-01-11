@@ -461,7 +461,7 @@ namespace ParkMobileServer.Controllers
 		}
 
 		[HttpPost("GetItemsByName")]
-		public async Task<IActionResult> GetItemByName(string name, int skip, int take)
+		public async Task<IActionResult> GetItemByName(string name, int skip, int take, bool fromSearch = true)
 		{
 			var splittedName = name.Split(" ");
 
@@ -470,7 +470,62 @@ namespace ParkMobileServer.Controllers
 								.AsQueryable();
 			foreach(var splitValue in splittedName)
 			{
-				query = query.Where(item => item.Name.ToLower().Contains(splitValue.ToLower()));
+				query = query
+							.Where(item => item.Name.ToLower()
+							.Contains(splitValue.ToLower()));
+				if(fromSearch == false)
+				{
+					if(name.ToLower() == "iphone 16" ||  name.ToLower() == "iphone 15" || name.ToLower() == "iphone 14" || name.ToLower() == "iphone 13" || name.ToLower() == "iphone 12" || name.ToLower() == "iphone 11")
+					{
+						query = query
+									.Where(item => !item.Name.ToLower().Contains("max"))
+									.Where(item => item.Name.ToLower().Contains("pro"));
+					}
+
+					if(name.ToLower() == "iphone 16 pro" || name.ToLower() == "iphone 15 pro")
+					{
+						query = query.Where(item => !item.Name.ToLower().Contains("max"));
+					}
+
+					if(name.ToLower() == "galaxy s")
+					{
+						query = query
+								.Where(item =>
+										item.Name.ToLower().Contains("galaxy s24") ||
+										item.Name.ToLower().Contains("galaxy s23") ||
+										item.Name.ToLower().Contains("galaxy s22") ||
+										item.Name.ToLower().Contains("galaxy s21") ||
+										item.Name.ToLower().Contains("galaxy s20"));
+
+                    }
+
+					if (name.ToLower() == "galaxy a")
+					{
+						query = query
+								.Where(item =>
+										item.Name.ToLower().Contains("galaxy a55") ||
+										item.Name.ToLower().Contains("galaxy a35") ||
+										item.Name.ToLower().Contains("galaxy a05") ||
+                                        item.Name.ToLower().Contains("galaxy a06")
+                                );
+					}
+
+					if(name.ToLower() == "xiaomi 14")
+					{
+						query = query
+									.Where(item => !item.Name.ToLower().Contains("ultra"))
+									.Where(item => !item.Name.ToLower().Contains("pro"))
+									.Where(item => !item.Name.ToLower().Contains("14t"));
+					}
+					
+					if(name.ToLower() == "xiaomi 13")
+					{
+						query = query
+									.Where(item => !item.Name.ToLower().Contains("pro"))
+									.Where(item => !item.Name.ToLower().Contains("plus"))
+									.Where(item => !item.Name.ToLower().Contains("13t"));
+					}
+				}
 			}
 
 			var itemsCount = await query.CountAsync();

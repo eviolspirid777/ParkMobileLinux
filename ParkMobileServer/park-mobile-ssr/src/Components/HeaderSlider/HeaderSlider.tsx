@@ -193,7 +193,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
                 current={currentPage}
                 total={searchedItems.count}
                 showLessItems
-                pageSize={16}
+                pageSize={20}
                 onChange={handlePageClick}
                 showSizeChanger={false}
               />
