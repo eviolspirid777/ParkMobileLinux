@@ -676,7 +676,15 @@ namespace ParkMobileServer.Controllers
 
             if (categoryId.HasValue)
             {
-                query = query.Where(item => item.CategoryId == categoryId.Value);
+				if(category.ToLower() == "gaming")
+				{
+					query = query
+								.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
+				}
+				else
+				{
+					query = query.Where(item => item.CategoryId == categoryId.Value);
+				}
             }
 
             if (brandId.HasValue)

@@ -108,7 +108,11 @@ const ItemPage = () => {
     <div
       className={styles["product-container"]}
     >
-      <h4>
+      <h4
+        style={filters.length === 0 ? {
+          marginBottom: "5%"
+        } : {}}
+      >
         Каталог
       </h4>
       {
