@@ -479,7 +479,7 @@ namespace ParkMobileServer.Controllers
 					{
 						query = query
 									.Where(item => !item.Name.ToLower().Contains("max"))
-									.Where(item => item.Name.ToLower().Contains("pro"));
+									.Where(item => !item.Name.ToLower().Contains("pro"));
 					}
 
 					if(name.ToLower() == "iphone 16 pro" || name.ToLower() == "iphone 15 pro")
@@ -678,8 +678,7 @@ namespace ParkMobileServer.Controllers
             {
 				if(category.ToLower() == "gaming")
 				{
-					query = query
-								.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
+					query = query.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
 				}
 				else
 				{
