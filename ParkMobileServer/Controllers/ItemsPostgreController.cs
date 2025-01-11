@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkMobileServer.DbContext;
 using ParkMobileServer.DTO.ItemDTO;
+using ParkMobileServer.Entities;
 using ParkMobileServer.Entities.Items;
+using ParkMobileServer.Entities.OrderItem;
 using ParkMobileServer.Entities.Orders;
 using ParkMobileServer.Entities.OrderTelegram;
 using ParkMobileServer.Entities.Repair;
@@ -11,12 +13,10 @@ using ParkMobileServer.Entities.TradeIn;
 using ParkMobileServer.Mappers.BrandMapper;
 using ParkMobileServer.Mappers.CategoryMapper;
 using ParkMobileServer.Mappers.ItemsMapper;
-using ParkMobileServer.Entities;
-using ParkMobileServer.Entities.OrderItem;
 
 namespace ParkMobileServer.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("api/[controller]")]
 	public class ItemsPostgreController : Controller
 	{
@@ -463,17 +463,22 @@ namespace ParkMobileServer.Controllers
 		[HttpPost("GetItemsByName")]
 		public async Task<IActionResult> GetItemByName(string name, int skip, int take)
 		{
+			var splittedName = name.Split(" ");
 
-			var query =  _postgreSQLDbContext
-									.ItemEntities
-									.Where(item => item.Name.ToLower().Contains(name.ToLower()));
+			var query = _postgreSQLDbContext
+								.ItemEntities
+								.AsQueryable();
+			foreach(var splitValue in splittedName)
+			{
+				query = query.Where(item => item.Name.ToLower().Contains(splitValue.ToLower()));
+			}
 
 			var itemsCount = await query.CountAsync();
 
 			var items = await query
-										.Skip(skip)
-                                        .Take(take)										
-										.ToListAsync();
+								.Skip(skip)
+                                .Take(take)										
+								.ToListAsync();
 
 			var mappedItems = items.Select(ItemMapper.MatToShortDto).ToList();
 
@@ -603,8 +608,13 @@ namespace ParkMobileServer.Controllers
             {
                 brandId = (await _postgreSQLDbContext
                                 .ItemBrands
-                                .FirstOrDefaultAsync(b => b.Name == brand))?
+                                .FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower()))?
                                 .Id;
+				//TODO: Снизу заглушка, т.к. brandId не ищется, если brand = samsung
+				if(brand == "Samsung")
+				{
+					brandId = 11;
+				}
             }
 
             var query = _postgreSQLDbContext.ItemEntities.AsQueryable();
@@ -687,6 +697,7 @@ namespace ParkMobileServer.Controllers
 				message += $"\tНазвание: {item.Product.Name}\n" +
 									 $"\tАртикул: {item.Product.Article}\n" +
 									 $"\tКоличество: {item.Quantity}\n" +
+									 $"\tЦена: {item.Product.DiscountPrice ?? item.Product.Price}\n" + 
 									 $"\tОстаток на складе: {item.Product.Stock - item.Quantity}\n"+
 									 "\n\n";
 				var product = _postgreSQLDbContext
