@@ -487,7 +487,29 @@ namespace ParkMobileServer.Controllers
 						query = query.Where(item => !item.Name.ToLower().Contains("max"));
 					}
 
-					if(name.ToLower() == "galaxy s")
+					if(name.ToLower() == "apple watch ultra 2")
+					{
+						query = query.Where(item => !item.Name.ToLower().Contains("2024"));
+					}
+					if(name.ToLower() == "apple watch 9")
+					{
+						query = query
+									.Where(item => item.Name.ToLower().Contains("apple watch 9"))
+									.Where(item => !item.Name.ToLower().Contains("49mm"));
+					}
+					if(name.ToLower() == "airpods 2")
+					{
+						query = query
+									.Where(item => item.Name.ToLower().Contains("apple airpods 2"))
+									.Where(item => !item.Name.ToLower().Contains("2024"));
+					}
+                    if (name.ToLower() == "airpods 4")
+                    {
+                        query = query
+                                    .Where(item => item.Name.ToLower().Contains("apple airpods 4"))
+                                    .Where(item => !item.Name.ToLower().Contains("2024"));
+                    }
+                    if (name.ToLower() == "galaxy s")
 					{
 						query = query
 								.Where(item =>
@@ -524,6 +546,18 @@ namespace ParkMobileServer.Controllers
 									.Where(item => !item.Name.ToLower().Contains("pro"))
 									.Where(item => !item.Name.ToLower().Contains("plus"))
 									.Where(item => !item.Name.ToLower().Contains("13t"));
+					}
+					if(name.ToLower() == "янедкс станция 2")
+					{
+						query = query.Where(item => !item.Name.ToLower().Contains("лайт"));
+					}
+					if(name.ToLower() == "яндекс станция мини")
+					{
+						query = query.Where(item => !item.Name.ToLower().Contains("с часами"));
+					}
+					if(name.ToLower() == "яндекс станция лайт")
+					{
+						query = query.Where(item => !item.Name.ToLower().Contains("2"));
 					}
 				}
 			}
