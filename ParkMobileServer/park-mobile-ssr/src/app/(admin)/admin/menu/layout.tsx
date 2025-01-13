@@ -56,7 +56,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body style={{width:"100%"}}>
         <Layout style={mainLayoutStyle} hasSider>
           <Sider collapsible style={siderStyle}>
             <div className={styles["shell-page"]}>

@@ -13,7 +13,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body style={{width:"100%"}}>
         <ConfigProvider>
           <QueryClientProvider client={queryClient}>
             {children}
