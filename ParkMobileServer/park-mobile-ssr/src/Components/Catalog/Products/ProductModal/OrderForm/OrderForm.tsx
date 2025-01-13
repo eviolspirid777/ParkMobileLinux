@@ -46,6 +46,9 @@ export const OrderForm: FC<OrderFormProps> = ({
             }}
           >
             <strong className={styles["alarm"]}>Внимание! Уведомляем вас, что цены на модель по предзаказу могут меняться.</strong>
+            <strong className={styles["waitting"]}>
+              Ожидание 1-2 дня.
+            </strong>
             <div className={styles["content-block"]}>
               <Form.Item
                 name="name"

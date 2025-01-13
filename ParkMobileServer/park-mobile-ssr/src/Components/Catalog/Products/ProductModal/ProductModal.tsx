@@ -214,7 +214,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
                       border:"1px solid #87a08b"
                     }}
                   >
-                    <i className="fa-regular fa-circle-question" style={{opacity:"0.5"}}/>
+                    <i className="fa-regular fa-circle-question" style={{opacity:"0.5", cursor: "help"}}/>
                   </Tooltip>
                 </> :
                 <Skeleton.Button active />
