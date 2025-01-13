@@ -131,7 +131,7 @@ export const Products: FC<ProductsType> = ({
   };
 
   useEffect(() => {
-    if (openProductCard.state) document.body.style.overflow = "hidden";
+    // if (openProductCard.state) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
     };
