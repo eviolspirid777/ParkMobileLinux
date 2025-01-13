@@ -1,10 +1,10 @@
 # Используем официальный образ ASP.NET Core runtime для запуска приложения
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 3001
 
 # Используем официальный образ .NET SDK для сборки приложения
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy only the project file and restore dependencies
