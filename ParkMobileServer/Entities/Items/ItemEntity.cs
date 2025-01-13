@@ -42,6 +42,7 @@ namespace ParkMobileServer.Entities.Items
         public string? Options{ get; set; }
         public bool IsPopular { get; set; } = false;
         public bool IsNewItem { get; set; } = false;
+        public bool isInvisible { get; set; } = false;
 
         public int CategoryId { get; set; }
         public ItemCategory? Category { get; set; }

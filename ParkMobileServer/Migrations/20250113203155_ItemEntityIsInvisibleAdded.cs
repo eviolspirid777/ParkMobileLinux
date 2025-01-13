@@ -5,13 +5,13 @@
 namespace ParkMobileServer.Migrations
 {
     /// <inheritdoc />
-    public partial class IsPopularMigration : Migration
+    public partial class ItemEntityIsInvisibleAdded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "IsPopular",
+                name: "isInvisible",
                 table: "ItemEntities",
                 type: "boolean",
                 nullable: false,
@@ -22,7 +22,7 @@ namespace ParkMobileServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsPopular",
+                name: "isInvisible",
                 table: "ItemEntities");
         }
     }

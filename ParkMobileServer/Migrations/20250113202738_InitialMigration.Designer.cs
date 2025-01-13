@@ -12,8 +12,8 @@ using ParkMobileServer.DbContext;
 namespace ParkMobileServer.Migrations
 {
     [DbContext(typeof(PostgreSQLDbContext))]
-    [Migration("20241206194716_AutorizationMigration")]
-    partial class AutorizationMigration
+    [Migration("20250113202738_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,12 @@ namespace ParkMobileServer.Migrations
                     b.Property<byte[]>("Image")
                         .HasColumnType("bytea");
 
+                    b.Property<bool>("IsNewItem")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPopular")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ItemBrandId")
                         .HasColumnType("integer");
 
@@ -149,6 +155,45 @@ namespace ParkMobileServer.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("ParkMobileServer.Entities.Slider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sliders");
+                });
+
+            modelBuilder.Entity("ParkMobileServer.Entities.SliderImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<int>("SliderId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SliderId");
+
+                    b.ToTable("SliderImages");
+                });
+
             modelBuilder.Entity("ParkMobileServer.Entities.Users.User", b =>
                 {
                     b.Property<int>("Id")
@@ -208,6 +253,17 @@ namespace ParkMobileServer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ParkMobileServer.Entities.SliderImage", b =>
+                {
+                    b.HasOne("ParkMobileServer.Entities.Slider", "Slider")
+                        .WithMany("Images")
+                        .HasForeignKey("SliderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Slider");
+                });
+
             modelBuilder.Entity("ParkMobileServer.Entities.Items.ItemBrand", b =>
                 {
                     b.Navigation("Products");
@@ -221,6 +277,11 @@ namespace ParkMobileServer.Migrations
             modelBuilder.Entity("ParkMobileServer.Entities.Orders.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("ParkMobileServer.Entities.Slider", b =>
+                {
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }
