@@ -58,7 +58,7 @@ export const UnderSwiperCards = () => {
                 height: "195px",
                 width: "200px"
               } : item.tag === "Macbook" ? {
-                height: "190px",
+                height: "160px",
                 width: "290px"
               } : item.tag === "iPhone" ? {
                 width: "250px",
