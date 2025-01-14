@@ -54,16 +54,6 @@ export const UnderSwiperCards = () => {
               alt={item.tag}
               width={500}
               height={500}
-              style={item.tag === "iPad" ? {
-                height: "195px",
-                width: "200px"
-              } : item.tag === "Macbook" ? {
-                height: "160px",
-                width: "290px"
-              } : item.tag === "iPhone" ? {
-                width: "250px",
-                height: "180px"
-              } : {}}
             />
             <div className={styles["cards-block-price-block"]}>
               <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
