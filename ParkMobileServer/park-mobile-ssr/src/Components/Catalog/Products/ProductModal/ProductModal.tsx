@@ -1,5 +1,4 @@
 import { Modal, notification, Skeleton, Tooltip } from "antd";
-import { createPortal } from "react-dom";
 
 import styles from "./ProductModal.module.scss";
 import MarkdownRenderer from "@/Components/MarkDown/MarkDownRenderer";
@@ -123,7 +122,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
   setOpenOrderForm(false);
 }
 
-  return createPortal(
+  return (
     <div>
       {contextHolder}
       <Modal
@@ -255,7 +254,6 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
         handleClose={setOpenOrderForm.bind(this,false)}
         submitData={handleSubmitData}
       />
-    </div>,
-    document.body
+    </div>
   );
 };

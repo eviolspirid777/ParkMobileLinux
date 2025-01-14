@@ -6,6 +6,7 @@ export const useGetPopularItems = () => {
     data: popularItemsList,
     refetch: refetchPopularItemsList,
     isSuccess: popularItemsListIsSuccess,
+    isLoading: popularItemsIsLoading,
   } = useQuery({
     queryKey: ["popularItemsList"],
     queryFn: () => apiClient.GetPopularItems(),
@@ -14,5 +15,6 @@ export const useGetPopularItems = () => {
     popularItemsList,
     refetchPopularItemsList,
     popularItemsListIsSuccess,
+    popularItemsIsLoading
   };
 };

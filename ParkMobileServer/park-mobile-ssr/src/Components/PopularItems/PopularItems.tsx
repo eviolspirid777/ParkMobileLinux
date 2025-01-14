@@ -16,9 +16,13 @@ import { useGetItemById } from "@/hooks/useGetItemById";
 
 import Image from "next/image"
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
+import { Skeleton } from "antd";
 
 export const PopularItems = () => {
-  const { popularItemsList } = useGetPopularItems();
+  const { 
+    popularItemsList,
+    popularItemsIsLoading
+  } = useGetPopularItems();
 
   const [isClient, setIsClient] = useState(false);
 
@@ -73,68 +77,99 @@ export const PopularItems = () => {
     });
   };
 
-  if (!popularItemsList) {
-    return <div className={styles["popular-items-none"]} />;
-  }
-
   return (
     <div className={styles["popular-items"]}>
-      <h2 className={styles["header"]}>Популярные товары</h2>
-      <div className={`${styles["popular-items-block"]} popular-items`}>
-        <Swiper
-          pagination={
-            isClient && window.screen.width > 1024
-              ? undefined
-              : { clickable: true }
-          }
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          navigation={isClient && window.screen.width > 1024 ? true : false}
-          modules={
-            isClient && window.screen.width > 1024
-              ? [Navigation, Pagination, Autoplay]
-              : [Autoplay]
-          }
-          className="mySwiper"
-          slidesPerView={isClient && window.screen.width > 1024 ? 5 : 2}
-        >
-          {popularItemsList?.map((item, index) => (
-            <SwiperSlide key={index}>
-              <div
-                className={styles["popular-items-block-item"]}
-                onClick={handleOpenCard.bind(null, item.id ?? -1)}
-              >
-                <Image src={`data:image/jpeg;base64,${item.image}`} alt={item.name} width={60} height={60} quality={100}/>
-                <div className={styles["popular-items-block-price-block"]}>
-                  <span className={styles["popular-items-block-item-tag"]}>
-                    {item.name}
-                  </span>
+      {
+        popularItemsIsLoading ? 
+          <>
+            <Skeleton.Input active style={{width: "250px", height: "50px"}}/>
+            <div
+              style={{
+                display: "flex",
+                flexFlow: "row nowrap",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "120px"
+              }}
+            >
+              {
+                [1,2,3,4,5].map((el, index) => (
                   <div
-                    className={styles["popular-items-block-price-block-prices"]}
+                    key={index}
                   >
-                    <span
-                      className={`${styles["popular-items-block-item-price"]} ${
-                        item.discountPrice && styles["discount"]
-                      }`}
-                    >
-                      {convertToIntlFormat(item.price)} ₽
-                    </span>
-                    {item.discountPrice && (
-                      <span
-                        className={styles["popular-items-block-item-price"]}
-                      >
-                        {convertToIntlFormat(item.discountPrice)} ₽
-                      </span>
-                    )}
+                    <Skeleton.Node
+                      style={{
+                        width:"250px",
+                        height: "320px"
+                      }}
+                      active
+                    />
                   </div>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+                ))
+              }
+            </div>
+          </> :
+          <>
+            <h2 className={styles["header"]}>Популярные товары</h2>
+            <div className={`${styles["popular-items-block"]} popular-items`}>
+              <Swiper
+                pagination={
+                  isClient && window.screen.width > 1024
+                    ? undefined
+                    : { clickable: true }
+                }
+                autoplay={{
+                  delay: 5000,
+                  disableOnInteraction: false,
+                }}
+                navigation={isClient && window.screen.width > 1024 ? true : false}
+                modules={
+                  isClient && window.screen.width > 1024
+                    ? [Navigation, Pagination, Autoplay]
+                    : [Autoplay]
+                }
+                className="mySwiper"
+                slidesPerView={isClient && window.screen.width > 1024 ? 5 : 2}
+              >
+                {
+                  popularItemsList?.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <div
+                        className={styles["popular-items-block-item"]}
+                        onClick={handleOpenCard.bind(null, item.id ?? -1)}
+                      >
+                        <Image src={`data:image/jpeg;base64,${item.image}`} alt={item.name} width={60} height={60} quality={100}/>
+                        <div className={styles["popular-items-block-price-block"]}>
+                          <span className={styles["popular-items-block-item-tag"]}>
+                            {item.name}
+                          </span>
+                          <div
+                            className={styles["popular-items-block-price-block-prices"]}
+                          >
+                            <span
+                              className={`${styles["popular-items-block-item-price"]} ${
+                                item.discountPrice && styles["discount"]
+                              }`}
+                            >
+                              {convertToIntlFormat(item.price)} ₽
+                            </span>
+                            {item.discountPrice && (
+                              <span
+                                className={styles["popular-items-block-item-price"]}
+                              >
+                                {convertToIntlFormat(item.discountPrice)} ₽
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  )) 
+                }
+              </Swiper>
+            </div>
+          </>
+      }
       <ProductModal
         CardData={cardData}
         openProductCard={openProductCard}

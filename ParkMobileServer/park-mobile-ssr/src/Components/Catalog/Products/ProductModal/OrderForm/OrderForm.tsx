@@ -1,5 +1,4 @@
 import { Button, ConfigProvider, Form, Input, Modal } from "antd"
-import { createPortal } from "react-dom";
 import styles from "./OrderForm.module.scss";
 import { FC } from "react";
 import { OrderItem } from "@/Types/OrderItem";
@@ -21,7 +20,6 @@ export const OrderForm: FC<OrderFormProps> = ({
   }
 
   return (
-    createPortal(
       <Modal
         open={open}
         onClose={handleClose}
@@ -80,7 +78,5 @@ export const OrderForm: FC<OrderFormProps> = ({
           </Form>
         </ConfigProvider>
       </Modal>
-      , document.body
-    )
   )
 }
