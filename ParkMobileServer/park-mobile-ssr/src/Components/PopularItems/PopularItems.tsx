@@ -93,15 +93,22 @@ export const PopularItems = () => {
               }}
             >
               {
-                [1,2,3,4,5].map((el, index) => (
+                (isClient && window.screen.width > 1024 ? [1,2,3,4,5] : [1,2]).map((el, index) => (
                   <div
                     key={index}
                   >
                     <Skeleton.Node
-                      style={{
-                        width:"250px",
-                        height: "320px"
-                      }}
+                      style={
+                        isClient && window.screen.width > 1024 ?
+                        {
+                          width:"250px",
+                          height: "320px"
+                        } :
+                        {
+                          width: "110px",
+                          height: "180px"
+                        }
+                      }
                       active
                     />
                   </div>
