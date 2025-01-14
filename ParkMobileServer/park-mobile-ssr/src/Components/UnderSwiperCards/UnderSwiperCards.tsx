@@ -11,25 +11,25 @@ export const UnderSwiperCards = () => {
 
   const items = [
     {
-      image: "/images/Снимок экрана 2024-11-09 в 22.09.33.webp",
+      image: "/images/iphone.webp",
       tag: "iPhone",
       price: "47 990",
       category: "iPhone",
     },
     {
-      image: "/images/Снимок экрана 2024-11-09 в 22.09.43.webp",
+      image: "/images/ipad.webp",
       tag: "iPad",
       price: "37 990",
       category: "iPad",
     },
     {
-      image: "/images/Снимок экрана 2024-11-09 в 22.09.52.webp",
+      image: "/images/watch.webp",
       tag: "Watch",
       price: "31 990",
       category: "Watch",
     },
     {
-      image: "/images/Снимок экрана 2024-11-09 в 22.10.01.webp",
+      image: "/images/mac.webp",
       tag: "Macbook",
       price: "97 990",
       category: "Mac",
@@ -49,7 +49,16 @@ export const UnderSwiperCards = () => {
             className={styles["cards-block-item"]}
             onClick={handleToCategory.bind(null, item.category)}
           >
-            <Image src={item.image} alt={item.tag} width={150} height={150} layout="responsive"/>
+            <Image
+              src={item.image}
+              alt={item.tag}
+              width={500}
+              height={500}
+              style={item.tag === "iPad" ? {
+                height: "195px",
+                width: "200px"
+              } : {}}
+            />
             <div className={styles["cards-block-price-block"]}>
               <span className={styles["cards-block-item-tag"]}>{item.tag}</span>
               <span className={styles["cards-block-item-price"]}>
