@@ -82,7 +82,6 @@ export const TilesMobile = () => {
             className={styles["popular-item-slide"]}
             style={{
               backgroundImage: `url(${el.image})`,
-              color: `${el.color}`,
             }}
           >
             <div className={styles["popular-item-slide-block"]}>
