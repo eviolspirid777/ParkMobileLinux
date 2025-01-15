@@ -126,6 +126,11 @@ class ApiClient {
         return response.data
     }
 
+    async GetMobileSliderData() {
+        const response = await this.client.get<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/MobileSliderImages`);
+        return response.data;
+    }
+
     async DeleteSliderData(id: number) {
         const response = await this.authClient.delete(`${POSTGRE_ITEMS_PATH}/sliderImage/${id}`);
         return response;

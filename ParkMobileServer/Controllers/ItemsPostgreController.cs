@@ -972,6 +972,34 @@ namespace ParkMobileServer.Controllers
             return Ok(imageUrls);
         }
 
+		[HttpGet("MobileSliderImages")]
+		public async Task<IActionResult> GetMobileSliderImages()
+		{
+			var sliders = await _postgreSQLDbContext.Sliders.ToListAsync();
+			var selectedSlides = sliders
+									.Where(slide => slide.Name.Contains("Mobile"))
+									.ToList();
+
+			var responseData = new List<SliderImage>();
+
+			var selectedData = await _postgreSQLDbContext
+										.SliderImages
+										.ToListAsync();
+			foreach(var data in selectedData)
+			{
+				if(selectedSlides.Any(slide => slide.Id  == data.Id))
+				{
+					data.Slider = null;
+					responseData.Add(data);
+				}
+			}
+			if(responseData.Count == 0)
+			{
+				return BadRequest();
+			} 
+			return Ok(responseData);
+		}
+
 		[HttpDelete("sliderImage/{id}")]
 		public async Task<IActionResult> DeleteSliderImage(int id)
 		{

@@ -15,7 +15,7 @@ export const SwiperList = () => {
   const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
-    fetchImages().then((fetchedImages) => {
+    fetchImages(window.screen.width).then((fetchedImages) => {
       setImages(fetchedImages);
     });
   }, []);
