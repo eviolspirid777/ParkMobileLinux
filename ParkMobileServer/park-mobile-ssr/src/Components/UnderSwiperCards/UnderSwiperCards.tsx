@@ -52,6 +52,7 @@ export const UnderSwiperCards = () => {
             <Image
               src={item.image}
               alt={item.tag}
+              className={styles["image"]}
               width={500}
               height={500}
             />

@@ -71,3 +71,9 @@
     }
   }
 }
+
+.image {
+  &[alt="iPad"] {
+    height: 260px;
+  }
+}
