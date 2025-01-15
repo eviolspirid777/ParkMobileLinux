@@ -966,10 +966,32 @@ namespace ParkMobileServer.Controllers
         [HttpGet("sliderImages")]
         public async Task<IActionResult> GetSliderImages()
         {
-            var images = await _postgreSQLDbContext.SliderImages.ToListAsync();
-			//var imageUrls = images.Select(image => $"http://localhost:3001/api/ItemsPostgre/sliderImage/{image.Id}").ToList();
-			var imageUrls = images.Where(image => image.ImageData != null);
-            return Ok(imageUrls);
+            var images = await _postgreSQLDbContext
+									.SliderImages
+									.ToListAsync();
+			var imageUrls = images
+							.Where(image => image.ImageData != null);
+			var selectedSlides = (await _postgreSQLDbContext
+											.Sliders
+											.ToListAsync())
+											.Where(slider => !slider.Name.Contains("Mobile"));
+
+            var responseData = new List<SliderImage>();
+            foreach (var data in images)
+			{
+				if(selectedSlides.Any(slide => slide.Id == data.Id))
+				{
+					data.Slider = null;
+					responseData.Add(data);
+				}
+			}
+			
+			if(responseData.Count == 0)
+			{
+				return BadRequest();
+			}
+
+			return Ok(responseData);
         }
 
 		[HttpGet("MobileSliderImages")]
