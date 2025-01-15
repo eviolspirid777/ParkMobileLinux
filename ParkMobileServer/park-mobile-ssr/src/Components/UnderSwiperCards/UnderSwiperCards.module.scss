@@ -32,6 +32,12 @@
   }
 }
 
+.image {
+  &[alt="iPad"] {
+    height: 260px;
+  }
+}
+
 @media (max-width: 1024px) {
   .cards-block {
     grid-template-columns: repeat(2, 1fr);
@@ -70,10 +76,10 @@
       gap: 10px;
     }
   }
-}
 
-.image {
-  &[alt="iPad"] {
-    height: 260px;
+  .image {
+    &[alt="iPad"] {
+      height: 150px;
+    }
   }
 }
