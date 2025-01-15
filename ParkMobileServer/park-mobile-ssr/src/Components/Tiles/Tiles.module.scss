@@ -32,7 +32,6 @@
         font-size: 2.5rem;
         font-weight: 500;
         font-family: 'SF-Pro-Display-Regular';
-        color: white;
         opacity: 0;
     }
     & span[data-image="1"] {
@@ -42,7 +41,6 @@
         font-size: 1.8rem;
         font-weight: 500;
         font-family: "SF-Pro-Display-Regular_light";
-        color: white;
         opacity: 0;
     }
 
@@ -58,7 +56,7 @@
     & span[data-image="3"] {
         position: absolute;
         top: 20%;
-        left: 18% !important;
+        left: 23% !important;
         font-size: 1.8rem;
         font-weight: 500;
         font-family: "SF-Pro-Display-Regular_light";
@@ -73,7 +71,6 @@
         font-size: 2.5rem;
         font-weight: 500;
         font-family: 'SF-Pro-Display-Regular';
-        color: white;
         opacity: 0;
     }
 
@@ -85,7 +82,6 @@
         font-weight: 500;
         font-family: "SF-Pro-Display-Regular_light";
         text-wrap: nowrap;
-        color: white;
         opacity: 0;
     }
     &-button-block {
@@ -105,6 +101,7 @@
             &[data-button="подробнее"] {
                 width: 175px;
                 background-color: #f5f5f7;
+                border: 1.5px solid #87a08b;
                 color: #87a08b;
             }
             &[data-button="купить"] {
@@ -170,7 +167,6 @@
             font-size: 1.6rem !important;
             font-weight: 500;
             font-family: 'SF-Pro-Display-Regular';
-            color: white;
             opacity: 0;
         }
 
@@ -181,7 +177,6 @@
             font-size: 1.2rem !important;
             font-weight: 500;
             font-family: "SF-Pro-Display-Regular_light";
-            color: white;
             opacity: 0;
         }
 
@@ -215,7 +210,6 @@
             font-size: 1.6rem !important;
             font-weight: 500;
             font-family: 'SF-Pro-Display-Regular';
-            color: white;
             opacity: 0;
         }
 
@@ -227,7 +221,6 @@
             font-weight: 500;
             font-family: "SF-Pro-Display-Regular_light";
             text-wrap: nowrap;
-            color: white;
             opacity: 0;
         }
 
@@ -250,6 +243,7 @@
                 &[data-button="подробнее"] {
                     width: 130px !important;
                     background-color: #f5f5f7;
+                    border: 1px solid #87a08b;
                     color: #87a08b;
                 }
 
