@@ -31,9 +31,11 @@ services:
       - "3001:3001"
     depends_on:
       - db
+      - redis
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=parkmobile;Username=postgres;Password=94monizi
+            - ConnectionStrings__Redis=redis:6379
     networks:
       - app-network # Подключение к общей сети
 
