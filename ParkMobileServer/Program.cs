@@ -7,11 +7,25 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 
 /*
+ * docker system df - Информация о всем занимаем место докером
+ * docker builder prune - удаление данных
+ */
+
+/*
+ * 1) Зайти в park-mobile-store и запустить npm run build для создания сборки
+ * 2) Перейти на уровень выше и выполнить docker network create app-network
+ * 3) Выполнить сборку контейнеров docker compose build
+ * 4) Поднять контейнеры docker compose up -d
+ */
+
+/*
  * Команды для развертывания докера на серваке
 sudo apt update
 sudo apt install docker.io
 sudo systemctl start docker
 sudo systemctl enable docker
+
+df -h  - занимаемое место на диске
  */
 
 //https://cp.sprintbox.ru/customer/boxes/list
@@ -35,6 +49,12 @@ namespace ParkMobileServer
 			{
 				var botToken = "7566916254:AAG6ikx9G9a2ETL1lAEbZFWxXmhj7ylq_MY";
 				return new TelegramBot.TelegramBot(botToken);
+			});
+
+			builder.Services.AddStackExchangeRedisCache(options =>
+			{
+				options.Configuration = builder.Configuration.GetConnectionString("Redis");
+				options.InstanceName = "RedisInstance";
 			});
 
 			builder.WebHost.UseUrls("http://*:3001");

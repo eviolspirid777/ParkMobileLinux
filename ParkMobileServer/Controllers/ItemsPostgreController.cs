@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using ParkMobileServer.DbContext;
 using ParkMobileServer.DTO.ItemDTO;
 using ParkMobileServer.Entities;
@@ -22,14 +24,17 @@ namespace ParkMobileServer.Controllers
 	{
 		private readonly PostgreSQLDbContext _postgreSQLDbContext;
 		private readonly TelegramBot.TelegramBot _telegramBot;
-		public ItemsPostgreController
+        private readonly IDistributedCache _cache;
+        public ItemsPostgreController
 		(
 			PostgreSQLDbContext postgreSQLDbContext,
-			TelegramBot.TelegramBot telegramBot
+			TelegramBot.TelegramBot telegramBot,
+            IDistributedCache cache
 		)
 		{
 			_postgreSQLDbContext = postgreSQLDbContext;
 			_telegramBot = telegramBot;
+			_cache = cache;
 		}
 		#region BaseFunctionsToCompeteDB
 
@@ -650,10 +655,29 @@ namespace ParkMobileServer.Controllers
 		[HttpGet("GetPopularItems")]
 		public async Task<IActionResult> GetPopularItems()
 		{
+			const string cacheKey = "popularItems";
+
+			var cachedData = await _cache.GetStringAsync(cacheKey);
+
+			if (cachedData != null)
+			{
+				var popularItems = JsonConvert.DeserializeObject<List<ItemEntity>>(cachedData);
+				return Ok(popularItems);
+			}
+
 			var newItems = await _postgreSQLDbContext
 						.ItemEntities
 						.Where(item => item.IsPopular == true)
 						.ToListAsync();
+
+			var cacheOptions = new DistributedCacheEntryOptions
+			{
+				AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+			};
+
+			var serializedData = JsonConvert.SerializeObject(newItems);
+
+			await _cache.SetStringAsync(cacheKey, serializedData, cacheOptions);
 
 			return Ok(newItems);
 		}
