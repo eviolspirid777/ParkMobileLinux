@@ -121,8 +121,12 @@ class ApiClient {
         return response.data;
     }
 
-    async GetSliderData() {
-        const response = await this.client.get<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/sliderImages`);
+    async GetSliderData(isForAdmin: boolean = false) {
+        const response = await this.client.post<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/sliderImages`, isForAdmin, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return response.data
     }
 

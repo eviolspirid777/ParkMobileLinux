@@ -29,7 +29,7 @@ const Page = () => {
   }, [isSliderSuccess,])
 
   useEffect(() => {
-    refetchSlider();
+    refetchSlider(true);
   }, [isDeleteSlideSuccess])
   
 
@@ -57,7 +57,7 @@ const Page = () => {
 
       alert('Files uploaded successfully');
       setTimeout(() => {
-        refetchSlider();
+        refetchSlider(true);
       }, 1000)
     } catch (error) {
       console.error('Error uploading files:', error);

@@ -1,25 +1,19 @@
 import { apiClient } from "@/api/ApiClient"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 
 export const useGetSliders = () => {
     const {
         data: sliderResponse,
         isSuccess: isSliderSuccess,
-        isLoading: isSliderLoading,
-        isFetched: isSliderFetched,
-        isPending: isPending,
-        refetch: refetchSlider,
-    } = useQuery({
-        queryKey: ["slider"],
-        queryFn: async () => await apiClient.GetSliderData()
+        mutate: refetchSlider,
+    } = useMutation({
+        mutationKey: ["slider"],
+        mutationFn: async (isForAdmin: boolean = false) => await apiClient.GetSliderData(isForAdmin)
     })
 
     return {
         sliderResponse,
-        isSliderLoading,
         isSliderSuccess,
-        isSliderFetched,
-        isPending,
         refetchSlider,
     }
 }

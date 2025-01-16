@@ -963,18 +963,31 @@ namespace ParkMobileServer.Controllers
             return Ok(new { sliderId = slider.Id });
         }
 
-        [HttpGet("sliderImages")]
-        public async Task<IActionResult> GetSliderImages()
+        [HttpPost("sliderImages")]
+        public async Task<IActionResult> GetSliderImages([FromBody] bool? isForAdmin = false)
         {
             var images = await _postgreSQLDbContext
 									.SliderImages
 									.ToListAsync();
 			var imageUrls = images
 							.Where(image => image.ImageData != null);
-			var selectedSlides = (await _postgreSQLDbContext
+			var selectedSlidesQuery = await _postgreSQLDbContext
 											.Sliders
-											.ToListAsync())
-											.Where(slider => !slider.Name.Contains("Mobile"));
+											.ToListAsync();
+			List<Slider> selectedSlides = new ();
+
+			if(isForAdmin == false)
+			{
+                selectedSlides = selectedSlidesQuery
+										.Where(slider => !slider.Name.Contains("Mobile"))
+										.ToList();
+            }
+			else
+			{
+                selectedSlides = selectedSlidesQuery
+                        .Where(slider => slider.Name != null)
+                        .ToList();
+            }
 
             var responseData = new List<SliderImage>();
             foreach (var data in images)
