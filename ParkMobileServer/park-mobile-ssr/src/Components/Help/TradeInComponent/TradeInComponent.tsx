@@ -3,7 +3,8 @@ import { AccordionComponent } from "@/Shared/Components/Accordion/AccordionCompo
 import styles from "./TradeInComponent.module.scss";
 import { TradeInModal } from "./TradeInModal/TradeInModal";
 import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CustomQueryProvider } from "@/Shared/Components/CustomQueryProvider/CustomQueryProvider";
+
 
 export const TradeInComponent = () => {
   const accordionData = [
@@ -28,14 +29,12 @@ export const TradeInComponent = () => {
       "Среднее время удаленной оценки менеджером - 5-10 минут. А второй этап подразумевает диагностику устройства специалистом в магазине, которая занимает не менее 30 минут. Во время обращения будет составлен акт приема передачи с указанием тех недочетов, которые были до диагностики. После того, как специалист сделает заключение, Вам будет сделано предложение с финальной оценкой вашего устройства. Будьте внимательны, что заключение действительно до конца рабочего дня.",
     ],
   ];
-  
-  const queryClient = new QueryClient();
 
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
+      <CustomQueryProvider>
         <div className={styles["trade-in-block"]}>
           <h2>
             Сдайте свою старую технику и получите скидку на покупку новой по
@@ -63,7 +62,7 @@ export const TradeInComponent = () => {
           handleClose={setOpen.bind(this, false)}
           open={open}
         />
-      </QueryClientProvider>
+      </CustomQueryProvider>
     </>
   );
 };

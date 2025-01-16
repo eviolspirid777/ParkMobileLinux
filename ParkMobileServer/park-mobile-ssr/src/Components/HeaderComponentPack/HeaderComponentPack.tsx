@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 import { animateScroll as scroll } from "react-scroll";
 
 import { ShopBucket } from "../ShopBucket/ShopBucket";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { searchedItemsAtom } from "@/Store/SearchedItemsStore";
 import { useAtom } from "jotai";
 import { MobileHeaderBlock } from "../Header/MobileHeaderBlock/MobileHeaderBlock";
+import { CustomQueryProvider } from "@/Shared/Components/CustomQueryProvider/CustomQueryProvider";
 
 export type ReducerAction = {
   type?: ContentType;
@@ -38,7 +38,6 @@ const navTitleDictionary = new Map([
 
 export const HeaderComponentPack = () => {
   const navigate = useRouter();
-  const queryClient = new QueryClient();
 
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
@@ -93,7 +92,7 @@ export const HeaderComponentPack = () => {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
+      <CustomQueryProvider>
         <Media
           queries={{
             telephone: "(max-width: 1024px)",
@@ -132,7 +131,7 @@ export const HeaderComponentPack = () => {
             </>
           )}
         </Media>
-      </QueryClientProvider>
+      </CustomQueryProvider>
     </>
   );
 };
