@@ -1,23 +1,21 @@
-"use client";
 import { ConfigProvider } from "antd";
 import "../../App.scss";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CustomQueryProvider } from "@/Shared/Components/CustomQueryProvider/CustomQueryProvider";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = new QueryClient();
 
   return (
     <html lang="en">
       <body style={{width:"100%"}}>
         <ConfigProvider>
-          <QueryClientProvider client={queryClient}>
+          <CustomQueryProvider>
             {children}
-          </QueryClientProvider>
+          </CustomQueryProvider>
         </ConfigProvider>
       </body>
     </html>

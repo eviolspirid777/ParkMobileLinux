@@ -5,12 +5,11 @@ import { Tiles } from "@/Components/Tiles/Tiles";
 import { PopularItems } from "@/Components/PopularItems/PopularItems";
 import { SwiperList } from "@/Components/Swiper/Swiper";
 import { UnderSwiperCards } from "@/Components/UnderSwiperCards/UnderSwiperCards";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; 
 import Media from "react-media";
 import { TilesMobile } from "@/Components/Tiles/TilesMobile/TilesMobile";
+import { CustomQueryProvider } from "@/Shared/Components/CustomQueryProvider/CustomQueryProvider";
 
 const Home = () => {
-  const queryClient = new QueryClient();
 
   //TODO: fa-(solid,regular, thin, sharp)
   //TODO: Redis прикрути(жрет оперативу)
@@ -43,7 +42,7 @@ const Home = () => {
   */
   return (
     <>
-      <QueryClientProvider client={queryClient}>
+      <CustomQueryProvider>
         <SwiperList />
         <UnderSwiperCards />
         <PopularItems />
@@ -57,7 +56,7 @@ const Home = () => {
         </Media>
         <UnderTilesLogos />
         <Catalog />
-      </QueryClientProvider>
+      </CustomQueryProvider>
     </>
   );
 };
