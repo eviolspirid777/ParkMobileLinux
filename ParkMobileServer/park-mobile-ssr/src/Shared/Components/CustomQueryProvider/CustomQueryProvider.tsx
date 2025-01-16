@@ -1,6 +1,5 @@
 "use client"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { FC, ReactNode, useState } from "react";
 
 type CustomQueryProviderProps = {
@@ -17,7 +16,6 @@ export const CustomQueryProvider: FC<CustomQueryProviderProps> = ({
       client={client}
     >
       {children}
-      {process.env.NODE_ENV === "development" && <ReactQueryDevtools/>}
     </QueryClientProvider>
   )
 }
