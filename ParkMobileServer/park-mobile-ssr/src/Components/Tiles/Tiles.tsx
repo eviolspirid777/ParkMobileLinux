@@ -39,7 +39,7 @@ export const Tiles = () => {
       key: "3",
     },
     {
-      title: "AirPods Pro",
+      title: "AirPods",
       description: "Никаких проводов. Только магия звука.",
       img: "/images/TilesImages/AirpodsTile/PodsTileReviewed.webp",
       category: "Airpods",

@@ -43,7 +43,7 @@ export const TilesMobile = () => {
     },
     {
       image: "images/TilesImages/AirpodsTile/PodsTileReviewedMobile.jpg",
-      header: "AirPods Pro",
+      header: "AirPods",
       text: "Никаких проводов. Только магия звука.",
       color: "white",
       action: () => handleCategory("Airpods"),
