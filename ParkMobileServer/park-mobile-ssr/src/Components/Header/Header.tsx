@@ -136,7 +136,9 @@ export const Header: FC<HeaderProps> = ({
           onMouseEnter={() => handleMouseEnter("search", undefined, undefined)}
         />
         <div className={styles["nav-bucket-search-shop-block"]}>
-          <span>{shopBucket.length}</span>
+          <span>
+            {shopBucket.length}
+          </span>
           <i
             className="fa-sharp fa-thin fa-bag-shopping fa-lg"
             onClick={handleShopBag}

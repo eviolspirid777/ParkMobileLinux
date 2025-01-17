@@ -5,9 +5,11 @@ import { categoryAtom } from "@/Store/FiltersStore";
 
 import Image from "next/image";
 import Link from "next/link";
+import { accentColorAtom } from "@/Store/AccentColor";
 
 export const UnderSwiperCards = () => {
   const [, setCategories] = useAtom(categoryAtom);
+  const [accentColor, ] = useAtom(accentColorAtom);
 
   const items = [
     {
@@ -40,6 +42,15 @@ export const UnderSwiperCards = () => {
     setCategories(category);
   };
 
+  const handleColorChange = () => {
+    const selectedColor = accentColor
+                            .split("")
+                            .slice(0, accentColor.length - 1)
+                            .join("") + ',0.5)'
+
+    return selectedColor
+  }
+
   return (
     <div className={styles["cards-block"]}>
       {items.map((item, i) => (
@@ -47,6 +58,9 @@ export const UnderSwiperCards = () => {
           <div
             key={i}
             className={styles["cards-block-item"]}
+            style={{
+              backgroundImage: `linear-gradient(to bottom, ${handleColorChange()} -10%, white 20%)`
+            }}
             onClick={handleToCategory.bind(null, item.category)}
           >
             <Image
