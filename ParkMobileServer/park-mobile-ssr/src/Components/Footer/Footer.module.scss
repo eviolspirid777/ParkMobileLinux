@@ -1,6 +1,6 @@
 .footer-block {
     height: 355px;
-    background-color: #121212;
+    background-color: black;
     color: white;
     display: flex;
     flex-flow: column nowrap;
@@ -30,7 +30,7 @@
             }
             & span, a {
                 font-size: 0.8rem;
-                color: #ffffff94;
+                color: #ffffffa9;
                 cursor: pointer;
                 text-decoration: none;
                 &:hover {

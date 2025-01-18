@@ -58,9 +58,12 @@ export const UnderSwiperCards = () => {
           <div
             key={i}
             className={styles["cards-block-item"]}
-            style={{
+            style={window && window.screen.width > 1024 ? {
               backgroundImage: `linear-gradient(to bottom, ${handleColorChange()} -10%, white 20%)`
-            }}
+            } : 
+            [0,1].includes(i) ? {
+              backgroundImage: `linear-gradient(to bottom, ${handleColorChange()} -10%, white 20%)`
+            } : {}}
             onClick={handleToCategory.bind(null, item.category)}
           >
             <Image
