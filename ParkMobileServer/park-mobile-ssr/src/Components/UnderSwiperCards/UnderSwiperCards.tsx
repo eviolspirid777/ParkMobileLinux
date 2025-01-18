@@ -6,10 +6,15 @@ import { categoryAtom } from "@/Store/FiltersStore";
 import Image from "next/image";
 import Link from "next/link";
 import { accentColorAtom } from "@/Store/AccentColor";
+import { useEffect, useState } from "react";
 
 export const UnderSwiperCards = () => {
   const [, setCategories] = useAtom(categoryAtom);
   const [accentColor, ] = useAtom(accentColorAtom);
+  const [isClientGenerated, setIsClientGenerated] = useState(false);
+  useEffect(() => {
+    setIsClientGenerated(true)
+  }, [])
 
   const items = [
     {
@@ -58,7 +63,7 @@ export const UnderSwiperCards = () => {
           <div
             key={i}
             className={styles["cards-block-item"]}
-            style={window && window.screen.width > 1024 ? {
+            style={isClientGenerated && window.screen.width > 1024 ? {
               backgroundImage: `linear-gradient(to bottom, ${handleColorChange()} -10%, white 20%)`
             } : 
             [0,1].includes(i) ? {
