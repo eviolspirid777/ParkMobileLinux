@@ -34,12 +34,9 @@ namespace ParkMobileServer.Entities.Items
         public int Id { get; set; }
         public string Name { get; set; }
         public string Price { get; set; }
-        public string? Article { get; set;}
         public string? DiscountPrice { get; set; }
-        public string? Description { get; set; }
         public byte[]? Image { get; set; }
         public int Stock { get; set; }
-        public string? Options{ get; set; }
         public bool IsPopular { get; set; } = false;
         public bool IsNewItem { get; set; } = false;
         public bool isInvisible { get; set; } = false;
@@ -48,5 +45,11 @@ namespace ParkMobileServer.Entities.Items
         public ItemCategory? Category { get; set; }
         public int ItemBrandId { get; set; }
         public ItemBrand? ItemBrand { get; set; }
+
+        public int DescriptionId { get; set; }
+        public DescriptionEntity? Description { get; set; }
+
+        public int ArticleId { get; set; }
+        public ArticleEntity? Article { get; set; }
     }
 }

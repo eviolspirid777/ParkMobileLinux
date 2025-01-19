@@ -5,25 +5,24 @@
 namespace ParkMobileServer.Migrations
 {
     /// <inheritdoc />
-    public partial class ItemEntityIsInvisibleAdded : Migration
+    public partial class NewField : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "isInvisible",
-                table: "ItemEntities",
-                type: "boolean",
-                nullable: false,
-                defaultValue: false);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "isInvisible",
+                name: "Options",
                 table: "ItemEntities");
+
+            migrationBuilder.RenameColumn(
+                name: "DescriptionId",
+                table: "ItemEntities",
+                newName: "DescriptionDescriptionId");
         }
     }
 }
