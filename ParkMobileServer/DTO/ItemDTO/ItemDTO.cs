@@ -18,17 +18,7 @@ namespace ParkMobileServer.DTO.ItemDTO
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
 
-        public DescriptionEntityDTO Description { get; set; } = new();
-        public ArticleEntityDto Article { get; set; } = new();
-    }
-
-    public class DescriptionEntityDTO
-    {
-        public string? Description { get; set; }
-    }
-
-    public class ArticleEntityDto
-    {
-        public string? Article { get; set; }
+        public string Description { get; set; }
+        public string Article { get; set; }
     }
 }

@@ -79,10 +79,9 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         discountPrice: newItem.discountPrice,
         description: newItem.description,
         categoryId: newItem.categoryId,
-        itemBrandId: newItem.brandId,
+        brandId: newItem.brandId,
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
-        // options: _options,
       };
       try {
         await apiClient.UpdateItem(mappedItem);
@@ -106,10 +105,9 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         discountPrice: newItem.discountPrice,
         description: newItem.description,
         categoryId: newItem.categoryId,
-        itemBrandId: newItem.brandId,
+        brandId: newItem.brandId,
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
-        // options: _options,
       };
       try {
         await apiClient.AddItem(mappedItem);

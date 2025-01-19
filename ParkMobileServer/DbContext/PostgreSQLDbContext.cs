@@ -20,9 +20,9 @@ namespace ParkMobileServer.DbContext
 							.WithMany(c => c.Products)
 							.HasForeignKey(p => p.CategoryId);
 			modelBuilder.Entity<ItemEntity>()
-							.HasOne(p => p.ItemBrand)
+							.HasOne(p => p.Brand)
 							.WithMany(b => b.Products)
-							.HasForeignKey(p => p.ItemBrandId);
+							.HasForeignKey(p => p.BrandId);
 			modelBuilder.Entity<ItemEntity>()
 							.HasOne(i => i.Description)
 							.WithOne(d => d.Item)

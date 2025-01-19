@@ -43,8 +43,8 @@ namespace ParkMobileServer.Entities.Items
 
         public int CategoryId { get; set; }
         public ItemCategory? Category { get; set; }
-        public int ItemBrandId { get; set; }
-        public ItemBrand? ItemBrand { get; set; }
+        public int BrandId { get; set; }
+        public ItemBrand? Brand { get; set; }
 
         public int DescriptionId { get; set; }
         public DescriptionEntity? Description { get; set; }

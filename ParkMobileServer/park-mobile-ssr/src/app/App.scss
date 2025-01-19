@@ -754,6 +754,28 @@ body {
     }
 }
 
+.bubble {
+    position: absolute;
+    z-index: 999999;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: bubble-float 2000ms ease-in-out forwards;
+}
+
+@keyframes bubble-float {
+    0% {
+        opacity: 0.3;
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -150%) scale(3);
+    }
+}
+
 @media (max-width: 1024px) {
     .swiper-slide {
         & img {
