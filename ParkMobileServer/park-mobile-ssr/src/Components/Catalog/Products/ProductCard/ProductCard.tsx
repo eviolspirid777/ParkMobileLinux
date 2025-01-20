@@ -32,8 +32,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         const bubble = document.createElement('div');
 
         bubble.classList.add('bubble');
-        bubble.style.left = e.offsetX + 'px';
-        bubble.style.top = e.offsetY + 'px';
+        bubble.style.left = e.offsetX + 50 + 'px';
+        bubble.style.top = e.offsetY +'px';
         if(buttonBlockRef.current) {
           buttonBlockRef.current.appendChild(bubble);
         }
@@ -76,30 +76,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     
         return [...previousBucket, newItem];
       });
-    }, 1500)
-    
-    api.destroy();
 
-    api.open({
-      message: "",
-      description: (
-        <div className={styles["information-title"]}>
-          <strong>{card?.name} в корзине!</strong>
-          <span>Перейдите в корзину для оформления заказа.</span>
-        </div>
-      ),
-      style: {
-        padding: "3%",
-        border: "1px solid #87a08b",
-        borderRadius: "5px"
-      },
-      placement: "bottomRight",
-      closable: false,
-      duration: 2,
-      type: "success",
-      // showProgress: true,
-      pauseOnHover: true,
-    })
+      api.destroy();
+
+      api.open({
+        message: "",
+        description: (
+          <div className={styles["information-title"]}>
+            <strong>{card?.name} в корзине!</strong>
+            <span>Перейдите в корзину для оформления заказа.</span>
+          </div>
+        ),
+        style: {
+          padding: "3%",
+          border: "1px solid #87a08b",
+          borderRadius: "5px"
+        },
+        placement: "bottomRight",
+        closable: false,
+        duration: 2,
+        type: "success",
+        // showProgress: true,
+        pauseOnHover: true,
+      })
+    }, 350)
   };
 
   return (
@@ -144,8 +144,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div
           className={styles["add-to-bucket"]}
           ref={buttonBlockRef}
-          key={shopBucket.length}
         >
+
           {
             !shopBucket.some(item => item.id === card.id) ?
             <button
@@ -153,12 +153,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               onClick={handleAddToBucket}
               ref={buttonRef}
             >
-              Добавить в корзину
-            </button> :
+              В корзину
+            </button>
+            :
             <span>
-              В корзине
-              &nbsp;
               <i className="fa-solid fa-check"></i>
+              &nbsp;
+              В корзине
             </span>
           }
         </div>

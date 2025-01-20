@@ -28,7 +28,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkMacosConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
 			});
 
 			builder.Services.AddSingleton(provider =>
