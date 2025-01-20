@@ -22,78 +22,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [api, contextHolder] = notification.useNotification();
   const [image, setImage] = useState<string | null>(null);
-  const [, setShopBucket] = useAtom(shopBucketAtom);
+  const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const buttonBlockRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.addEventListener('mousemove', (e) => {
-      const bubble = document.createElement('div');
+    if(buttonRef.current) {
+      buttonRef.current.addEventListener('click', (e) => {
+        const bubble = document.createElement('div');
 
-        if(e.target === buttonRef.current) {
-          bubble.classList.add('bubble');
-          bubble.style.left = e.pageX + 'px';
-          bubble.style.top = e.pageY + 'px';
-          document.body.appendChild(bubble);
+        bubble.classList.add('bubble');
+        bubble.style.left = e.offsetX + 'px';
+        bubble.style.top = e.offsetY + 'px';
+        if(buttonBlockRef.current) {
+          buttonBlockRef.current.appendChild(bubble);
         }
-      
-      setTimeout(() => {
-        bubble.remove();
-      }, 1000);
-    });
-    // const abortContorller = new AbortController();
-    // const currentOffsets = {
-    //   offsetY: 0,
-    //   offsetX: 0,
-    // }
-
-    // if(buttonRef.current) {
-    //   const circle = document.createElement("div");
-    //   circle.style.height = "50px";
-    //   circle.style.width = "50px";
-    //   circle.style.borderRadius = "100%";
-    //   // circle.style.backgroundColor = "rgb(255 255 255 / 40%)";
-    //   circle.style.backgroundColor = "red";
-    //   circle.style.position = "absolute";
-
-    //   document.addEventListener("mousemove", (event) => {
-    //     if(event.target === buttonRef.current) {
-    //       circle.style.top = `${event.layerY - 25}px`;
-    //       circle.style.left = `${event.layerX - 25}px`;
-
-    //       currentOffsets.offsetX = event.layerX;
-    //       currentOffsets.offsetY = event.layerY;
-
-    //       if(buttonBlockRef.current) {
-    //         if(buttonBlockRef.current.contains(circle)) {
-    //           buttonBlockRef.current.removeChild(circle)
-    //         }
-    //         buttonBlockRef.current.appendChild(circle)
-    //       }
-    //     }
-    //   })
-      
-    //   circle.addEventListener("mousemove", (event) => {
-    //     const {offsetX, offsetY} = event;
-  
-    //     circle.style.top = `${offsetY}px`;
-    //     circle.style.left = `${offsetX}px`;
-    //   })
-
-    //   if(buttonBlockRef.current) {
-    //     buttonBlockRef.current.addEventListener("mouseleave", () => {
-    //       if(buttonBlockRef.current) {
-    //         buttonBlockRef.current.removeChild(circle)
-    //       }
-    //     }, {
-    //       signal: abortContorller.signal
-    //     })
-    //   }
-
-    // }
-    // return () => {
-    //   abortContorller.abort()
-    // }
+        
+        setTimeout(() => {
+          bubble.remove();
+        }, 1000);
+      });
+    }
   }, [])
 
   useEffect(() => {
@@ -113,19 +62,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const handleAddToBucket = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
   
-    setShopBucket((previousBucket: DataType[]) => {
-      const newItem: DataType = {
-        id: card.id ?? 0,
-        image: card.image,
-        name: card.name,
-        count: 1,
-        article: (card as CardType).article ?? "",
-        price: card.price,
-        discountPrice: card.discountPrice
-      };
-  
-      return [...previousBucket, newItem];
-    });
+    setTimeout(() => {
+      setShopBucket((previousBucket: DataType[]) => {
+        const newItem: DataType = {
+          id: card.id ?? 0,
+          image: card.image,
+          name: card.name,
+          count: 1,
+          article: (card as CardType).article ?? "",
+          price: card.price,
+          discountPrice: card.discountPrice
+        };
+    
+        return [...previousBucket, newItem];
+      });
+    }, 1500)
     
     api.destroy();
 
@@ -193,14 +144,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div
           className={styles["add-to-bucket"]}
           ref={buttonBlockRef}
+          key={shopBucket.length}
         >
-          <button
-            className={styles["add-to-bucket-button"]}
-            onClick={handleAddToBucket}
-            ref={buttonRef}
-          >
-            Добавить в корзину
-          </button>
+          {
+            !shopBucket.some(item => item.id === card.id) ?
+            <button
+              className={styles["add-to-bucket-button"]}
+              onClick={handleAddToBucket}
+              ref={buttonRef}
+            >
+              Добавить в корзину
+            </button> :
+            <span>
+              В корзине
+              &nbsp;
+              <i className="fa-solid fa-check"></i>
+            </span>
+          }
         </div>
       </div>
     </>

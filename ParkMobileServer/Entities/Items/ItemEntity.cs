@@ -2,32 +2,6 @@
 
 namespace ParkMobileServer.Entities.Items
 {
-    public enum ItemCategoryEnum
-    {
-        Iphone = 0,
-        Ipad,
-        Watch,
-        Mac,
-        Airpods,
-        Accessories,
-        Gadgets,
-        Audio,
-        Phones,
-        Gaming,
-        Health,
-        Tv,
-    }
-
-    public enum ItemBrandEnum
-    {
-        Apple = 0,
-        Samsung,
-        Xiaomi,
-        Sony,
-        Steam,
-        Dyson,
-    }
-
     public class ItemEntity
     {
         [Key]

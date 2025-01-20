@@ -756,14 +756,14 @@ body {
 
 .bubble {
     position: absolute;
-    z-index: 999999;
+    z-index: 1;
     width: 30px;
     height: 30px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgb(255, 255, 255);
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
-    animation: bubble-float 2000ms ease-in-out forwards;
+    animation: bubble-float 1000ms ease-in-out forwards;
 }
 
 @keyframes bubble-float {
@@ -772,7 +772,7 @@ body {
     }
     to {
         opacity: 0;
-        transform: translate(-50%, -150%) scale(3);
+        transform: translate(-50%, -150%) scale(50);
     }
 }
 

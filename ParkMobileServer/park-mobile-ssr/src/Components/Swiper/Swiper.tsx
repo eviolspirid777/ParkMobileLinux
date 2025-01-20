@@ -75,6 +75,7 @@ export const SwiperList = () => {
                 width={1200}
                 height={300}
                 layout="relative"
+                priority
               />
             </SwiperSlide>
           ))}
