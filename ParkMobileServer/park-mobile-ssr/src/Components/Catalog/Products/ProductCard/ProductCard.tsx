@@ -153,7 +153,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               onClick={handleAddToBucket}
               ref={buttonRef}
             >
-              В корзину
+              <label>
+                В корзину
+              </label>
             </button>
             :
             <span>

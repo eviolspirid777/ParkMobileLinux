@@ -611,25 +611,22 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 12px; /* Ширина вертикальной полосы прокрутки */
-    height: 8px; /* Высота горизонтальной полосы прокрутки */
+    width: 8px;
+    height: 4px;
 }
 
-/* Стили для трека (фон полосы прокрутки) */
 ::-webkit-scrollbar-track {
-    background: #ffffff; /* Цвет фона */
-    // border-radius: 10px; /* Закругленные углы */
+    background: #ffffff;
+    border-radius: 10px;
 }
 
-/* Стили для ползунка (сама полоса прокрутки) */
 ::-webkit-scrollbar-thumb {
-    background: #87a08b; /* Цвет ползунка */
-    // border-radius: 10px; /* Закругленные углы */
+    background: #87a08b;
+    border-radius: 10px;
 }
 
-/* Стили для ползунка при наведении */
 ::-webkit-scrollbar-thumb:hover {
-    background: #a7c6ac; /* Цвет ползунка при наведении */
+    background: #a7c6ac;
 }
 
 @font-face {
