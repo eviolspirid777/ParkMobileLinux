@@ -599,6 +599,7 @@ body {
     font-family: 'Roboto';
     width: 100%;
     height: 200%;
+    overflow-y: scroll; /* Всегда показывать вертикальную полосу прокрутки */
 
     * {
         scrollbar-width: thin;
@@ -607,6 +608,28 @@ body {
             color: white;
         }
     }
+}
+
+::-webkit-scrollbar {
+    width: 12px; /* Ширина вертикальной полосы прокрутки */
+    height: 8px; /* Высота горизонтальной полосы прокрутки */
+}
+
+/* Стили для трека (фон полосы прокрутки) */
+::-webkit-scrollbar-track {
+    background: #ffffff; /* Цвет фона */
+    // border-radius: 10px; /* Закругленные углы */
+}
+
+/* Стили для ползунка (сама полоса прокрутки) */
+::-webkit-scrollbar-thumb {
+    background: #87a08b; /* Цвет ползунка */
+    // border-radius: 10px; /* Закругленные углы */
+}
+
+/* Стили для ползунка при наведении */
+::-webkit-scrollbar-thumb:hover {
+    background: #a7c6ac; /* Цвет ползунка при наведении */
 }
 
 @font-face {

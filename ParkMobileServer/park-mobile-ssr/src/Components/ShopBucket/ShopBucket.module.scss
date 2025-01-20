@@ -25,14 +25,39 @@
   }
 
   & main {
-      flex-grow: 1;
-      height: 73vh;
-      min-height: 73vh;
-      max-height: 73vh;
-      overflow: auto;
-      display: flex;
-      flex-flow: column nowrap;
-      gap: 10px;
+    flex-grow: 1;
+    height: 73vh;
+    min-height: 73vh;
+    max-height: 73vh;
+    overflow: auto;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    overflow-y: scroll;
+  
+    /* Стили для полосы прокрутки в WebKit (Chrome, Safari) */
+    &::-webkit-scrollbar {
+      width: 12px;
+      height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #ffffff;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #87a08b;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a7c6ac;
+    }
+  
+    /* Стили для полосы прокрутки в Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #87a08b #ffffff;
 
       & strong {
           font-size: 1rem;
