@@ -8,6 +8,9 @@ import { SearchItemShortType } from "@/Types/SearchItemShortType";
 import { useAtom } from "jotai";
 import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { notification } from "antd";
+import { OrderForm } from "../ProductModal/OrderForm/OrderForm";
+import { OrderItem } from "@/Types/OrderItem";
+import { usePostOrderItem } from "@/hooks/usePostOrderItem";
 
 type ProductCardProps = {
   card: CardType | SearchItemShortType;
@@ -22,10 +25,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [api, contextHolder] = notification.useNotification();
   const [image, setImage] = useState<string | null>(null);
+  const [openOrderForm, setOpenOrderForm] = useState(false);
+  const {
+    postOrderItemAsync,
+  } = usePostOrderItem();
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const buttonBlockRef = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     if(buttonRef.current) {
       buttonRef.current.addEventListener('click', (e) => {
@@ -58,6 +65,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       setImage(null);
     }
   }, [card.image, card]);
+
+  const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">) => {
+    const sendData = {...values, itemName: card?.name, article: (card as CardType).article};
+    await postOrderItemAsync(sendData)
+    setOpenOrderForm(false);
+  }
 
   const handleAddToBucket = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
@@ -101,6 +114,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       })
     }, 350)
   };
+
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
+
+    if((card as CardType).stock > 0) {
+      handleAddToBucket(event)
+    }
+    else {
+      setOpenOrderForm(true)
+    }
+  }
 
   return (
     <>
@@ -150,11 +174,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             !shopBucket.some(item => item.id === card.id) ?
             <button
               className={styles["add-to-bucket-button"]}
-              onClick={handleAddToBucket}
+              onClick={handleButtonClick}
               ref={buttonRef}
             >
               <label>
-                В корзину
+                {(card as CardType).stock > 0 ? "В корзину" : "Заказать"}
               </label>
             </button>
             :
@@ -166,6 +190,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }
         </div>
       </div>
+      <OrderForm
+        key={`${openOrderForm}`}
+        open={openOrderForm}
+        handleClose={setOpenOrderForm.bind(this,false)}
+        submitData={handleSubmitData}
+      />
     </>
   );
 };
