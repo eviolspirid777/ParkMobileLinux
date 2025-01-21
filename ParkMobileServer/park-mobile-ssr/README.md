@@ -10,7 +10,7 @@
 
 ## Docker commands
 ```bash
-docker system df - полная сводка информации(сколько данных содержится по докеру
+docker system df - полная сводка информации(сколько данных содержится по докеру)
 
 docker builder prune - удаление кеша из докера
 ```
@@ -19,6 +19,7 @@ docker builder prune - удаление кеша из докера
 ## Getting Started
 #### Production :
 ```bash
+#в папке park-mobile-ssr
 npm  run  build #билдим проект
 cd ../ #переходим на путь выше
 docker network create app-network #создаем внутреннюю сеть для докер образов
