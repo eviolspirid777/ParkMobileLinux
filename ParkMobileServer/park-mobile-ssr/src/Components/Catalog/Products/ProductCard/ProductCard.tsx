@@ -39,6 +39,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         const bubble = document.createElement('div');
 
         bubble.classList.add('bubble');
+        if(buttonRef.current?.firstChild?.textContent === "заказать") {
+          bubble.style.backgroundColor = "#EDEDED"
+        }
         bubble.style.left = e.offsetX + 50 + 'px';
         bubble.style.top = e.offsetY +'px';
         if(buttonBlockRef.current) {
@@ -74,56 +77,56 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleAddToBucket = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
+
+    setShopBucket((previousBucket: DataType[]) => {
+      const newItem: DataType = {
+        id: card.id ?? 0,
+        image: card.image,
+        name: card.name,
+        count: 1,
+        article: (card as CardType).article ?? "",
+        price: card.price,
+        discountPrice: card.discountPrice
+      };
   
-    setTimeout(() => {
-      setShopBucket((previousBucket: DataType[]) => {
-        const newItem: DataType = {
-          id: card.id ?? 0,
-          image: card.image,
-          name: card.name,
-          count: 1,
-          article: (card as CardType).article ?? "",
-          price: card.price,
-          discountPrice: card.discountPrice
-        };
-    
-        return [...previousBucket, newItem];
-      });
+      return [...previousBucket, newItem];
+    });
 
-      api.destroy();
+    api.destroy();
 
-      api.open({
-        message: "",
-        description: (
-          <div className={styles["information-title"]}>
-            <strong>{card?.name} в корзине!</strong>
-            <span>Перейдите в корзину для оформления заказа.</span>
-          </div>
-        ),
-        style: {
-          padding: "3%",
-          border: "1px solid #87a08b",
-          borderRadius: "5px"
-        },
-        placement: "bottomRight",
-        closable: false,
-        duration: 2,
-        type: "success",
-        // showProgress: true,
-        pauseOnHover: true,
-      })
-    }, 350)
+    api.open({
+      message: "",
+      description: (
+        <div className={styles["information-title"]}>
+          <strong>{card?.name} в корзине!</strong>
+          <span>Перейдите в корзину для оформления заказа.</span>
+        </div>
+      ),
+      style: {
+        padding: "3%",
+        border: "1px solid #87a08b",
+        borderRadius: "5px"
+      },
+      placement: "bottomRight",
+      closable: false,
+      duration: 2,
+      type: "success",
+      // showProgress: true,
+      pauseOnHover: true,
+    })
   };
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
 
-    if((card as CardType).stock > 0) {
-      handleAddToBucket(event)
-    }
-    else {
-      setOpenOrderForm(true)
-    }
+    setTimeout(() => {
+      if((card as CardType).stock > 0) {
+        handleAddToBucket(event)
+      }
+      else {
+        setOpenOrderForm(true)
+      }
+    }, 350)
   }
 
   return (
@@ -169,11 +172,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           className={styles["add-to-bucket"]}
           ref={buttonBlockRef}
         >
-
           {
             !shopBucket.some(item => item.id === card.id) ?
             <button
               className={styles["add-to-bucket-button"]}
+              data-state={(card as CardType).stock > 0 ? "В корзину" : "Заказать"}
               onClick={handleButtonClick}
               ref={buttonRef}
             >
