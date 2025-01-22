@@ -14,6 +14,8 @@ using ParkMobileServer.Entities.TradeIn;
 using ParkMobileServer.Mappers.BrandMapper;
 using ParkMobileServer.Mappers.CategoryMapper;
 using ParkMobileServer.Mappers.ItemsMapper;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace ParkMobileServer.Controllers
 {
@@ -23,14 +25,21 @@ namespace ParkMobileServer.Controllers
 	{
 		private readonly PostgreSQLDbContext _postgreSQLDbContext;
 		private readonly TelegramBot.TelegramBot _telegramBot;
-		public ItemsPostgreController
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<ItemsPostgreController> _logger;
+
+        public ItemsPostgreController
 		(
 			PostgreSQLDbContext postgreSQLDbContext,
-			TelegramBot.TelegramBot telegramBot
-		)
+			TelegramBot.TelegramBot telegramBot,
+            IDistributedCache cache,
+            ILogger<ItemsPostgreController> logger
+        )
 		{
 			_postgreSQLDbContext = postgreSQLDbContext;
 			_telegramBot = telegramBot;
+			_cache = cache;
+			_logger = logger;
 		}
 
 		//[Authorize]
@@ -149,6 +158,11 @@ namespace ParkMobileServer.Controllers
             if (itemDto == null)
             {
                 return BadRequest("Invalid brand data");
+            }
+
+			if(itemDto.IsPopular == true)
+			{
+                await _cache.RemoveAsync("popularItems");
             }
 
             var item = new ItemEntity
@@ -628,7 +642,17 @@ namespace ParkMobileServer.Controllers
 		[HttpGet("GetPopularItems")]
 		public async Task<IActionResult> GetPopularItems()
 		{
-			var newItems = await _postgreSQLDbContext
+            const string cacheKey = "popularItems";
+
+            var cachedData = await _cache.GetStringAsync(cacheKey);
+
+            if (cachedData != null)
+            {
+                var popularItems = JsonConvert.DeserializeObject<List<ItemEntity>>(cachedData);
+                return Ok(popularItems);
+            }
+
+            var newItems = await _postgreSQLDbContext
 						.ItemEntities
 						.Where(item => item.IsPopular == true)
 						.Select(item => new {
@@ -640,7 +664,18 @@ namespace ParkMobileServer.Controllers
 						})
 						.ToListAsync();
 
-			return Ok(newItems);
+			_logger.LogInformation("Retrived popular items: {items}", JsonConvert.SerializeObject(newItems, Formatting.Indented));
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+            };
+            var serializedData = JsonConvert.SerializeObject(newItems);
+            await _cache.SetStringAsync(cacheKey, serializedData, cacheOptions);
+
+			_logger.LogInformation("Data from Redis: {items}", _cache.GetString(cacheKey));
+
+            return Ok(newItems);
 		}
 
         [HttpGet("GetItems")]

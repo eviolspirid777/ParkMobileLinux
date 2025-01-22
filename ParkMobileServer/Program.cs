@@ -28,7 +28,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
 
 			builder.Services.AddSingleton(provider =>
@@ -37,7 +37,13 @@ namespace ParkMobileServer
 				return new TelegramBot.TelegramBot(botToken);
 			});
 
-			builder.WebHost.UseUrls("http://*:3001");
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration.GetConnectionString("Redis");
+                options.InstanceName = "RedisInstance";
+            });
+
+            builder.WebHost.UseUrls("http://*:3001");
 
             //builder.Services.AddHttpsRedirection(options =>
             //{
