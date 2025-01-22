@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -13,11 +14,16 @@ const nextConfig: NextConfig = {
   webpack(config) {
     return config;
   },
-  //Раскоментировать только для сборки FireBase
+  // Раскомментировать только для сборки FireBase
   // output: "export",
   images: {
     unoptimized: true,
   },
+  experimental: {
+    optimizePackageImports: ["antd", "@ant-design/icons", "lodash-es"]
+  }
 };
 
-export default nextConfig;
+export default withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})(nextConfig);

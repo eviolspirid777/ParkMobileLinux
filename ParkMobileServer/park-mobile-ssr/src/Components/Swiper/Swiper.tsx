@@ -12,6 +12,7 @@ import ImageData from "next/image";
 import { accentColorAtom } from "@/Store/AccentColor";
 import { useAtom } from "jotai";
 
+
 export const SwiperList = () => {
   const [images, setImages] = useState<string[]>([]);
   const [accentColor, setAccentColor] = useAtom(accentColorAtom)
@@ -74,6 +75,7 @@ export const SwiperList = () => {
                 alt="swiper_image"
                 width={1200}
                 height={300}
+                quality={100}
                 layout="relative"
                 priority
               />
