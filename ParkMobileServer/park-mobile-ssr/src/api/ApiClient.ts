@@ -206,6 +206,16 @@ class ApiClient {
         const response = await this.authClient.post(`${POSTGRE_ITEMS_PATH}/CreateCategory`, {name})
         return response.data
     }
+
+    async GetFilters() {
+        const response = await this.client.get(`${POSTGRE_ITEMS_PATH}/GetFilters`);
+        return response.data;
+    }
+
+    async PostFilter(name: string) {
+        const response = await this.authClient.post(`${POSTGRE_ITEMS_PATH}/CreateFilter`, {name: name})
+        return response.data;
+    }
 }
 
 export const apiClient = new ApiClient;

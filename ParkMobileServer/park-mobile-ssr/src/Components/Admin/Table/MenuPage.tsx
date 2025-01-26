@@ -17,6 +17,7 @@ import { AggregationColor } from "antd/es/color-picker/color";
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Image from "next/image";
 import { currentPageAtom, pageSizeAtom, searchKeyWordAtom } from "@/Store/AdminItems";
+import { useGetFilters } from "@/hooks/useGetFilters";
 
 export type FormItemChange = {
   article: string;
@@ -31,6 +32,7 @@ export type FormItemChange = {
   optionValue: string | AggregationColor;
   isPopular?: boolean;
   isNewItem?: boolean,
+  isInvisible?: boolean,
 };
 
 type DataType = {
@@ -40,9 +42,9 @@ type DataType = {
   name: string;
   count: number;
   price: string;
-  article: string;
   isPopular: boolean,
   isNewItem: boolean,
+  isInvisible: boolean,
 };
 
 const columns: TableColumnsType<DataType> = [
@@ -62,11 +64,6 @@ const columns: TableColumnsType<DataType> = [
     key: "name",
   },
   {
-    title: "Артикул",
-    dataIndex: "article",
-    key: "article"
-  },
-  {
     title: "Популярное",
     dataIndex: "isPopular",
     key: "isPopular",
@@ -81,6 +78,15 @@ const columns: TableColumnsType<DataType> = [
     key: "isNewItem",
     render: (isNewItem: boolean) => (
       isNewItem ? <CheckCircleOutlined style={{ color: 'green' }} /> : <CloseCircleOutlined style={{ color: 'red' }} />
+    ),
+    align: "center"
+  },
+  {
+    title: "Невидимый",
+    dataIndex: "isInvisible",
+    key: "isInvisible",
+    render: (isInvisible: boolean) => (
+      isInvisible ? <CheckCircleOutlined style={{ color: 'green' }} /> : <CloseCircleOutlined style={{ color: 'red' }} />
     ),
     align: "center"
   },
@@ -108,6 +114,8 @@ export const MenuPage = () => {
   const { itemsList, itemsListIsSuccess, refetchItemsList } =
     useGetItemsAdmin();
     
+  useGetFilters();
+  
   const { deleteItem } = useDeleteItem();
   useGetCategories();
   useGetBrands();
@@ -161,7 +169,8 @@ export const MenuPage = () => {
             isPopular: el.isPopular!,
             isNewItem: el.isNewItem!,
             brandId: el.brandId,
-            categoryId: el.categoryId
+            categoryId: el.categoryId,
+            isInvisible: el.isInvisible,
           };
         }) 
       }
@@ -180,6 +189,7 @@ export const MenuPage = () => {
         image: "",
         isNewItem: false,
         isPopular: false,
+        isInvisible: false,
         name: "",
         price: "",
       };
@@ -194,6 +204,7 @@ export const MenuPage = () => {
         image: "",
         isNewItem: false,
         isPopular: false,
+        isInvisible: false,
         name: "",
         price: ""
       };
@@ -254,6 +265,7 @@ export const MenuPage = () => {
       />
       <ModalWindow
         key={`${selectedItem?.key}`}
+        refetchItems={refetchItemsList}
         brandsOptions={brandsOptions!}
         categoriesOptions={categoriesOptions!}
         closeModal={handleCloseModal}

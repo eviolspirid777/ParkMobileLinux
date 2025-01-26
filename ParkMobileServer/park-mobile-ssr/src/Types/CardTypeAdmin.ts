@@ -11,6 +11,7 @@ export type CardTypeAdmin = {
     id?: number;
     isPopular: boolean;
     isNewItem: boolean;
+    isInvisible: boolean;
     brandId?: number;
     categoryId?: number;
 }

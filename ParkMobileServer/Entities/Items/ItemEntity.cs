@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ParkMobileServer.Entities.Filters;
 
 namespace ParkMobileServer.Entities.Items
 {
@@ -25,5 +26,7 @@ namespace ParkMobileServer.Entities.Items
 
         public int ArticleId { get; set; }
         public ArticleEntity? Article { get; set; }
+
+        public ICollection<FilterEntity>? Filters { get; set; } = new List<FilterEntity>();
     }
 }

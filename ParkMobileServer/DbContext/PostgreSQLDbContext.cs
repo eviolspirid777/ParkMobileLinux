@@ -3,6 +3,7 @@ using ParkMobileServer.Entities.Items;
 using ParkMobileServer.Entities.Orders;
 using ParkMobileServer.Entities.Users;
 using ParkMobileServer.Entities;
+using ParkMobileServer.Entities.Filters;
 
 namespace ParkMobileServer.DbContext
 {
@@ -33,6 +34,16 @@ namespace ParkMobileServer.DbContext
 							.WithOne(a => a.Item)
 							.HasForeignKey<ArticleEntity>(a => a.ItemId)
 							.OnDelete(DeleteBehavior.Restrict);
+
+			modelBuilder.Entity<ItemEntity>()
+							.HasMany(i => i.Filters)
+							.WithMany(f => f.Items)
+							.UsingEntity<Dictionary<string, object>>(
+								"ItemFilter",
+								j => j.HasOne<FilterEntity>().WithMany().HasForeignKey("FilterId"),
+								j => j.HasOne<ItemEntity>().WithMany().HasForeignKey("ItemId"),
+								j => j.ToTable("ItemFilters")
+							);
         }
         public DbSet<ItemEntity> ItemEntities { get; set; } = null!;
 		public DbSet<DescriptionEntity> DescriptionEntity { get; set; } = null!;
@@ -41,5 +52,6 @@ namespace ParkMobileServer.DbContext
         public DbSet<ItemBrand> ItemBrands { get; set; } = null!;
 		public DbSet<User> Users { get; set; } = null!;
         public DbSet<Slider> Sliders { get; set; } = null!;
+		public DbSet<FilterEntity> Filters { get; set; } = null!;
     }
 }

@@ -16,6 +16,7 @@ using ParkMobileServer.Mappers.CategoryMapper;
 using ParkMobileServer.Mappers.ItemsMapper;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using ParkMobileServer.DTO.FilterDTO;
 
 namespace ParkMobileServer.Controllers
 {
@@ -148,6 +149,40 @@ namespace ParkMobileServer.Controllers
 			await _postgreSQLDbContext.SaveChangesAsync();
 
 			return Ok();
+		}
+
+		[Authorize]
+		[HttpPost("CreateFilter")]
+		public async Task<IActionResult> CreateFilter([FromBody] CreateFilterRequest item)
+		{
+			if(await _postgreSQLDbContext.Filters.AnyAsync(i => i.Name == item.Name))
+			{
+				_logger.LogError("В фильтрах есть уже запись с таким названием!");
+				return BadRequest("В фильтрах есть уже запись с таким названием!");
+			}
+
+			_postgreSQLDbContext
+					.Filters
+					.Add(new() { Name = item.Name });
+
+			await _postgreSQLDbContext
+						.SaveChangesAsync();
+			return Ok();
+		}
+
+		[HttpGet("GetFilters")]
+		public async Task<IActionResult> GetFilters()
+		{
+			var filters = await _postgreSQLDbContext
+										.Filters
+										.Select(filt => new
+										{
+											filt.Id,
+											filt.Name,
+										})
+										.ToListAsync();
+
+			return Ok(filters);
 		}
         #endregion
         #region Item
@@ -577,14 +612,34 @@ namespace ParkMobileServer.Controllers
 		[HttpDelete("DeleteItem/{id}")]
 		public async Task<IActionResult> DeleteItem (int id )
 		{
-			var item = await _postgreSQLDbContext.ItemEntities.FindAsync(id);
+			var item = await _postgreSQLDbContext
+										.ItemEntities
+										.FindAsync(id);
+
+			var article = await _postgreSQLDbContext
+										.ArticleEntity
+										.FirstAsync(article => article.ItemId == id);
+
+			var description = await _postgreSQLDbContext
+										.DescriptionEntity
+										.FirstAsync(desc => desc.ItemId == id);
 			
-			if (item == null)
+			if (item == null || article == null || description == null)
 			{
 				return BadRequest();
 			}
 
-			_postgreSQLDbContext.ItemEntities.Remove(item);
+			_postgreSQLDbContext
+					.DescriptionEntity
+					.Remove(description);
+
+			_postgreSQLDbContext
+					.ArticleEntity
+					.Remove(article);
+
+			_postgreSQLDbContext
+					.ItemEntities
+					.Remove(item);
 
 			await _postgreSQLDbContext.SaveChangesAsync();
 			return Ok();
@@ -614,6 +669,7 @@ namespace ParkMobileServer.Controllers
 			_item.BrandId = item.BrandId;
 			_item.IsNewItem = item.IsNewItem;
 			_item.IsPopular = item.IsPopular;
+			_item.isInvisible = item.IsInvisible;
 
 			// Обновляем связанные сущности
 			if (_item.Article == null)
@@ -726,6 +782,7 @@ namespace ParkMobileServer.Controllers
 						item.Price,
 						item.Image,
 						item.IsPopular,
+						item.isInvisible,
 						item.IsNewItem,
 						Article = item.Article!.Article,
 						Description = item.Description!.Description,
@@ -835,6 +892,7 @@ namespace ParkMobileServer.Controllers
 					item.Image,
 					item.IsPopular,
 					item.IsNewItem,
+					item.isInvisible,
 					Article = item.Article!.Article,
 					Description = item.Description!.Description,
 					brandId = item.BrandId,
