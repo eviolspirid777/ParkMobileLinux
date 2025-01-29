@@ -100,14 +100,13 @@ useEffect(() => {
   };
   
   window.addEventListener("resize", handleResize);
-  // Получаем высоту при первом рендере
   handleResize();
   
   return () => {
     window.removeEventListener("resize", handleResize);
     document.body.style.overflow = "auto";
   };
-}, [openProductCard.state]); // Запускаем эффект при открытии/закрытии модального окна
+}, [openProductCard.state]);
 
 const handleCreditPrice = (price: string | undefined | number) => {
   if (typeof price == "string") {

@@ -8,6 +8,9 @@ import { SearchItemShortType } from "@/Types/SearchItemShortType";
 import { useAtom } from "jotai";
 import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { notification } from "antd";
+import { OrderForm } from "../ProductModal/OrderForm/OrderForm";
+import { OrderItem } from "@/Types/OrderItem";
+import { usePostOrderItem } from "@/hooks/usePostOrderItem";
 
 type ProductCardProps = {
   card: CardType | SearchItemShortType;
@@ -22,16 +25,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [api, contextHolder] = notification.useNotification();
   const [image, setImage] = useState<string | null>(null);
+  const [openOrderForm, setOpenOrderForm] = useState(false);
+  const {
+    postOrderItemAsync,
+  } = usePostOrderItem();
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const buttonBlockRef = useRef<HTMLDivElement>(null);
-
+  
   useEffect(() => {
     if(buttonRef.current) {
       buttonRef.current.addEventListener('click', (e) => {
         const bubble = document.createElement('div');
 
         bubble.classList.add('bubble');
+        if(buttonRef.current?.firstChild?.textContent === "заказать") {
+          bubble.style.backgroundColor = "#EDEDED"
+        }
         bubble.style.left = e.offsetX + 50 + 'px';
         bubble.style.top = e.offsetY +'px';
         if(buttonBlockRef.current) {
@@ -59,48 +69,65 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
   }, [card.image, card]);
 
+  const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">) => {
+    const sendData = {...values, itemName: card?.name, article: (card as CardType).article};
+    await postOrderItemAsync(sendData)
+    setOpenOrderForm(false);
+  }
+
   const handleAddToBucket = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
+
+    setShopBucket((previousBucket: DataType[]) => {
+      const newItem: DataType = {
+        id: card.id ?? 0,
+        image: card.image,
+        name: card.name,
+        count: 1,
+        article: (card as CardType).article ?? "",
+        price: card.price,
+        discountPrice: card.discountPrice
+      };
   
-    setTimeout(() => {
-      setShopBucket((previousBucket: DataType[]) => {
-        const newItem: DataType = {
-          id: card.id ?? 0,
-          image: card.image,
-          name: card.name,
-          count: 1,
-          article: (card as CardType).article ?? "",
-          price: card.price,
-          discountPrice: card.discountPrice
-        };
-    
-        return [...previousBucket, newItem];
-      });
+      return [...previousBucket, newItem];
+    });
 
-      api.destroy();
+    api.destroy();
 
-      api.open({
-        message: "",
-        description: (
-          <div className={styles["information-title"]}>
-            <strong>{card?.name} в корзине!</strong>
-            <span>Перейдите в корзину для оформления заказа.</span>
-          </div>
-        ),
-        style: {
-          padding: "3%",
-          border: "1px solid #87a08b",
-          borderRadius: "5px"
-        },
-        placement: "bottomRight",
-        closable: false,
-        duration: 2,
-        type: "success",
-        // showProgress: true,
-        pauseOnHover: true,
-      })
-    }, 350)
+    api.open({
+      message: "",
+      description: (
+        <div className={styles["information-title"]}>
+          <strong>{card?.name} в корзине!</strong>
+          <span>Перейдите в корзину для оформления заказа.</span>
+        </div>
+      ),
+      style: {
+        padding: "3%",
+        border: "1px solid #87a08b",
+        borderRadius: "5px"
+      },
+      placement: "bottomRight",
+      closable: false,
+      duration: 2,
+      type: "success",
+      // showProgress: true,
+      pauseOnHover: true,
+    })
   };
+
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
+
+    setTimeout(() => {
+      if((card as CardType).stock > 0) {
+        handleAddToBucket(event)
+      }
+      else {
+        setOpenOrderForm(true)
+      }
+    }, 350)
+  }
 
   return (
     <>
@@ -145,16 +172,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           className={styles["add-to-bucket"]}
           ref={buttonBlockRef}
         >
-
           {
             !shopBucket.some(item => item.id === card.id) ?
             <button
               className={styles["add-to-bucket-button"]}
-              onClick={handleAddToBucket}
+              data-state={(card as CardType).stock > 0 ? "В корзину" : "Заказать"}
+              onClick={handleButtonClick}
               ref={buttonRef}
             >
               <label>
-                В корзину
+                {(card as CardType).stock > 0 ? "В корзину" : "Заказать"}
               </label>
             </button>
             :
@@ -166,6 +193,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }
         </div>
       </div>
+      <OrderForm
+        key={`${openOrderForm}`}
+        open={openOrderForm}
+        handleClose={setOpenOrderForm.bind(this,false)}
+        submitData={handleSubmitData}
+      />
     </>
   );
 };

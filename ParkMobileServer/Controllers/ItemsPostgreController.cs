@@ -567,8 +567,16 @@ namespace ParkMobileServer.Controllers
                                 .Take(take)										
 								.ToListAsync();
 
-			var mappedItems = items.Select(ItemMapper.MatToShortDto).ToList();
+			if(fromSearch == false)
+			{
+                return Ok(new
+                {
+                    items = items,
+                    count = itemsCount
+                });
+            }
 
+			var mappedItems = items.Select(ItemMapper.MatToShortDto).ToList();
 			
 			if(itemsCount == 0)
 			{
