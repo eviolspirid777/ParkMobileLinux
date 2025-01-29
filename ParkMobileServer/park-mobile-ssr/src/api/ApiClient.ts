@@ -10,10 +10,10 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
-const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
-// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
-// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
+// const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
+// const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
+const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
+const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
 
 class ApiClient {
     client: AxiosInstance;
@@ -85,16 +85,13 @@ class ApiClient {
         return response.data
     }
 
-    async GetItemsAdmin(skip: number, take: number, category: string = "", brand: string = "", searchKeyWord: string = "") {
+    async GetItemsAdmin(skip: number, take: number, searchKeyWord: string = "") {
         const response = await this.client.get<RecivedCardDataAdminType>(
-            `${POSTGRE_ITEMS_PATH}/GetItems`, {
+            `${POSTGRE_ITEMS_PATH}/GetItemsForAdmin`, {
                 params: {
                     skip: skip,
                     take: take,
-                    category: category,
-                    brand: brand,
-                    name: searchKeyWord,
-                    isForAdmin: true
+                    name: searchKeyWord
                 }
             });
         return response.data;

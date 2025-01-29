@@ -83,6 +83,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
         isInvisible: newItem.isInvisible,
+        filters: newItem.filters ? [newItem.filters] : []
       };
       try {
         await apiClient.UpdateItem(mappedItem);
@@ -109,6 +110,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
         isInvisible: newItem.isInvisible,
+        filters: newItem.filters ? [newItem.filters] : []
       };
       try {
         await apiClient.AddItem(mappedItem);

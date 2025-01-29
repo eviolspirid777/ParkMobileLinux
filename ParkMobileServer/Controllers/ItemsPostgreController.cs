@@ -24,6 +24,11 @@ namespace ParkMobileServer.Controllers
 	[Route("api/[controller]")]
 	public class ItemsPostgreController : Controller
 	{
+		public static DistributedCacheEntryOptions _cacheOptions = new ()
+		{
+			AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+		};
+
 		private readonly PostgreSQLDbContext _postgreSQLDbContext;
 		private readonly TelegramBot.TelegramBot _telegramBot;
         private readonly IDistributedCache _cache;
@@ -215,6 +220,17 @@ namespace ParkMobileServer.Controllers
                 Description = new DescriptionEntity { Description = itemDto.Description },
                 Article = new ArticleEntity { Article = itemDto.Article }
             };
+
+			foreach(var filter in itemDto.Filters) {
+				var existingFilter = await _postgreSQLDbContext.Filters
+					.FirstOrDefaultAsync(f => f.Id == filter);
+
+				if (existingFilter != null)
+				{
+					// Если фильтр существует, добавляем его в коллекцию
+					item.Filters.Add(existingFilter);
+				}
+			}
 
             _postgreSQLDbContext.ItemEntities.Add(item);
 			await _postgreSQLDbContext.SaveChangesAsync();
@@ -679,6 +695,17 @@ namespace ParkMobileServer.Controllers
 			_item.IsPopular = item.IsPopular;
 			_item.isInvisible = item.IsInvisible;
 
+			foreach(var filter in item.Filters) {
+				var existingFilter = await _postgreSQLDbContext.Filters
+					.FirstOrDefaultAsync(f => f.Id == filter);
+
+				if (existingFilter != null)
+				{
+					// Если фильтр существует, добавляем его в коллекцию
+					_item.Filters.Add(existingFilter);
+				}
+			}
+
 			// Обновляем связанные сущности
 			if (_item.Article == null)
 			{
@@ -743,77 +770,41 @@ namespace ParkMobileServer.Controllers
 		}
 
         [HttpGet("GetItems")]
-        public async Task<IActionResult> GetItems(string? category, string? brand, int skip, int take, string name = "", bool isForAdmin = false)
+        public async Task<IActionResult> GetItems(string? category, string? brand, int skip, int take, string name = "")
         {
             int? categoryId = null;
             int? brandId = null;
 
             if (category != null && category == "New")
             {
-				if(isForAdmin == false) {
-					var queryString = await _postgreSQLDbContext
-										.ItemEntities
-										.Select(item => new
-										{
-											item.Id,
-											item.Name,
-											item.DiscountPrice,
-											item.Price,
-											item.Image,
-											item.IsPopular,
-											item.IsNewItem,
-											Article = item.Article!.Article,
-										})
-										.Where(item => item.IsNewItem == true && item.Name.ToLower().Contains(name.ToLower()))
-										.ToListAsync();
+				var queryString = await _postgreSQLDbContext
+									.ItemEntities
+									.Select(item => new
+									{
+										item.Id,
+										item.Name,
+										item.DiscountPrice,
+										item.Price,
+										item.Image,
+										item.IsPopular,
+										item.IsNewItem,
+										Article = item.Article!.Article,
+									})
+									.Where(item => item.IsNewItem == true && item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase))
+									.ToListAsync();
 
-					var newItems = queryString
-										.Skip(skip)
-										.Take(take);
+				var newItems = queryString
+									.Skip(skip)
+									.Take(take);
 
-					var counter = queryString
-										.Count;
+				var counter = queryString
+									.Count;
 
-					return Ok(new
-					{
-						count = counter,
-						items = newItems,
-					});
-				}
-				else {
-					var queryString = await _postgreSQLDbContext
-					.ItemEntities
-					.Select(item => new {
-						item.Id,
-						item.Name,
-						item.DiscountPrice,
-						item.Price,
-						item.Image,
-						item.IsPopular,
-						item.isInvisible,
-						item.IsNewItem,
-						Article = item.Article!.Article,
-						Description = item.Description!.Description,
-						brandId = item.BrandId,
-						stock = item.Stock,
-						item.CategoryId
-					})
-					.Where(item => item.IsNewItem == true && item.Name.ToLower().Contains(name.ToLower()))
-					.ToListAsync();
-
-					var newItems = queryString
-										.Skip(skip)
-										.Take(take);
-
-					var counter = queryString
-										.Count;
-
-					return Ok(new
-					{
-						count = counter,
-						items = newItems,
-					});
-				}
+				return Ok(new
+				{
+					count = counter,
+					items = newItems,
+				});
             }
 
             if (!string.IsNullOrWhiteSpace(category))
@@ -836,7 +827,6 @@ namespace ParkMobileServer.Controllers
 				}
             }
 
-			if(isForAdmin == false) {
 				var query = _postgreSQLDbContext
 								.ItemEntities
 								.Select(item => new
@@ -873,7 +863,7 @@ namespace ParkMobileServer.Controllers
 
 				if (!string.IsNullOrWhiteSpace(name))
 				{
-					query = query.Where(item => item.Name.ToLower().Contains(name.ToLower()));
+					query = query.Where(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
 				}
 
 				var count = await query.CountAsync();
@@ -889,62 +879,51 @@ namespace ParkMobileServer.Controllers
 					items = items
 				});
 			}
-			else {
-				var query = _postgreSQLDbContext
-				.ItemEntities
-				.Select(item => new {
-					item.Id,
-					item.Name,
-					item.DiscountPrice,
-					item.Price,
-					item.Image,
-					item.IsPopular,
-					item.IsNewItem,
-					item.isInvisible,
-					Article = item.Article!.Article,
-					Description = item.Description!.Description,
-					brandId = item.BrandId,
-					stock = item.Stock,
-					item.CategoryId
-				})
-				.AsQueryable();
 
-				if (categoryId.HasValue)
-				{
-					if(category.ToLower() == "gaming")
-					{
-						query = query.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
-					}
-					else
-					{
-						query = query.Where(item => item.CategoryId == categoryId.Value);
-					}
-				}
+		[HttpGet("GetItemsForAdmin")]
+		public async Task<IActionResult> GetItemsForAdmin(int skip, int take, string name = "") {
+			var query = _postgreSQLDbContext
+							.ItemEntities
+							.Include(i => i.Filters)
+							.Select(item => new
+							{
+								item.Id,
+								item.Name,
+								item.DiscountPrice,
+								item.Price,
+								item.Image,
+								item.IsPopular,
+								item.IsNewItem,
+								item.BrandId,
+								item.CategoryId,
+								item.Stock,
+								Description = item.Description!.Description,
+								Article = item.Article!.Article,
+								Filters = item.Filters.Select(f => new {
+									f.Id,
+									f.Name
+								})
+							})
+							.AsQueryable();
 
-				if (brandId.HasValue)
-				{
-					query = query.Where(item => item.brandId == brandId.Value);
-				}
-
-				if (!string.IsNullOrWhiteSpace(name))
-				{
-					query = query.Where(item => item.Name.ToLower().Contains(name.ToLower()));
-				}
-
-				var count = await query.CountAsync();
-
-				var items = await query
-									.Skip(skip)
-									.Take(take)
-									.ToListAsync();
-
-				return Ok(new
-				{
-					count = count,
-					items = items
-				});
+			if (!string.IsNullOrWhiteSpace(name))
+			{
+				query = query.Where(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
 			}
-        }
+
+			var count = await query.CountAsync();
+
+			var items = await query
+								.Skip(skip)
+								.Take(take)
+								.ToListAsync();
+
+			return Ok(new
+			{
+				count = count,
+				items = items
+			});
+		}
         #endregion
         #region TelegrammAlerts
         [HttpPost("orderData")]
@@ -1160,12 +1139,25 @@ namespace ParkMobileServer.Controllers
             _postgreSQLDbContext.Sliders.Add(slider);
             await _postgreSQLDbContext.SaveChangesAsync();
 
+            await _cache.RemoveAsync("sliderImages");
+			await _cache.RemoveAsync("sliderImagesMobile");
+
             return Ok(new { sliderId = slider.Id });
         }
 
         [HttpPost("sliderImages")]
         public async Task<IActionResult> GetSliderImages([FromQuery] bool? isForAdmin = false)
         {
+			const string cacheKey = "sliderImages";
+
+            var cachedData = await _cache.GetStringAsync(cacheKey);
+
+			if (cachedData != null)
+            {
+                var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
+                return Ok(slides);
+            }
+
 			var sliderImageQuery = await _postgreSQLDbContext
 											   .Sliders
 											   .ToListAsync();
@@ -1181,12 +1173,25 @@ namespace ParkMobileServer.Controllers
 				return BadRequest();
 			}
 
+            var serializedData = JsonConvert.SerializeObject(selectedSlides);
+            await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
+
 			return Ok(selectedSlides);
 		}
 
         [HttpGet("MobileSliderImages")]
         public async Task<IActionResult> GetMobileSliderImages()
         {
+			const string cacheKey = "sliderImagesMobile";
+
+			var cachedData = await _cache.GetStringAsync(cacheKey);
+
+			if (cachedData != null)
+            {
+                var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
+                return Ok(slides);
+            }
+
 			var sliders = await _postgreSQLDbContext
 										.Sliders
                                         .Where(item => item.Name.Contains("Mobile"))
@@ -1202,6 +1207,10 @@ namespace ParkMobileServer.Controllers
             {
                 return BadRequest();
             }
+
+            var serializedData = JsonConvert.SerializeObject(sliders);
+            await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
+
             return Ok(sliders);
         }
 

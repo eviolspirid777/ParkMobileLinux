@@ -18,5 +18,7 @@
 
         public string? Description { get; set; }
         public string? Article { get; set; }
+
+        public List<int>? Filters {get; set;} = new ();
     }
 }

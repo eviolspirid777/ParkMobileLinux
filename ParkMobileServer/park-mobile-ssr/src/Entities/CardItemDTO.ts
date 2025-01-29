@@ -13,4 +13,5 @@ export type CardItemDTO = {
     isPopular?: boolean,
     isNewItem?: boolean,
     isInvisible?: boolean,
+    filters?: string[],
 }

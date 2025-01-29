@@ -18,7 +18,7 @@ export const useGetItemsAdmin = () => {
     isSuccess: itemsListIsSuccess,
   } = useQuery({
     queryKey: ["itemsListAdmin", skip, searchKeyWord],
-    queryFn: () => apiClient.GetItemsAdmin(skip, 10, "", "", searchKeyWord),
+    queryFn: () => apiClient.GetItemsAdmin(skip, 10, searchKeyWord),
   });
 
   useEffect(() => {

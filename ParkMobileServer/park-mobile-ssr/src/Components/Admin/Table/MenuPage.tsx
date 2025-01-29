@@ -33,6 +33,7 @@ export type FormItemChange = {
   isPopular?: boolean;
   isNewItem?: boolean,
   isInvisible?: boolean,
+  filters?: string,
 };
 
 type DataType = {
