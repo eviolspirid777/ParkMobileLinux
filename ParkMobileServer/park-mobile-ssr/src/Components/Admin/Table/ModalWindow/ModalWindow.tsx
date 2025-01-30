@@ -83,7 +83,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
         isInvisible: newItem.isInvisible,
-        filters: newItem.filters ? [newItem.filters] : []
+        filters: newItem.filters ?? []
       };
       try {
         await apiClient.UpdateItem(mappedItem);
@@ -110,7 +110,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
         isInvisible: newItem.isInvisible,
-        filters: newItem.filters ? [newItem.filters] : []
+        filters: newItem.filters ?? []
       };
       try {
         await apiClient.AddItem(mappedItem);
@@ -178,7 +178,8 @@ export const ModalWindow: FC<ModalWindowProps> = ({
           {
             ...selectedItem,
             stock: selectedItem.count,
-            isInvisible: selectedItem.isInvisible
+            isInvisible: selectedItem.isInvisible,
+            filters: selectedItem.filters?.map(el => el.id)
           } :
           {}}
         onFinish={handleFinishForm}
@@ -312,6 +313,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
             >
               <Select
                 placeholder="Выберите фильтры"
+                mode="multiple"
                 options={filters}
               />
             </Form.Item>

@@ -33,7 +33,7 @@ export type FormItemChange = {
   isPopular?: boolean;
   isNewItem?: boolean,
   isInvisible?: boolean,
-  filters?: string,
+  filters?: string[],
 };
 
 type DataType = {
@@ -172,6 +172,7 @@ export const MenuPage = () => {
             brandId: el.brandId,
             categoryId: el.categoryId,
             isInvisible: el.isInvisible,
+            filters: el.filters
           };
         }) 
       }

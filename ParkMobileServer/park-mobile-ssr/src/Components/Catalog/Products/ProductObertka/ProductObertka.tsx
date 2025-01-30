@@ -1,8 +1,8 @@
 "use client";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { Products } from "../Products";
 import { animateScroll as scroll } from "react-scroll";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import styles from "./ProductObertka.module.scss";
 import { apiClient } from "@/api/ApiClient";
@@ -14,15 +14,6 @@ type ProductObertkaProps = {
   category: string;
 };
 
-const categoryDictionary = new Map([
-  ["Apple", "brand=Apple"],
-  ["Samsung", "brand=Samsung"],
-  ["Xiaomi", "brand=Xiaomi"],
-  ["Dyson", "brand=Dyson"],
-  ["Headphones", "category=Audio"],
-  ["Gaming", "category=Gaming"],
-]);
-
 export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   let filters: string[] = [];
   
@@ -32,49 +23,40 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     filters = CategoryFilters.get(category as string) as string[]
   }
 
-  const [skip, setSkip] = useState(0);
   const [take] = useState(16);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: items,
-    refetch,
-    isLoading: isLoadingAll,
-  } = useQuery({
-    queryKey: ["items", skip, take],
-    //TODO: Здесь нужно будет пофиксить баг с тем, что категории неправильно отправляются, нужна дополнительная обработка на беке
-    queryFn: async () =>
-      apiClient.GetItemsCostil(
+    mutateAsync: getItemsAsync,
+    mutate: getItems,
+    isPending: isPendingItems
+  } = useMutation({
+    mutationKey: ["items"],
+    mutationFn: async ({skip, take, brand}: {skip: number, take: number, brand: string}) =>
+      apiClient.GetItemsCostil({
         skip,
         take,
-        categoryDictionary.get(category) ?? ""
-      ),
-    refetchOnWindowFocus: false,
+        brand
+      }),
   });
 
-  const handleOnPageChange = (newSkip: number, newPage: number) => {
+  useEffect(() => {
+    getItems({skip: 0, take, brand: category})
+  }, [])
+
+  const handleOnPageChange = async (newSkip: number, newPage: number) => {
     scroll.scrollTo(100, {
       duration: 700,
       smooth: true,
     });
 
-    setSkip(newSkip);
     setCurrentPage(newPage);
-    refetch();
+    await getItemsAsync({take, skip: newSkip, brand: category});
   };
 
   const handlePath = (path: string) => {
     let _path = path;
-    if(_path === "Apple Watch") {
-      _path = "watches"
-    }
-    if(_path === "Apple TV") {
-      _path = "tv"
-    }
-    if(_path === "Смартфоны") {
-      _path = "phones"
-    }
     switch (path) {
       case "Apple Watch":
         _path = "watches"
@@ -134,7 +116,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     navigate.push(`/categories/${category}/${_path}`)
   }
 
-  if (isLoadingAll || items?.count === 0) {
+  if (isPendingItems || items?.count === 0) {
     return <div style={{ height: "320vh", width: "100%" }} />;
   }
 

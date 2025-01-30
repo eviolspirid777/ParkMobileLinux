@@ -8,7 +8,7 @@ import { Products } from "@/Components/Catalog/Products/Products";
 
 import styles from "./ItemsPage.module.scss"
 import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
-import { InnerItemsFilters, ItemsFilters } from "@/Shared/FiltersData/Filters";
+import { ItemsFilters } from "@/Shared/FiltersData/Filters";
 import { useGetSearchItems } from "@/hooks/useGetSearchItems";
 import { useAtom } from "jotai";
 import { filterAtom } from "@/Store/Filter";
@@ -25,9 +25,14 @@ const ItemPage = () => {
   } = useGetSearchItems();
 
   const [filter, setFilter] = useAtom(filterAtom);
-  const [filters, setFilters] = useState<string[]>(() => {
+
+  useEffect(() => {
+    setFilter([category as string, ...items as string[]]);
+  }, [])
+
+  const [filters, ] = useState<string[]>(() => {
       if(items) {
-        let _items = items;
+        let _items = items[items.length - 1];
         if(category === "Samsung") {
           if(items === "phones") {
             _items = "SamsungPhones";
@@ -55,22 +60,9 @@ const ItemPage = () => {
       return []
     }
   );
-  
-  useEffect(() => {
-    return () => {
-      setFilter("");
-    }
-  }, [])
-
-  useEffect(() => {
-    if(filter) {
-      setFilters(InnerItemsFilters.get(filter) as string[])
-    }
-  }, [filter])
 
   const [skip, setSkip] = useState(0);
   const [take] = useState(16);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -84,10 +76,8 @@ const ItemPage = () => {
   });
 
   const handleFilterSelect = async (item: string) => {
-    const _skip = skip;
-    const _take = take;
-    setFilter(item)
-    await mutateSearchedItems({ skip: _skip, take: _take, tag: item, fromSearch: false })
+    setFilter(prevFilters => [...prevFilters, item])
+    await mutateSearchedItems({ skip: skip, take: take, tag: item, fromSearch: false })
   }
 
   const handleOnPageChange = (newSkip: number, newPage: number) => {
@@ -98,7 +88,7 @@ const ItemPage = () => {
 
     setSkip(newSkip);
     if(filter) {
-      mutateSearchedItems({skip: newSkip, take: take, tag: filter, fromSearch: false})
+      mutateSearchedItems({skip: newSkip, take: take, tag: filter[0], fromSearch: false})
     }
     setCurrentPage(newPage);
     refetch();
@@ -118,7 +108,6 @@ const ItemPage = () => {
       {
         filters && filters.length > 0 &&
         <ItemsCategories
-          key={filters[0]}
           categoriesItems={filters}
           onSelect={handleFilterSelect}
         />

@@ -17,6 +17,8 @@ using ParkMobileServer.Mappers.ItemsMapper;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using ParkMobileServer.DTO.FilterDTO;
+using ParkMobileServer.Entities.Filters;
+using ParkMobileServer.DTO.GetItemDTO;
 
 namespace ParkMobileServer.Controllers
 {
@@ -455,6 +457,8 @@ namespace ParkMobileServer.Controllers
 			var items = await query
 								.Skip(searchCategoryRequest.Skip)
 								.Take(searchCategoryRequest.Take)
+								.Include(i => i.Description)
+								.Include(i => i.Article)
 								.ToListAsync();
 
 			if(items.Count > 0)
@@ -677,6 +681,7 @@ namespace ParkMobileServer.Controllers
 								.ItemEntities
 								.Include(i => i.Description)
 								.Include(i => i.Article)
+								.Include(i => i.Filters)
 								.SingleOrDefaultAsync(i => i.Id == item.id);
 
 			if (_item == null)
@@ -695,18 +700,18 @@ namespace ParkMobileServer.Controllers
 			_item.IsPopular = item.IsPopular;
 			_item.isInvisible = item.IsInvisible;
 
-			foreach(var filter in item.Filters) {
+            _item.Filters.Clear();
+
+            foreach (var filter in item.Filters) {
 				var existingFilter = await _postgreSQLDbContext.Filters
 					.FirstOrDefaultAsync(f => f.Id == filter);
 
 				if (existingFilter != null)
 				{
-					// Если фильтр существует, добавляем его в коллекцию
 					_item.Filters.Add(existingFilter);
 				}
 			}
 
-			// Обновляем связанные сущности
 			if (_item.Article == null)
 			{
 				_item.Article = new () { Article = item.Article };
@@ -730,6 +735,7 @@ namespace ParkMobileServer.Controllers
 
 			return Ok();
 		}
+
 		[HttpGet("GetPopularItems")]
 		public async Task<IActionResult> GetPopularItems()
 		{
@@ -769,16 +775,17 @@ namespace ParkMobileServer.Controllers
             return Ok(newItems);
 		}
 
-        [HttpGet("GetItems")]
-        public async Task<IActionResult> GetItems(string? category, string? brand, int skip, int take, string name = "")
+        [HttpPost("GetItems")]
+        public async Task<IActionResult> GetItems(GetItemDTO GetItemRequest)
         {
             int? categoryId = null;
             int? brandId = null;
 
-            if (category != null && category == "New")
+            if (GetItemRequest.category == "New")
             {
 				var queryString = await _postgreSQLDbContext
 									.ItemEntities
+									.Where(item => item.IsNewItem)
 									.Select(item => new
 									{
 										item.Id,
@@ -788,14 +795,13 @@ namespace ParkMobileServer.Controllers
 										item.Image,
 										item.IsPopular,
 										item.IsNewItem,
-										Article = item.Article!.Article,
+										item.Stock
 									})
-									.Where(item => item.IsNewItem == true && item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase))
 									.ToListAsync();
 
 				var newItems = queryString
-									.Skip(skip)
-									.Take(take);
+									.Skip(GetItemRequest.skip)
+									.Take(GetItemRequest.take);
 
 				var counter = queryString
 									.Count;
@@ -807,21 +813,21 @@ namespace ParkMobileServer.Controllers
 				});
             }
 
-            if (!string.IsNullOrWhiteSpace(category))
+            if (!string.IsNullOrWhiteSpace(GetItemRequest.category))
             {
                 categoryId = (await _postgreSQLDbContext
                                 .ItemCategories
-                                .FirstOrDefaultAsync(c => c.Name == category))?
+                                .FirstOrDefaultAsync(c => c.Name == GetItemRequest.category))?
                                 .Id;
             }
-            if (!string.IsNullOrWhiteSpace(brand))
+            if (!string.IsNullOrWhiteSpace(GetItemRequest.brand))
             {
                 brandId = (await _postgreSQLDbContext
                                 .ItemBrands
-                                .FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower()))?
+                                .FirstOrDefaultAsync(b => b.Name.ToLower() == GetItemRequest.brand.ToLower()))?
                                 .Id;
 				//TODO: Снизу заглушка, т.к. brandId не ищется, если brand = samsung
-				if(brand == "Samsung")
+				if(GetItemRequest.brand == "Samsung")
 				{
 					brandId = 11;
 				}
@@ -840,13 +846,13 @@ namespace ParkMobileServer.Controllers
 									item.IsNewItem,
 									item.BrandId,
 									item.CategoryId,
-									Article = item.Article!.Article,
+									item.Stock
 								})
 								.AsQueryable();
 
 				if (categoryId.HasValue)
 				{
-					if(category.ToLower() == "gaming")
+					if(GetItemRequest.category.ToLower() == "gaming")
 					{
 						query = query.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
 					}
@@ -861,16 +867,22 @@ namespace ParkMobileServer.Controllers
 					query = query.Where(item => item.BrandId == brandId.Value);
 				}
 
-				if (!string.IsNullOrWhiteSpace(name))
-				{
-					query = query.Where(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
-				}
-
 				var count = await query.CountAsync();
 
 				var items = await query
-									.Skip(skip)
-									.Take(take)
+									.Select(item => new
+									{
+                                        item.Id,
+                                        item.Name,
+                                        item.DiscountPrice,
+                                        item.Price,
+                                        item.Image,
+                                        item.IsPopular,
+                                        item.IsNewItem,
+										item.Stock
+                                    })
+									.Skip(GetItemRequest.skip)
+									.Take(GetItemRequest.take)
 									.ToListAsync();
 
 				return Ok(new
@@ -908,7 +920,7 @@ namespace ParkMobileServer.Controllers
 
 			if (!string.IsNullOrWhiteSpace(name))
 			{
-				query = query.Where(item => item.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
+				query = query.Where(item => item.Name.ToLower().Contains(name.ToLower()));
 			}
 
 			var count = await query.CountAsync();
