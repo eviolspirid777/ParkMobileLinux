@@ -9,6 +9,7 @@ import { apiClient } from "@/api/ApiClient";
 import { CategoryFilters } from "@/Shared/FiltersData/Filters";
 import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
 import { useRouter } from "next/navigation";
+import { GetItemType } from "@/Types/GetItemType";
 
 type ProductObertkaProps = {
   category: string;
@@ -33,16 +34,12 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     isPending: isPendingItems
   } = useMutation({
     mutationKey: ["items"],
-    mutationFn: async ({skip, take, brand}: {skip: number, take: number, brand: string}) =>
-      apiClient.GetItemsCostil({
-        skip,
-        take,
-        brand
-      }),
+    mutationFn: async (item: GetItemType) =>
+      apiClient.GetFilteredItems(item),
   });
 
   useEffect(() => {
-    getItems({skip: 0, take, brand: category})
+    getItems({skip: 0, take, filters: [category]})
   }, [])
 
   const handleOnPageChange = async (newSkip: number, newPage: number) => {
@@ -52,7 +49,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     });
 
     setCurrentPage(newPage);
-    await getItemsAsync({take, skip: newSkip, brand: category});
+    await getItemsAsync({take, skip: newSkip, filters: [category]});
   };
 
   const handlePath = (path: string) => {

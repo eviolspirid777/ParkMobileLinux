@@ -47,6 +47,14 @@ namespace ParkMobileServer.Functions
             var items = await query
                                 .Skip(searchRequest.Skip)
                                 .Take(searchRequest.Take)
+                                .Select(item => new
+                                {
+                                    item.Id,
+                                    item.Name,
+                                    item.Price,
+                                    item.DiscountPrice,
+                                    item.Image,
+                                })
                                 .ToListAsync();
             
             if(itemsCount == 0)
@@ -56,7 +64,7 @@ namespace ParkMobileServer.Functions
 
             return new
             {
-                items,
+                items = items,
                 count = itemsCount
             };
         }
@@ -64,25 +72,34 @@ namespace ParkMobileServer.Functions
         public async Task<object> GetFilteredItemsAsync(SearchCategoryItemRequest searchCategoryRequest)
         {
             var query = _postgreSQLDbContext
-                                        .ItemEntities
-                                        .Include(i => i.Filters)
-                                        .AsQueryable();
+                            .ItemEntities
+                            .Include(i => i.Filters)
+                            .AsQueryable();
 
-            if(searchCategoryRequest.Filters != null && searchCategoryRequest.Filters.Count > 0)
+            if (searchCategoryRequest.Filters != null && searchCategoryRequest.Filters.Count > 0)
             {
                 query = query
-                                 .Where(i => i.Filters.OrEmpty().All(f => searchCategoryRequest.Filters.Contains(f.Name)));
+                            .Where(i => searchCategoryRequest.Filters
+                                .All(filter => i.Filters.Any(f => f.Name == filter)));
             }
 
-            var itemsCount = await query
-                                        .CountAsync();
+            var itemsCount = await query.CountAsync();
 
             var items = await query
-                                        .Skip(searchCategoryRequest.Skip)
-                                        .Take(searchCategoryRequest.Take)
-                                        .ToListAsync();
+                                .Skip(searchCategoryRequest.Skip)
+                                .Take(searchCategoryRequest.Take)
+                                .Select(item => new
+                                {
+                                    item.Id,
+                                    item.Name,
+                                    item.Stock,
+                                    item.Image,
+                                    item.Price,
+                                    item.DiscountPrice
+                                })
+                                .ToListAsync();
 
-            if(items.Count == 0)
+            if (items.Count == 0)
             {
                 throw new Exception("Не найдено товаров");
             }
@@ -219,6 +236,8 @@ namespace ParkMobileServer.Functions
             var count = await query.CountAsync();
 
             var items = await query
+                                .OrderByDescending(item => item.IsNewItem)
+                                .ThenByDescending(item => item.Name)
                                 .Select(item => new
                                 {
                                     item.Id,

@@ -33,10 +33,10 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
   contentType,
   category,
 }) => {
-  const { mutateSearchedItems, searchedItems, isSearchedItemsSuccess } =
+  const { mutateSearchedItems, searchedItems, isSearchedItemsSuccess, isSearchedItemsError } =
     useGetSearchItems();
 
-  const {mutateAsync} = useAddRepairRequest();
+  const { mutateAsync } = useAddRepairRequest();
 
   const handleSubmitData = async (values: RepairRequestType) => {
     await mutateAsync(values);
@@ -110,12 +110,12 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
 
   const handleInputChange = debounce(async (value: string) => {
     setInputValue(value);
-    await mutateSearchedItems({ tag: value, skip: skip, take: take });
+    await mutateSearchedItems({ name: value, skip: skip, take: take });
   }, 700);
 
   useEffect(() => {
     if (inputValue) {
-      mutateSearchedItems({ tag: inputValue, skip: skip, take: take });
+      mutateSearchedItems({ name: inputValue, skip: skip, take: take });
     }
   }, [skip]);
 
@@ -222,6 +222,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
           <SliderSearch
             onInputChange={handleInputChange}
             isSuccess={isSearchedItemsSuccess}
+            isError={isSearchedItemsError}
             foundItemsCount={searchedItems?.count ?? 0}
           />
         )}

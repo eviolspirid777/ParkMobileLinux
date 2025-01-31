@@ -3,6 +3,7 @@ import { RepairRequestType } from "@/hooks/useAddRepairRequest";
 import { TradeInType } from "@/Store/TradeInStore";
 import { CardItemType, CardType, RecivedCardDataType } from "@/Types/CardType";
 import { RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
+import { GetItemByNameType } from "@/Types/GetItemByName";
 import { GetItemType } from "@/Types/GetItemType";
 import { OrderItem } from "@/Types/OrderItem";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
@@ -95,13 +96,13 @@ class ApiClient {
         return response.data;
     }
 
-    async GetItemsCostil(item: GetItemType) {
-        const response = await this.client.post<RecivedCardDataType>(`${POSTGRE_ITEMS_PATH}/GetItems`, item);
+    async GetFilteredItems(item: GetItemType) {
+        const response = await this.client.post<RecivedCardDataType>(`${POSTGRE_ITEMS_PATH}/GetFilteredItems`, item);
         return response.data;
     }
 
-    async GetSearchItems(tag: string, skip: number, take: number, fromSearch: boolean = true) {
-        const response = await this.client.post<SearchItemsResponseType>(`${POSTGRE_ITEMS_PATH}/GetItemsByName?skip=${skip}&take=${take}&name=${tag}&fromSearch=${fromSearch}`)
+    async GetSearchItems(item: GetItemByNameType) {
+        const response = await this.client.post<SearchItemsResponseType>(`${POSTGRE_ITEMS_PATH}/GetItemsByName`, item)
         return response.data;
     }
 

@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { animateScroll as scroll } from "react-scroll";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/api/ApiClient";
 import { useParams } from 'next/navigation';
 import { Products } from "@/Components/Catalog/Products/Products";
@@ -9,20 +9,13 @@ import { Products } from "@/Components/Catalog/Products/Products";
 import styles from "./ItemsPage.module.scss"
 import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
 import { ItemsFilters } from "@/Shared/FiltersData/Filters";
-import { useGetSearchItems } from "@/hooks/useGetSearchItems";
 import { useAtom } from "jotai";
 import { filterAtom } from "@/Store/Filter";
 import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
+import { GetItemType } from "@/Types/GetItemType";
 
 const ItemPage = () => {
   const { category, items } = useParams();
-
-  const {
-    mutateSearchedItems,
-    searchedItems,
-    isSearchedItemsPending,
-    isSearchedItemsError,
-  } = useGetSearchItems();
 
   const [filter, setFilter] = useAtom(filterAtom);
 
@@ -67,20 +60,30 @@ const ItemPage = () => {
 
   const {
     data: itemsFromStore,
-    refetch,
-    isLoading: isLoadingAll,
-  } = useQuery({
-    queryKey: ["items", skip, take],
-    queryFn: async () => apiClient.GetItemsByHeader(skip, take, category as string, items as string),
-    refetchOnWindowFocus: false,
+    mutateAsync: mutateItemsAsync,
+    isPending: isLoadingAll,
+  } = useMutation({
+    mutationKey: ["items"],
+    mutationFn: async (item: GetItemType) =>
+      apiClient.GetFilteredItems(item),
   });
 
+  useEffect(() => {
+    const refreshItems = async () => {
+      await mutateItemsAsync({skip, take, filters: [category as string, ...items as string[]]})
+    }
+
+    refreshItems()
+  }, [])
+
   const handleFilterSelect = async (item: string) => {
-    setFilter(prevFilters => [...prevFilters, item])
-    await mutateSearchedItems({ skip: skip, take: take, tag: item, fromSearch: false })
+    if(!filter.includes(item)) {
+      setFilter(prevFilters => [...prevFilters, item])
+    }
+    await mutateItemsAsync({ skip: skip, take: take, filters: [...filter, item] })
   }
 
-  const handleOnPageChange = (newSkip: number, newPage: number) => {
+  const handleOnPageChange = async (newSkip: number, newPage: number) => {
     scroll.scrollTo(100, {
       duration: 700,
       smooth: true,
@@ -88,10 +91,9 @@ const ItemPage = () => {
 
     setSkip(newSkip);
     if(filter) {
-      mutateSearchedItems({skip: newSkip, take: take, tag: filter[0], fromSearch: false})
+      await mutateItemsAsync({skip: newSkip, take: take, filters: [...filter]})
     }
     setCurrentPage(newPage);
-    refetch();
   };
 
   return (
@@ -113,15 +115,15 @@ const ItemPage = () => {
         />
       }
       {
-        isLoadingAll || isSearchedItemsPending || isSearchedItemsError ?
+        isLoadingAll ?
         <div style={{
           height:"50vh"
         }}>
           <LoadingComponent />
         </div> :
         <Products
-          cards={searchedItems?.items ? searchedItems.items : itemsFromStore?.items}
-          itemsCount={searchedItems?.count ? searchedItems.count : itemsFromStore?.count}
+          cards={itemsFromStore?.items}
+          itemsCount={itemsFromStore?.count}
           currentPage={currentPage}
           onPageChange={handleOnPageChange}
         />
