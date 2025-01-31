@@ -42,6 +42,7 @@ namespace ParkMobileServer
                 return new TelegramBot.TelegramBot(botToken);
             });
             builder.Services.AddScoped<GetItems>();
+			builder.Services.AddScoped<CreateItems>();
             
 			
 			builder.WebHost.UseUrls("http://*:3001");

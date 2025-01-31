@@ -38,6 +38,7 @@ namespace ParkMobileServer.Controllers
         private readonly IDistributedCache _cache;
         private readonly ILogger<ItemsPostgreController> _logger;
         private readonly GetItems _getItemsService;
+		private readonly CreateItems _itemService;
 
         public ItemsPostgreController
 		(
@@ -45,13 +46,15 @@ namespace ParkMobileServer.Controllers
 			TelegramBot.TelegramBot telegramBot,
             IDistributedCache cache,
             ILogger<ItemsPostgreController> logger,
-			GetItems getItemsService
+			GetItems getItemsService,
+            CreateItems itemService
         )
 		{
 			_postgreSQLDbContext = postgreSQLDbContext;
 			_telegramBot = telegramBot;
 			_cache = cache;
 			_getItemsService = getItemsService;
+			_itemService = itemService;
 			_logger = logger;
 		}
 
@@ -202,54 +205,24 @@ namespace ParkMobileServer.Controllers
 		[HttpPost("CreateItem")]
 		public async Task<IActionResult> CreateItem([FromBody] ItemDTO itemDto)
 		{
-            if (itemDto == null)
-            {
-                return BadRequest("Invalid brand data");
-            }
-
-			if(itemDto.IsPopular == true)
+			try
 			{
-                await _cache.RemoveAsync("popularItems");
-            }
-
-            var item = new ItemEntity
-            {
-                Name = itemDto.Name,
-                Price = itemDto.Price,
-                DiscountPrice = itemDto.DiscountPrice,
-                Image = itemDto.Image,
-                Stock = itemDto.Stock,
-                IsPopular = itemDto.IsPopular,
-                IsNewItem = itemDto.IsNewItem,
-                isInvisible = itemDto.IsInvisible,
-                CategoryId = itemDto.CategoryId,
-                BrandId = itemDto.BrandId,
-                Description = new DescriptionEntity { Description = itemDto.Description },
-                Article = new ArticleEntity { Article = itemDto.Article }
-            };
-
-			foreach(var filter in itemDto.Filters.OrEmpty()) {
-				var existingFilter = await _postgreSQLDbContext.Filters
-					.FirstOrDefaultAsync(f => f.Id == filter);
-
-				if (existingFilter != null)
-				{
-					// Если фильтр существует, добавляем его в коллекцию
-					item.Filters?.Add(existingFilter);
-				}
+				var response = await _itemService.CreateItemAsync(itemDto);
+				return Ok(response);
 			}
-
-            _postgreSQLDbContext.ItemEntities.Add(item);
-			await _postgreSQLDbContext.SaveChangesAsync();
-			return Ok();
+			catch (Exception ex)
+			{
+				_logger.LogError("Ошибка! {message}", ex.Message);
+				return BadRequest(ex.Message);
+			}
 		}
 
-		[HttpPost("GetCategoryItems")]
-		public async Task<IActionResult> GetCategoryItems(SearchCategoryItemRequest searchCategoryRequest)
+		[HttpPost("GetFilteredItems")]
+		public async Task<IActionResult> GetFilteredItems(SearchCategoryItemRequest searchCategoryRequest)
 		{
 			try
 			{
-				var response = await _getItemsService.GetCategoryItemsAsync(searchCategoryRequest);
+				var response = await _getItemsService.GetFilteredItemsAsync(searchCategoryRequest);
 				return Ok(response);
 			}
 			catch(Exception ex)
@@ -274,139 +247,19 @@ namespace ParkMobileServer.Controllers
 			}
 		}
 
-        [HttpPost("GetItemsByName")]
-		public async Task<IActionResult> GetItemByName(string name, int skip, int take, bool fromSearch = true)
+		[HttpPost("GetItemsByName")]
+		public async Task<IActionResult> GetItemByName(GetSearchItemRequest searchRequest)
 		{
-			var splittedName = name.Split(" ");
-
-			var query = _postgreSQLDbContext
-								.ItemEntities
-								.Include(item => item.Description)
-                                .Include(item => item.Article)
-                                .AsQueryable();
-			foreach(var splitValue in splittedName)
+			try
 			{
-				query = query
-							.Where(item => item.Name.ToLower()
-							.Contains(splitValue.ToLower()));
-
-				if(fromSearch == false)
-				{
-					if(name.ToLower() == "iphone 16" ||  name.ToLower() == "iphone 15" || name.ToLower() == "iphone 14" || name.ToLower() == "iphone 13" || name.ToLower() == "iphone 12" || name.ToLower() == "iphone 11")
-					{
-						query = query
-									.Where(item => !item.Name.ToLower().Contains("max"))
-									.Where(item => !item.Name.ToLower().Contains("pro"));
-					}
-
-					if(name.ToLower() == "iphone 16 pro" || name.ToLower() == "iphone 15 pro")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("max"));
-					}
-
-					if(name.ToLower() == "apple watch ultra 2")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("2024"));
-					}
-					if(name.ToLower() == "apple watch 9")
-					{
-						query = query
-									.Where(item => item.Name.ToLower().Contains("apple watch 9"))
-									.Where(item => !item.Name.ToLower().Contains("49mm"));
-					}
-					if(name.ToLower() == "airpods 2")
-					{
-						query = query
-									.Where(item => item.Name.ToLower().Contains("apple airpods 2"))
-									.Where(item => !item.Name.ToLower().Contains("2024"));
-					}
-                    if (name.ToLower() == "airpods 4")
-                    {
-                        query = query
-                                    .Where(item => item.Name.ToLower().Contains("apple airpods 4"))
-                                    .Where(item => !item.Name.ToLower().Contains("2024"));
-                    }
-                    if (name.ToLower() == "galaxy s")
-					{
-						query = query
-								.Where(item =>
-										item.Name.ToLower().Contains("galaxy s24") ||
-										item.Name.ToLower().Contains("galaxy s23") ||
-										item.Name.ToLower().Contains("galaxy s22") ||
-										item.Name.ToLower().Contains("galaxy s21") ||
-										item.Name.ToLower().Contains("galaxy s20"));
-
-                    }
-
-					if (name.ToLower() == "galaxy a")
-					{
-						query = query
-								.Where(item =>
-										item.Name.ToLower().Contains("galaxy a55") ||
-										item.Name.ToLower().Contains("galaxy a35") ||
-										item.Name.ToLower().Contains("galaxy a05") ||
-                                        item.Name.ToLower().Contains("galaxy a06")
-                                );
-					}
-
-					if(name.ToLower() == "xiaomi 14")
-					{
-						query = query
-									.Where(item => !item.Name.ToLower().Contains("ultra"))
-									.Where(item => !item.Name.ToLower().Contains("pro"))
-									.Where(item => !item.Name.ToLower().Contains("14t"));
-					}
-					
-					if(name.ToLower() == "xiaomi 13")
-					{
-						query = query
-									.Where(item => !item.Name.ToLower().Contains("pro"))
-									.Where(item => !item.Name.ToLower().Contains("plus"))
-									.Where(item => !item.Name.ToLower().Contains("13t"));
-					}
-					if(name.ToLower() == "янедкс станция 2")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("лайт"));
-					}
-					if(name.ToLower() == "яндекс станция мини")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("с часами"));
-					}
-					if(name.ToLower() == "яндекс станция лайт")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("2"));
-					}
-				}
+				var response = await _getItemsService.GetItemsByNameAsync(searchRequest);
+				return Ok(response);
 			}
-
-			var itemsCount = await query.CountAsync();
-
-			var items = await query
-								.Skip(skip)
-                                .Take(take)										
-								.ToListAsync();
-
-			if(fromSearch == false)
+			catch (Exception ex)
 			{
-                return Ok(new
-                {
-                    items,
-                    count = itemsCount
-                });
-            }
-
-			var mappedItems = items.Select(ItemMapper.MatToShortDto).ToList();
-			
-			if(itemsCount == 0)
-			{
-				return BadRequest("Нет товаров с таким именем!");
+				_logger.LogError("Ошибка! {message}", ex.Message);
+				return BadRequest(ex.Message);
 			}
-
-			return Ok(new
-			{
-				items = mappedItems,
-				count = itemsCount
-			});
 		}
 
 		[HttpPost("GetItem/{id}")]
@@ -439,37 +292,16 @@ namespace ParkMobileServer.Controllers
 		[HttpDelete("DeleteItem/{id}")]
 		public async Task<IActionResult> DeleteItem (int id )
 		{
-			var item = await _postgreSQLDbContext
-										.ItemEntities
-										.FindAsync(id);
-
-			var article = await _postgreSQLDbContext
-										.ArticleEntity
-										.FirstAsync(article => article.ItemId == id);
-
-			var description = await _postgreSQLDbContext
-										.DescriptionEntity
-										.FirstAsync(desc => desc.ItemId == id);
-			
-			if (item == null || article == null || description == null)
+			try
 			{
-				return BadRequest();
+				var response = await _itemService.DeleteItemAsync(id);
+				return Ok(response);
 			}
-
-			_postgreSQLDbContext
-					.DescriptionEntity
-					.Remove(description);
-
-			_postgreSQLDbContext
-					.ArticleEntity
-					.Remove(article);
-
-			_postgreSQLDbContext
-					.ItemEntities
-					.Remove(item);
-
-			await _postgreSQLDbContext.SaveChangesAsync();
-			return Ok();
+			catch (Exception ex)
+			{
+				_logger.LogError("Ошибка! {message}", ex.Message);
+				return BadRequest(ex.Message);
+			}
 		}
 
 		[Authorize]

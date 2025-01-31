@@ -25,15 +25,43 @@ namespace ParkMobileServer.Functions
             _cache = cache;
         }
 
-        public async Task<object> GetItemsByNameAsync()
+        public async Task<object> GetItemsByNameAsync(GetSearchItemRequest searchRequest)
         {
+            var splittedName = searchRequest.Name.Split(" ");
+
+            var query = _postgreSQLDbContext
+                                .ItemEntities
+                                .Include(item => item.Description)
+                                      .Include(item => item.Article)
+                                      .AsQueryable();
+
+            foreach (var splitValue in splittedName)
+            {
+                query = query
+                            .Where(item => item.Name.ToLower().Contains(splitValue.ToLower()))
+                            .AsQueryable();
+            }
+
+            var itemsCount = await query.CountAsync();
+
+            var items = await query
+                                .Skip(searchRequest.Skip)
+                                .Take(searchRequest.Take)
+                                .ToListAsync();
+            
+            if(itemsCount == 0)
+            {
+                throw new Exception("Не найдено данных!");
+            }
+
             return new
             {
-                t = true
+                items,
+                count = itemsCount
             };
         }
 
-        public async Task<object> GetCategoryItemsAsync(SearchCategoryItemRequest searchCategoryRequest)
+        public async Task<object> GetFilteredItemsAsync(SearchCategoryItemRequest searchCategoryRequest)
         {
             var query = _postgreSQLDbContext
                                         .ItemEntities
