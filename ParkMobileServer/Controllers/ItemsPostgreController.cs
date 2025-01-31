@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using ParkMobileServer.DTO.FilterDTO;
 using ParkMobileServer.Entities.Filters;
 using ParkMobileServer.DTO.GetItemDTO;
+using ParkMobileServer.Functions;
+using ParkMobileServer.Helpers;
 
 namespace ParkMobileServer.Controllers
 {
@@ -35,18 +37,21 @@ namespace ParkMobileServer.Controllers
 		private readonly TelegramBot.TelegramBot _telegramBot;
         private readonly IDistributedCache _cache;
         private readonly ILogger<ItemsPostgreController> _logger;
+        private readonly GetItems _getItemsService;
 
         public ItemsPostgreController
 		(
 			PostgreSQLDbContext postgreSQLDbContext,
 			TelegramBot.TelegramBot telegramBot,
             IDistributedCache cache,
-            ILogger<ItemsPostgreController> logger
+            ILogger<ItemsPostgreController> logger,
+			GetItems getItemsService
         )
 		{
 			_postgreSQLDbContext = postgreSQLDbContext;
 			_telegramBot = telegramBot;
 			_cache = cache;
+			_getItemsService = getItemsService;
 			_logger = logger;
 		}
 
@@ -223,14 +228,14 @@ namespace ParkMobileServer.Controllers
                 Article = new ArticleEntity { Article = itemDto.Article }
             };
 
-			foreach(var filter in itemDto.Filters) {
+			foreach(var filter in itemDto.Filters.OrEmpty()) {
 				var existingFilter = await _postgreSQLDbContext.Filters
 					.FirstOrDefaultAsync(f => f.Id == filter);
 
 				if (existingFilter != null)
 				{
 					// Если фильтр существует, добавляем его в коллекцию
-					item.Filters.Add(existingFilter);
+					item.Filters?.Add(existingFilter);
 				}
 			}
 
@@ -242,241 +247,34 @@ namespace ParkMobileServer.Controllers
 		[HttpPost("GetCategoryItems")]
 		public async Task<IActionResult> GetCategoryItems(SearchCategoryItemRequest searchCategoryRequest)
 		{
-			var _query = searchCategoryRequest.Query;
-
-			var splitedQuery = _query.Split("/");
-
-			string category = splitedQuery[0].ToLower();
-			string item = splitedQuery[1].ToLower();
-
-			var brandId = 0;
-			var categoryId = 0;
-
-            IQueryable<ItemEntity> query = _postgreSQLDbContext
-											.ItemEntities;
-
-			//TODO: Можно отобрать бренды и категории через Select и упростить эту схему
-
-			switch(category.ToLower())
+			try
 			{
-				case "apple": 
-					switch (item.ToLower())
-					{
-						case "iphone":
-                            query = query.Where(queryItem => queryItem.Name.ToLower().Contains(item.ToLower()));
-							break;
-						case "macbook":
-							query = query.Where(queryItem => queryItem.Name.ToLower().Contains(item.ToLower()));
-							break;
-						case "ipad":
-							query = query.Where(queryItem => queryItem.Name.ToLower().Contains(item.ToLower()));
-							break;
-						case "watches":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "watch")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-						case "airpods":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "airpods")).Id;
-							query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-							break;
-                        }
-						case "tv":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "tv")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-                    }
-					break;
-				case "samsung":
-					switch (item.ToLower())
-					{
-						case "phones":
-						{
-                            brandId = 11;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "phones")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "headphones":
-						{
-                            brandId = 11;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "watches":
-						{
-                            brandId = 11;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "watch")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-					}
-					break;
-				case "xiaomi":
-					switch (item.ToLower())
-					{
-						case "phones":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "xiaomi")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "phones")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "headphones":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "xiaomi")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-							break;
-                        }
-						case "tv":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "xiaomi")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "tv")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-							break;
-                        }
-					}
-					break;
-				case "dyson":
-					switch(item.ToLower())
-					{
-						case "styler":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "styler")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "hairdryer":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "hairdryer")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-                        case "rectifier":
-                        {
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "rectifier")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-                        case "vacuumcleaner":
-                        {
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "vacuumcleaner")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-                        case "airpurifiers":
-                        {
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "airpurifiers")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-                    }
-					break;
-				case "headphones":
-					switch (item.ToLower())
-					{
-						case "yandex":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "yandex")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "jbl":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "jbl")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "marshall":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "marshall")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-					}
-					break;
-				case "gaming":
-					switch (item.ToLower())
-					{
-						case "sony":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "sony")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId).Take(5);
-                            break;
-						}
-						case "microsoft":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "microsoft")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "nintendo":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "nintendo")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "steam":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "steam")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.BrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "accessories":
-						{
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaimingaccessories")).Id;
-                            query = query.Where(queryItem => queryItem.CategoryId == categoryId);
-                            break;
-						}
-					}
-					break;
+				var response = await _getItemsService.GetCategoryItemsAsync(searchCategoryRequest);
+				return Ok(response);
 			}
-
-			var itemsCount = await query.CountAsync();
-			var items = await query
-								.Skip(searchCategoryRequest.Skip)
-								.Take(searchCategoryRequest.Take)
-								.Include(i => i.Description)
-								.Include(i => i.Article)
-								.ToListAsync();
-
-			if(items.Count > 0)
+			catch(Exception ex)
 			{
-				return Ok(new
-				{
-					items = items.Select(item => ItemMapper.MapToDto(item, brandId, categoryId)),
-					count = itemsCount
-				});
+				_logger.LogError("Ошибка! {Message}", ex.Message);
+				return BadRequest(ex.Message);
 			}
-			else
-			{
-				return NoContent();
-			}
+        }
 
+		[HttpPost("GetSearchItemsByName")]
+		public async Task<IActionResult> SearchItemsByName(GetSearchItemRequest searchRequest)
+		{
+			try
+			{
+				var response = await _getItemsService.GetSearchItemsByName(searchRequest);
+				return Ok(response);
+			}
+			catch(Exception ex)
+			{
+				_logger.LogError("Ошибка! {Message}", ex.Message);
+				return BadRequest(ex.Message);
+			}
 		}
 
-		[HttpPost("GetItemsByName")]
+        [HttpPost("GetItemsByName")]
 		public async Task<IActionResult> GetItemByName(string name, int skip, int take, bool fromSearch = true)
 		{
 			var splittedName = name.Split(" ");
@@ -491,6 +289,7 @@ namespace ParkMobileServer.Controllers
 				query = query
 							.Where(item => item.Name.ToLower()
 							.Contains(splitValue.ToLower()));
+
 				if(fromSearch == false)
 				{
 					if(name.ToLower() == "iphone 16" ||  name.ToLower() == "iphone 15" || name.ToLower() == "iphone 14" || name.ToLower() == "iphone 13" || name.ToLower() == "iphone 12" || name.ToLower() == "iphone 11")
@@ -591,7 +390,7 @@ namespace ParkMobileServer.Controllers
 			{
                 return Ok(new
                 {
-                    items = items,
+                    items,
                     count = itemsCount
                 });
             }
@@ -629,8 +428,8 @@ namespace ParkMobileServer.Controllers
 									item.isInvisible,
 									Category = item.Category!.Name,
 									Brand = item.Brand!.Name,
-                                    Article = item.Article!.Article,
-									Description = item.Description!.Description
+                                    item.Article!.Article,
+									item.Description!.Description
 								})
 								.FirstOrDefault();
 			return Ok(item);
@@ -699,7 +498,6 @@ namespace ParkMobileServer.Controllers
 			_item.IsNewItem = item.IsNewItem;
 			_item.IsPopular = item.IsPopular;
 			_item.isInvisible = item.IsInvisible;
-
             _item.Filters.Clear();
 
             foreach (var filter in item.Filters) {
@@ -730,7 +528,6 @@ namespace ParkMobileServer.Controllers
 				_item.Description.Description = item.Description;
 			}
 
-			// Сохраняем изменения
 			await _postgreSQLDbContext.SaveChangesAsync();
 
 			return Ok();
@@ -739,202 +536,33 @@ namespace ParkMobileServer.Controllers
 		[HttpGet("GetPopularItems")]
 		public async Task<IActionResult> GetPopularItems()
 		{
-            const string cacheKey = "popularItems";
+			var response = await _getItemsService.GetPopularItemsAsync();
 
-            var cachedData = await _cache.GetStringAsync(cacheKey);
-
-            if (cachedData != null)
-            {
-                var popularItems = JsonConvert.DeserializeObject<List<ItemEntity>>(cachedData);
-                return Ok(popularItems);
-            }
-
-            var newItems = await _postgreSQLDbContext
-						.ItemEntities
-						.Where(item => item.IsPopular == true)
-						.Select(item => new {
-							item.Id,
-							item.Name,
-							item.Price,
-							item.DiscountPrice,
-							item.Image
-						})
-						.ToListAsync();
-
-			_logger.LogInformation("Retrived popular items: {items}", JsonConvert.SerializeObject(newItems, Formatting.Indented));
-
-            var cacheOptions = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-            };
-            var serializedData = JsonConvert.SerializeObject(newItems);
-            await _cache.SetStringAsync(cacheKey, serializedData, cacheOptions);
-
-			_logger.LogInformation("Data from Redis: {items}", _cache.GetString(cacheKey));
-
-            return Ok(newItems);
+            return Ok(response);
 		}
 
         [HttpPost("GetItems")]
         public async Task<IActionResult> GetItems(GetItemDTO GetItemRequest)
         {
-            int? categoryId = null;
-            int? brandId = null;
+			object response;
 
-            if (GetItemRequest.category == "New")
-            {
-				var queryString = await _postgreSQLDbContext
-									.ItemEntities
-									.Where(item => item.IsNewItem)
-									.Select(item => new
-									{
-										item.Id,
-										item.Name,
-										item.DiscountPrice,
-										item.Price,
-										item.Image,
-										item.IsPopular,
-										item.IsNewItem,
-										item.Stock
-									})
-									.ToListAsync();
-
-				var newItems = queryString
-									.Skip(GetItemRequest.skip)
-									.Take(GetItemRequest.take);
-
-				var counter = queryString
-									.Count;
-
-				return Ok(new
-				{
-					count = counter,
-					items = newItems,
-				});
+			if(GetItemRequest.category == "New")
+			{
+				response = await _getItemsService.GetNewItemsAsync(GetItemRequest);
+				return Ok(response);
             }
 
-            if (!string.IsNullOrWhiteSpace(GetItemRequest.category))
-            {
-                categoryId = (await _postgreSQLDbContext
-                                .ItemCategories
-                                .FirstOrDefaultAsync(c => c.Name == GetItemRequest.category))?
-                                .Id;
-            }
-            if (!string.IsNullOrWhiteSpace(GetItemRequest.brand))
-            {
-                brandId = (await _postgreSQLDbContext
-                                .ItemBrands
-                                .FirstOrDefaultAsync(b => b.Name.ToLower() == GetItemRequest.brand.ToLower()))?
-                                .Id;
-				//TODO: Снизу заглушка, т.к. brandId не ищется, если brand = samsung
-				if(GetItemRequest.brand == "Samsung")
-				{
-					brandId = 11;
-				}
-            }
+			response = await _getItemsService.GetFilteredItemsAsync(GetItemRequest);
 
-				var query = _postgreSQLDbContext
-								.ItemEntities
-								.Select(item => new
-								{
-									item.Id,
-									item.Name,
-									item.DiscountPrice,
-									item.Price,
-									item.Image,
-									item.IsPopular,
-									item.IsNewItem,
-									item.BrandId,
-									item.CategoryId,
-									item.Stock
-								})
-								.AsQueryable();
-
-				if (categoryId.HasValue)
-				{
-					if(GetItemRequest.category.ToLower() == "gaming")
-					{
-						query = query.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
-					}
-					else
-					{
-						query = query.Where(item => item.CategoryId == categoryId.Value);
-					}
-				}
-
-				if (brandId.HasValue)
-				{
-					query = query.Where(item => item.BrandId == brandId.Value);
-				}
-
-				var count = await query.CountAsync();
-
-				var items = await query
-									.Select(item => new
-									{
-                                        item.Id,
-                                        item.Name,
-                                        item.DiscountPrice,
-                                        item.Price,
-                                        item.Image,
-                                        item.IsPopular,
-                                        item.IsNewItem,
-										item.Stock
-                                    })
-									.Skip(GetItemRequest.skip)
-									.Take(GetItemRequest.take)
-									.ToListAsync();
-
-				return Ok(new
-				{
-					count = count,
-					items = items
-				});
-			}
+            return Ok(response);
+		}
 
 		[HttpGet("GetItemsForAdmin")]
 		public async Task<IActionResult> GetItemsForAdmin(int skip, int take, string name = "") {
-			var query = _postgreSQLDbContext
-							.ItemEntities
-							.Include(i => i.Filters)
-							.Select(item => new
-							{
-								item.Id,
-								item.Name,
-								item.DiscountPrice,
-								item.Price,
-								item.Image,
-								item.IsPopular,
-								item.IsNewItem,
-								item.BrandId,
-								item.CategoryId,
-								item.Stock,
-								Description = item.Description!.Description,
-								Article = item.Article!.Article,
-								Filters = item.Filters.Select(f => new {
-									f.Id,
-									f.Name
-								})
-							})
-							.AsQueryable();
 
-			if (!string.IsNullOrWhiteSpace(name))
-			{
-				query = query.Where(item => item.Name.ToLower().Contains(name.ToLower()));
-			}
+			var response = await _getItemsService.GetItemsForAdmin(skip,take,name);
 
-			var count = await query.CountAsync();
-
-			var items = await query
-								.Skip(skip)
-								.Take(take)
-								.ToListAsync();
-
-			return Ok(new
-			{
-				count = count,
-				items = items
-			});
+            return Ok(response);
 		}
         #endregion
         #region TelegrammAlerts

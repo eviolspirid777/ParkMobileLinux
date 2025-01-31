@@ -5,6 +5,7 @@ using ParkMobileServer.DbContext;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using ParkMobileServer.Functions;
 
 /*
  * Команды для развертывания докера на серваке
@@ -30,20 +31,20 @@ namespace ParkMobileServer
 			{
 				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
 			});
-
-			builder.Services.AddSingleton(provider =>
-			{
-				var botToken = "7566916254:AAG6ikx9G9a2ETL1lAEbZFWxXmhj7ylq_MY";
-				return new TelegramBot.TelegramBot(botToken);
-			});
-
             builder.Services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = builder.Configuration.GetConnectionString("Redis");
                 options.InstanceName = "RedisInstance";
             });
-
-            builder.WebHost.UseUrls("http://*:3001");
+            builder.Services.AddSingleton(provider =>
+            {
+                var botToken = "7566916254:AAG6ikx9G9a2ETL1lAEbZFWxXmhj7ylq_MY";
+                return new TelegramBot.TelegramBot(botToken);
+            });
+            builder.Services.AddScoped<GetItems>();
+            
+			
+			builder.WebHost.UseUrls("http://*:3001");
 
             //builder.Services.AddHttpsRedirection(options =>
             //{
