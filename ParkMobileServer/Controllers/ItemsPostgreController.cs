@@ -513,6 +513,7 @@ namespace ParkMobileServer.Controllers
 					{
 						query = query
 								.Where(item =>
+										item.Name.ToLower().Contains("galaxy s25") ||
 										item.Name.ToLower().Contains("galaxy s24") ||
 										item.Name.ToLower().Contains("galaxy s23") ||
 										item.Name.ToLower().Contains("galaxy s22") ||
