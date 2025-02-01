@@ -31,6 +31,7 @@ namespace ParkMobileServer.Functions
 
             var query = _postgreSQLDbContext
                                 .ItemEntities
+                                .Where(item => item.isInvisible == false)
                                 .Include(item => item.Description)
                                       .Include(item => item.Article)
                                       .AsQueryable();
@@ -73,6 +74,7 @@ namespace ParkMobileServer.Functions
         {
             var query = _postgreSQLDbContext
                             .ItemEntities
+                            .Where(item => item.isInvisible == false)
                             .Include(i => i.Filters)
                             .AsQueryable();
 
@@ -86,6 +88,8 @@ namespace ParkMobileServer.Functions
             var itemsCount = await query.CountAsync();
 
             var items = await query
+                                .OrderByDescending(item => item.IsNewItem)
+                                .ThenByDescending(item => item.Name)
                                 .Skip(searchCategoryRequest.Skip)
                                 .Take(searchCategoryRequest.Take)
                                 .Select(item => new
@@ -117,6 +121,7 @@ namespace ParkMobileServer.Functions
 
             var query = _postgreSQLDbContext
                                 .ItemEntities
+                                .Where(item => item.isInvisible == false)
                                 .Include(item => item.Description)
                                 .Include(item => item.Article)
                                 .AsQueryable();
@@ -130,6 +135,8 @@ namespace ParkMobileServer.Functions
             var itemsCount = await query.CountAsync();
 
             var items = await query
+                                .OrderByDescending(item => item.IsNewItem)
+                                .ThenByDescending(item => item.Name)
                                 .Skip(searchRequest.Skip)
                                 .Take(searchRequest.Take)
                                 .ToListAsync();
@@ -154,6 +161,7 @@ namespace ParkMobileServer.Functions
         {
             var query = _postgreSQLDbContext
                         .ItemEntities
+                        .Where(item => item.isInvisible == false)
                         .Select(item => new
                         {
                             item.Id,
@@ -171,9 +179,10 @@ namespace ParkMobileServer.Functions
 
 
             var newItems = await query
-                                        .Skip(request.skip)
-                                        .Take(request.take)
-                                        .ToListAsync();
+                                    .OrderByDescending(item => item.Name)
+                                    .Skip(request.skip)
+                                    .Take(request.take)
+                                    .ToListAsync();
 
             var counter = query
                                     .ToList()
@@ -193,6 +202,7 @@ namespace ParkMobileServer.Functions
 
             var query = _postgreSQLDbContext
                                     .ItemEntities
+                                    .Where(item => item.isInvisible == false)
                                     .Select(item => new
                                     {
                                         item.Id,
@@ -265,6 +275,7 @@ namespace ParkMobileServer.Functions
             var query = _postgreSQLDbContext
                 .ItemEntities
                 .Include(i => i.Filters)
+                .OrderBy(item => item.Id)
                 .Select(item => new
                 {
                     item.Id,
@@ -274,6 +285,7 @@ namespace ParkMobileServer.Functions
                     item.Image,
                     item.IsPopular,
                     item.IsNewItem,
+                    item.isInvisible,
                     item.BrandId,
                     item.CategoryId,
                     item.Stock,
@@ -318,6 +330,7 @@ namespace ParkMobileServer.Functions
             var popularItems = await _postgreSQLDbContext
                                                         .ItemEntities
                                                         .Where(item => item.IsPopular)
+                                                        .Where(item => item.isInvisible == false)
                                                         .Select(item => new PopularItemDTO
                                                         {
                                                             Id = item.Id,

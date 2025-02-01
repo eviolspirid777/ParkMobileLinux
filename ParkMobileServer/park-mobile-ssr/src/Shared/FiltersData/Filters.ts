@@ -1,13 +1,10 @@
-export const CategoryFilters = new Map([
+export const ItemsFilters = new Map([
     ["Apple", ["iPhone", "MacBook", "iPad", "AirPods", "Apple Watch", "Apple TV"]],
     ["Samsung", ["Смартфоны", "Наушники", "Умные часы"]],
     ["Xiaomi", ["Смартфоны", "Наушники", "ТВ Приставки"]],
     ["Dyson", ["Стайлеры", "Фены", "Выпрямители", "Пылесосы", "Очистители воздуха"]],
     ["Headphones", ["Яндекс Станции", "JBL", "Marshall"]],
-    ["Gaming", ["Sony", "Xbox", "Nintendo", "Steam Deck", "Аксессуары"]]
-])
-
-export const ItemsFilters = new Map([
+    ["Gaming", ["Sony", "Xbox", "Nintendo", "Steam Deck", "Аксессуары"]],
     //Apple
     ["iPhone", ["iPhone 16 Pro Max", "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16", "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15 Plus", "iPhone 15", "iPhone 14", "iPhone 13", "iPhone 12", "iPhone 11"]],
     ["MacBook", ['MacBook Pro 16” (2024)', 'MacBook Pro 16" (2023)', 'MacBook Pro 14” (2024)', 'MacBook Pro 14" (2023)', 'MacBook Air 15" (2024)', 'MacBook Air 13" (2024)', 'MacBook Air 15" (2023)', 'MacBook Air 13" (2022)', 'MacBook Air 13" (2020)']],
@@ -19,6 +16,9 @@ export const ItemsFilters = new Map([
     ["SamsungPhones", ["Galaxy S", "Galaxy A", "Galaxy Z"]],
     ["SamsungHeadphones", []],
     ["SamsungSmartWatches", []],
+    ["Galaxy S", []],
+    ["Galaxy A", []],
+    ["Galaxy Z", []],
     //Xiaomi
     ["XiaomiPhones", ["Xiaomi 14 Ultra", "Xiaomi 14", "Xiaomi 14T Pro", "Xiaomi 14T", "Xiaomi 13 Pro Plus", "Xiaomi 13 Pro", "Xiaomi 13T"]],
     ["XiaomiHeadphones", []],
@@ -38,10 +38,7 @@ export const ItemsFilters = new Map([
     ["microsoft", []],
     ["nintendo", []],
     ["steam", []],
-    ["accessories", []]
-])
-
-export const InnerItemsFilters = new Map([
+    ["accessories", []],
     //Iphone
     ["iPhone 16 Pro Max", ["16 Pro Max 256Gb", "16 Pro Max 512Gb", "16 Pro Max 1TB"]],
     ["iPhone 16 Pro", ["16 Pro 128Gb", "16 Pro 256Gb", "16 Pro 512Gb", "16 Pro 1TB"]],

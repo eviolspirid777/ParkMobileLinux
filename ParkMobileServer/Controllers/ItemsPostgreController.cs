@@ -278,7 +278,6 @@ namespace ParkMobileServer.Controllers
 									item.Stock,
 									item.IsPopular,
 									item.IsNewItem,
-									item.isInvisible,
 									Category = item.Category!.Name,
 									Brand = item.Brand!.Name,
                                     item.Article!.Article,

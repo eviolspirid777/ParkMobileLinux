@@ -6,10 +6,10 @@ import { useMutation } from "@tanstack/react-query";
 
 import styles from "./ProductObertka.module.scss";
 import { apiClient } from "@/api/ApiClient";
-import { CategoryFilters } from "@/Shared/FiltersData/Filters";
 import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
 import { useRouter } from "next/navigation";
 import { GetItemType } from "@/Types/GetItemType";
+import { ItemsFilters } from "@/Shared/FiltersData/Filters";
 
 type ProductObertkaProps = {
   category: string;
@@ -21,7 +21,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   const navigate = useRouter();
 
   if(category) {
-    filters = CategoryFilters.get(category as string) as string[]
+    filters = ItemsFilters.get(category as string) as string[]
   }
 
   const [take] = useState(16);

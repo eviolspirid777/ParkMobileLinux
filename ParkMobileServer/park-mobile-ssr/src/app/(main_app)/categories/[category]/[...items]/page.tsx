@@ -3,48 +3,46 @@ import { useEffect, useState } from "react";
 import { animateScroll as scroll } from "react-scroll";
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/api/ApiClient";
-import { useParams } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { Products } from "@/Components/Catalog/Products/Products";
 
 import styles from "./ItemsPage.module.scss"
 import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
 import { ItemsFilters } from "@/Shared/FiltersData/Filters";
-import { useAtom } from "jotai";
-import { filterAtom } from "@/Store/Filter";
 import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
 import { GetItemType } from "@/Types/GetItemType";
 
+const convertFilter = (item: string) => {
+  return item.replaceAll("%20", " ")
+}
+
 const ItemPage = () => {
   const { category, items } = useParams();
-
-  const [filter, setFilter] = useAtom(filterAtom);
-
-  useEffect(() => {
-    setFilter([category as string, ...items as string[]]);
-  }, [])
+  const navigate = useRouter();
+  const path = usePathname();
 
   const [filters, ] = useState<string[]>(() => {
       if(items) {
-        let _items = items[items.length - 1];
+        let _items = convertFilter(items[items.length - 1]);
         if(category === "Samsung") {
-          if(items === "phones") {
+          if(items.includes("phones")) {
             _items = "SamsungPhones";
           }
-          if(items === "headphones") {
+          if(items.includes("headphones")) {
             _items = "SamsungHeadphones"
           }
-          if(items === "watches") {
+          if(items.includes("watches")) {
             _items = "SamsungSmartWatches"
           }
         }
         if(category === "Xiaomi") {
-          if(items === "phones") {
+          if(items.includes("phones")) {
             _items = "XiaomiPhones";
           }
-          if(items === "headphones") {
+          if(items.includes("headphones")) {
             _items = "XiaomiHeadphones"
           }
-          if(items === "tv") {
+          if(items.includes("tv")) {
             _items = "XiaomiTv";
           }
         }
@@ -68,19 +66,23 @@ const ItemPage = () => {
       apiClient.GetFilteredItems(item),
   });
 
+  const collectFilters = (): string[] => {
+    return [category as string, ...(items as string[]).map(convertFilter)]
+  }
+
   useEffect(() => {
     const refreshItems = async () => {
-      await mutateItemsAsync({skip, take, filters: [category as string, ...items as string[]]})
+      await mutateItemsAsync({skip, take, filters: [...collectFilters()]})
     }
 
     refreshItems()
   }, [])
 
   const handleFilterSelect = async (item: string) => {
-    if(!filter.includes(item)) {
-      setFilter(prevFilters => [...prevFilters, item])
+    const lastElement = path.split("/").pop()
+    if(lastElement && item !== convertFilter(lastElement)) {
+      navigate.push(`${path}/${item}`)
     }
-    await mutateItemsAsync({ skip: skip, take: take, filters: [...filter, item] })
   }
 
   const handleOnPageChange = async (newSkip: number, newPage: number) => {
@@ -90,9 +92,7 @@ const ItemPage = () => {
     });
 
     setSkip(newSkip);
-    if(filter) {
-      await mutateItemsAsync({skip: newSkip, take: take, filters: [...filter]})
-    }
+    await mutateItemsAsync({skip: newSkip, take: take, filters: [...collectFilters()]})
     setCurrentPage(newPage);
   };
 
@@ -100,13 +100,19 @@ const ItemPage = () => {
     <div
       className={styles["product-container"]}
     >
-      <h4
-        style={Array.isArray(filters) && filters.length === 0 ? {
-          marginBottom: "5%"
-        } : {}}
-      >
-        Каталог
-      </h4>
+      <div className={styles["product-container-header"]}>
+        <i
+          className="fa-solid fa-arrow-left fa-xl"
+          onClick={navigate.back}
+        />
+        <h4
+          style={Array.isArray(filters) && filters.length === 0 ? {
+            marginBottom: "5%"
+          } : {}}
+        >
+          Каталог
+        </h4>
+      </div>
       {
         filters && filters.length > 0 &&
         <ItemsCategories
