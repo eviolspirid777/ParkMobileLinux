@@ -33,8 +33,8 @@ namespace ParkMobileServer.Functions
                                 .ItemEntities
                                 .Where(item => item.isInvisible == false)
                                 .Include(item => item.Description)
-                                      .Include(item => item.Article)
-                                      .AsQueryable();
+                                .Include(item => item.Article)
+                                .AsQueryable();
 
             foreach (var splitValue in splittedName)
             {
@@ -85,11 +85,46 @@ namespace ParkMobileServer.Functions
                                 .All(filter => i.Filters.Any(f => f.Name == filter)));
             }
 
+            if(searchCategoryRequest.Sort != null)
+            {
+                switch(searchCategoryRequest.Sort.Field)
+                {
+                    case "name":
+                    {
+                        if (searchCategoryRequest.Sort.Type == "asc")
+                        {
+                            query = query.OrderBy(item => item.Name);
+                        }
+                        else
+                        {
+                            query = query.OrderByDescending(item => item.Name);
+                        }
+                        break;
+                    }
+                    case "price":
+                    {
+                        if (searchCategoryRequest.Sort.Type == "asc")
+                        {
+                            query = query.OrderBy(item => item.Price);
+                        }
+                        else
+                        {
+                            query = query.OrderByDescending(item => item.Price);
+                        }
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                query = query
+                            .OrderByDescending(item => item.IsNewItem)
+                            .ThenByDescending(item => item.Name);
+            }
+
             var itemsCount = await query.CountAsync();
 
             var items = await query
-                                .OrderByDescending(item => item.IsNewItem)
-                                .ThenByDescending(item => item.Name)
                                 .Skip(searchCategoryRequest.Skip)
                                 .Take(searchCategoryRequest.Take)
                                 .Select(item => new
@@ -177,16 +212,52 @@ namespace ParkMobileServer.Functions
                         })
                         .Where(item => item.IsNewItem);
 
+            if (request.Sort != null)
+            {
+                switch (request.Sort.Field)
+                {
+                    case "name":
+                        {
+                            if (request.Sort.Type == "asc")
+                            {
+                                query = query.OrderBy(item => item.Name);
+                            }
+                            else
+                            {
+                                query = query.OrderByDescending(item => item.Name);
+                            }
+                            break;
+                        }
+                    case "price":
+                        {
+                            if (request.Sort.Type == "asc")
+                            {
+                                query = query.OrderBy(item => item.Price);
+                            }
+                            else
+                            {
+                                query = query.OrderByDescending(item => item.Price);
+                            }
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                query = query
+                            .OrderByDescending(item => item.IsNewItem)
+                            .ThenByDescending(item => item.Name);
+            }
+
 
             var newItems = await query
-                                    .OrderByDescending(item => item.Name)
                                     .Skip(request.skip)
                                     .Take(request.take)
                                     .ToListAsync();
 
             var counter = query
-                                    .ToList()
-                                    .Count;
+                            .ToList()
+                            .Count;
 
             return new
             {
@@ -243,11 +314,46 @@ namespace ParkMobileServer.Functions
                 query = query.Where(item => item.BrandId == brandId.Value);
             }
 
+            if (request.Sort != null)
+            {
+                switch (request.Sort.Field)
+                {
+                    case "name":
+                        {
+                            if (request.Sort.Type == "asc")
+                            {
+                                query = query.OrderBy(item => item.Name);
+                            }
+                            else
+                            {
+                                query = query.OrderByDescending(item => item.Name);
+                            }
+                            break;
+                        }
+                    case "price":
+                        {
+                            if (request.Sort.Type == "asc")
+                            {
+                                query = query.OrderBy(item => item.Price);
+                            }
+                            else
+                            {
+                                query = query.OrderByDescending(item => item.Price);
+                            }
+                            break;
+                        }
+                }
+            }
+            else
+            {
+                query = query
+                            .OrderByDescending(item => item.IsNewItem)
+                            .ThenByDescending(item => item.Name);
+            }
+
             var count = await query.CountAsync();
 
             var items = await query
-                                .OrderByDescending(item => item.IsNewItem)
-                                .ThenByDescending(item => item.Name)
                                 .Select(item => new
                                 {
                                     item.Id,

@@ -11,6 +11,8 @@ import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCatego
 import { ItemsFilters } from "@/Shared/FiltersData/Filters";
 import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
 import { GetItemType } from "@/Types/GetItemType";
+import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
+import { SortType } from "@/Types/SortType";
 
 const convertFilter = (item: string) => {
   return item.replaceAll("%20", " ")
@@ -54,6 +56,7 @@ const ItemPage = () => {
 
   const [skip, setSkip] = useState(0);
   const [take] = useState(16);
+  const [sort, setSort] = useState<SortType>()
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -72,17 +75,22 @@ const ItemPage = () => {
 
   useEffect(() => {
     const refreshItems = async () => {
-      await mutateItemsAsync({skip, take, filters: [...collectFilters()]})
+      await mutateItemsAsync({skip, take, filters: [...collectFilters()], sort: sort})
     }
 
     refreshItems()
-  }, [])
+  }, [sort])
 
   const handleFilterSelect = async (item: string) => {
     const lastElement = path.split("/").pop()
     if(lastElement && item !== convertFilter(lastElement)) {
       navigate.push(`${path}/${item}`)
     }
+  }
+
+  const setSortType = (value: string) => {
+    const [field, type] = value.split(",")
+    setSort({field: field, type: type as "asc" | "desc"})
   }
 
   const handleOnPageChange = async (newSkip: number, newPage: number) => {
@@ -92,7 +100,7 @@ const ItemPage = () => {
     });
 
     setSkip(newSkip);
-    await mutateItemsAsync({skip: newSkip, take: take, filters: [...collectFilters()]})
+    await mutateItemsAsync({skip: newSkip, take: take, filters: [...collectFilters()], sort: sort})
     setCurrentPage(newPage);
   };
 
@@ -115,10 +123,17 @@ const ItemPage = () => {
       </div>
       {
         filters && filters.length > 0 &&
-        <ItemsCategories
-          categoriesItems={filters}
-          onSelect={handleFilterSelect}
-        />
+        <div>
+          <ItemsCategories
+            categoriesItems={filters}
+            onSelect={handleFilterSelect}
+          />
+          <SortSelect
+            size="large"
+            onSelectChange={setSortType}
+            value={sort ? `${sort?.field},${sort?.type}` : null}
+          />
+        </div>
       }
       {
         isLoadingAll ?

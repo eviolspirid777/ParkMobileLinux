@@ -61,54 +61,54 @@ namespace ParkMobileServer.Controllers
 		//[Authorize]
 		//[HttpGet("ConnectData")]
 		//public async Task<IActionResult> ConnectData()
-  //      {
-  //          // Получите все записи ItemEntity
-  //          var items = _postgreSQLDbContext.ItemEntities.ToList();
+		//{
+		//	// Получите все записи ItemEntity
+		//	var items = _postgreSQLDbContext.ItemEntities.ToList();
 
-  //          foreach (var item in items)
-  //          {
-  //              // Перенесите данные в DescriptionEntity
-  //              if (!string.IsNullOrEmpty(item.Description))
-  //              {
-  //                  var description = new DescriptionEntity
-  //                  {
-  //                      Description = item.Description,
-  //                      ItemId = item.Id // Устанавливаем связь с ItemEntity
-  //                  };
-  //                  _postgreSQLDbContext.DescriptionEntity.Add(description);
+		//	foreach (var item in items)
+		//	{
+		//		// Перенесите данные в DescriptionEntity
+		//		if (!string.IsNullOrEmpty(item.Description))
+		//		{
+		//			var description = new DescriptionEntity
+		//			{
+		//				Description = item.Description,
+		//				ItemId = item.Id // Устанавливаем связь с ItemEntity
+		//			};
+		//			_postgreSQLDbContext.DescriptionEntity.Add(description);
 
-  //                  // Сохраните изменения, чтобы получить Id для DescriptionEntity
-  //                  _postgreSQLDbContext.SaveChanges();
+		//			// Сохраните изменения, чтобы получить Id для DescriptionEntity
+		//			_postgreSQLDbContext.SaveChanges();
 
-  //                  // Установите DescriptionId в ItemEntity
-  //                  item.DescriptionTableId = description.Id;
-  //              }
+		//			// Установите DescriptionId в ItemEntity
+		//			item.DescriptionId = description.Id;
+		//		}
 
-  //              // Перенесите данные в ArticleEntity
-  //              if (!string.IsNullOrEmpty(item.Article))
-  //              {
-  //                  var article = new ArticleEntity
-  //                  {
-  //                      Article = item.Article,
-  //                      ItemId = item.Id // Устанавливаем связь с ItemEntity
-  //                  };
-  //                  _postgreSQLDbContext.ArticleEntity.Add(article);
+		//		// Перенесите данные в ArticleEntity
+		//		if (!string.IsNullOrEmpty(item.Article))
+		//		{
+		//			var article = new ArticleEntity
+		//			{
+		//				Article = item.Article,
+		//				ItemId = item.Id // Устанавливаем связь с ItemEntity
+		//			};
+		//			_postgreSQLDbContext.ArticleEntity.Add(article);
 
-  //                  // Сохраните изменения, чтобы получить Id для ArticleEntity
-  //                  _postgreSQLDbContext.SaveChanges();
+		//			// Сохраните изменения, чтобы получить Id для ArticleEntity
+		//			_postgreSQLDbContext.SaveChanges();
 
-  //                  // Установите ArticleId в ItemEntity
-  //                  item.ArticleTableId = article.Id;
-  //              }
-  //          }
+		//			// Установите ArticleId в ItemEntity
+		//			item.ArticleId = article.Id;
+		//		}
+		//	}
 
-  //          // Сохраните изменения в ItemEntity
-  //          _postgreSQLDbContext.SaveChanges();
+		//	// Сохраните изменения в ItemEntity
+		//	_postgreSQLDbContext.SaveChanges();
 		//	return Ok();
-  //      }
+		//}
 
-        #region Brands&Categories
-        [HttpGet("GetBrands")]
+		#region Brands&Categories
+		[HttpGet("GetBrands")]
 		public async Task<IActionResult> GetBrandsList()
 		{
 			var items = await _postgreSQLDbContext
@@ -280,7 +280,7 @@ namespace ParkMobileServer.Controllers
 									item.IsNewItem,
 									Category = item.Category!.Name,
 									Brand = item.Brand!.Name,
-                                    item.Article!.Article,
+									item.Article!.Article,
 									item.Description!.Description
 								})
 								.FirstOrDefault();
@@ -343,7 +343,7 @@ namespace ParkMobileServer.Controllers
 
 			if (_item.Article == null)
 			{
-				_item.Article = new () { Article = item.Article };
+				_item.Article = new() { Article = item.Article };
 			}
 			else
 			{
@@ -352,7 +352,7 @@ namespace ParkMobileServer.Controllers
 
 			if (_item.Description == null)
 			{
-				_item.Description = new () { Description = item.Description };
+				_item.Description = new() { Description = item.Description };
 			}
 			else
 			{
@@ -574,19 +574,6 @@ namespace ParkMobileServer.Controllers
 			}
 		}
 
-		//[HttpPost("{id}/image")]
-  //      public async Task<IActionResult> GetImageData(int id)
-  //      {
-  //          var item = await _postgreSQLDbContext.ItemEntities.FindAsync(id);
-  //          if (item == null || item.Image == null)
-  //          {
-  //              return NotFound();
-  //          }
-
-  //          var imageContentType = "image/jpeg"; // или другой тип, который у вас
-  //          return File(item.Image, imageContentType); // Используйте метод File для отправки изображения
-  //      }
-
 		[Authorize]
 		[HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFileCollection files, [FromForm] string sliderName)
@@ -604,7 +591,7 @@ namespace ParkMobileServer.Controllers
                     var imageBytes = memoryStream.ToArray();
 					slider.Name = sliderName;
 					slider.ImageData = imageBytes;
-                }
+				}
             }
 
             _postgreSQLDbContext.Sliders.Add(slider);

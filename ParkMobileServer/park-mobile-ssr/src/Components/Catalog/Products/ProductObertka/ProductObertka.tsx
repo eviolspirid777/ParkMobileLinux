@@ -10,6 +10,8 @@ import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCatego
 import { useRouter } from "next/navigation";
 import { GetItemType } from "@/Types/GetItemType";
 import { ItemsFilters } from "@/Shared/FiltersData/Filters";
+import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
+import { SortType } from "@/Types/SortType";
 
 type ProductObertkaProps = {
   category: string;
@@ -25,6 +27,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   }
 
   const [take] = useState(16);
+  const [sort, setSort] = useState<SortType>()
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -39,8 +42,8 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   });
 
   useEffect(() => {
-    getItems({skip: 0, take, filters: [category]})
-  }, [])
+    getItems({skip: 0, take, filters: [category], sort: sort})
+  }, [sort])
 
   const handleOnPageChange = async (newSkip: number, newPage: number) => {
     scroll.scrollTo(100, {
@@ -49,7 +52,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     });
 
     setCurrentPage(newPage);
-    await getItemsAsync({take, skip: newSkip, filters: [category]});
+    await getItemsAsync({take, skip: newSkip, filters: [category], sort: sort});
   };
 
   const handlePath = (path: string) => {
@@ -113,6 +116,11 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     navigate.push(`/categories/${category}/${_path}`)
   }
 
+  const setSortType = (value: string) => {
+    const [field, type] = value.split(",")
+    setSort({field: field, type: type as "asc" | "desc"})
+  }
+
   if (isPendingItems || items?.count === 0) {
     return <div style={{ height: "320vh", width: "100%" }} />;
   }
@@ -124,10 +132,17 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
       </h4>
       {
         filters.length > 0 &&
-        <ItemsCategories
-          categoriesItems={filters}
-          onSelect={handlePath}
-        />
+        <div>
+          <ItemsCategories
+            categoriesItems={filters}
+            onSelect={handlePath}
+          />
+          <SortSelect
+            size="large"
+            onSelectChange={setSortType}
+            value={sort ? `${sort?.field},${sort?.type}` : null}
+          />
+        </div>
       }
       <Products
         cards={items?.items}
