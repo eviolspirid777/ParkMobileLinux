@@ -3,6 +3,8 @@
 
 ./ParkMobileServer/bin/*
 ./ParkMobileServer/bin/
+/ParkMobileServer/bin
+/ParkMobileServer/obj
 
 .idea
 .vs
