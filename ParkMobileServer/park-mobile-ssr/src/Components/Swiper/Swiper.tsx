@@ -7,10 +7,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import styles from "./Swiper.module.scss";
-import { fetchImages } from "./fetchImages";
 import ImageData from "next/image";
 import { accentColorAtom } from "@/Store/AccentColor";
 import { useAtom } from "jotai";
+import { useGetSliderData } from "@/hooks/useGetSliderData";
+import { useGetSliderDataMobile } from "@/hooks/useGetSliderDataMobile";
 
 
 export const SwiperList = () => {
@@ -18,17 +19,43 @@ export const SwiperList = () => {
   const [accentColor, setAccentColor] = useAtom(accentColorAtom)
   const [isRendered, setIsRendered] = useState(false);
 
+  const {
+    sliderData,
+    getSliderDataAsync,
+  } = useGetSliderData();
+
+  const {
+    mobileSliderData,
+    getMobileSliderDataAsync,
+  } = useGetSliderDataMobile();
+
   useEffect(() => {
     setIsRendered(true)
   }, [])
 
   useEffect(() => {
-    if(isRendered) {
-      fetchImages(window.screen.width).then((fetchedImages) => {
-        setImages(fetchedImages);
-      });
+    const getSliderData = async () => {
+      if(isRendered) {
+        if(window.screen.width > 1024) {
+          await getSliderDataAsync()
+        }
+        else {
+          await getMobileSliderDataAsync()
+        }
+      }
     }
+
+    getSliderData();
   }, [isRendered]);
+
+  useEffect(() => {
+    if(mobileSliderData) {
+      setImages(mobileSliderData.map(data => data.imageData))
+    }
+    else if(sliderData) {
+      setImages(sliderData.map(data => data.imageData))
+    }
+  }, [mobileSliderData, sliderData])
 
   const handleSlideChange = (swiper: { realIndex: number }) => {
     const currentIndex = swiper.realIndex;

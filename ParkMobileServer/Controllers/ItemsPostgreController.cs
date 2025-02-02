@@ -608,13 +608,13 @@ namespace ParkMobileServer.Controllers
         {
 			const string cacheKey = "sliderImages";
 
-            var cachedData = await _cache.GetStringAsync(cacheKey);
+			var cachedData = await _cache.GetStringAsync(cacheKey);
 
 			if (cachedData != null && isForAdmin == false)
-            {
-                var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
-                return Ok(slides);
-            }
+			{
+				var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
+				return Ok(slides);
+			}
 
 			var sliderImageQuery = await _postgreSQLDbContext
 											   .Sliders
@@ -631,8 +631,8 @@ namespace ParkMobileServer.Controllers
 				return BadRequest();
 			}
 
-            var serializedData = JsonConvert.SerializeObject(selectedSlides);
-            await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
+			var serializedData = JsonConvert.SerializeObject(selectedSlides);
+			await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
 
 			return Ok(selectedSlides);
 		}
@@ -645,10 +645,10 @@ namespace ParkMobileServer.Controllers
 			var cachedData = await _cache.GetStringAsync(cacheKey);
 
 			if (cachedData != null)
-            {
-                var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
-                return Ok(slides);
-            }
+			{
+				var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
+				return Ok(slides);
+			}
 
 			var sliders = await _postgreSQLDbContext
 										.Sliders
@@ -666,10 +666,10 @@ namespace ParkMobileServer.Controllers
                 return BadRequest();
             }
 
-            var serializedData = JsonConvert.SerializeObject(sliders);
-            await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
+			var serializedData = JsonConvert.SerializeObject(sliders);
+			await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
 
-            return Ok(sliders);
+			return Ok(sliders);
         }
 
         [HttpDelete("sliderImage/{id}")]
