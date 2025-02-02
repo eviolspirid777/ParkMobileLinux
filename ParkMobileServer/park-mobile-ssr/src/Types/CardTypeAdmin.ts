@@ -11,8 +11,10 @@ export type CardTypeAdmin = {
     id?: number;
     isPopular: boolean;
     isNewItem: boolean;
+    isInvisible: boolean;
     brandId?: number;
     categoryId?: number;
+    filters?: {id: number, name: string}[]
 }
 
 export type RecivedCardDataAdminType = {

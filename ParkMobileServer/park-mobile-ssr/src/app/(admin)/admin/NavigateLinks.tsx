@@ -36,6 +36,11 @@ export const navLinks: MenuProps["items"] = [
         icon: <i className="fa-solid fa-list" />,
         label: "Категории",
       },
+      {
+        key: "filters",
+        icon: <i className="fa-solid fa-filter"/>,
+        label: "Фильтры"
+      }
     ],
   },
   {

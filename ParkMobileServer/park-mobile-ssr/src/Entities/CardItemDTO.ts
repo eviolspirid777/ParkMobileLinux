@@ -4,12 +4,14 @@ export type CardItemDTO = {
     price: string,
     article?: string,
     image?: string,
-    discountPrice?: string;
+    discountPrice?: string,
     description?: string,
     stock: number,
     categoryId: number,
-    itemBrandId: number,
+    brandId: number,
     options?: string,
     isPopular?: boolean,
     isNewItem?: boolean,
+    isInvisible?: boolean,
+    filters?: string[],
 }

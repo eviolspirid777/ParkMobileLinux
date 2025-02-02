@@ -1,27 +1,21 @@
 "use client";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { Products } from "../Products";
 import { animateScroll as scroll } from "react-scroll";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import styles from "./ProductObertka.module.scss";
 import { apiClient } from "@/api/ApiClient";
-import { CategoryFilters } from "@/Shared/FiltersData/Filters";
 import { ItemsCategories } from "@/Shared/Components/ItemsCategories/ItemsCategories";
 import { useRouter } from "next/navigation";
+import { GetItemType } from "@/Types/GetItemType";
+import { ItemsFilters } from "@/Shared/FiltersData/Filters";
+import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
+import { SortType } from "@/Types/SortType";
 
 type ProductObertkaProps = {
   category: string;
 };
-
-const categoryDictionary = new Map([
-  ["Apple", "brand=Apple"],
-  ["Samsung", "brand=Samsung"],
-  ["Xiaomi", "brand=Xiaomi"],
-  ["Dyson", "brand=Dyson"],
-  ["Headphones", "category=Audio"],
-  ["Gaming", "category=Gaming"],
-]);
 
 export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   let filters: string[] = [];
@@ -29,52 +23,40 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   const navigate = useRouter();
 
   if(category) {
-    filters = CategoryFilters.get(category as string) as string[]
+    filters = ItemsFilters.get(category as string) as string[]
   }
 
-  const [skip, setSkip] = useState(0);
   const [take] = useState(16);
-
+  const [sort, setSort] = useState<SortType>()
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: items,
-    refetch,
-    isLoading: isLoadingAll,
-  } = useQuery({
-    queryKey: ["items", skip, take],
-    //TODO: Здесь нужно будет пофиксить баг с тем, что категории неправильно отправляются, нужна дополнительная обработка на беке
-    queryFn: async () =>
-      apiClient.GetItemsCostil(
-        skip,
-        take,
-        categoryDictionary.get(category) ?? ""
-      ),
-    refetchOnWindowFocus: false,
+    mutateAsync: getItemsAsync,
+    mutate: getItems,
+    isPending: isPendingItems
+  } = useMutation({
+    mutationKey: ["items"],
+    mutationFn: async (item: GetItemType) =>
+      apiClient.GetFilteredItems(item),
   });
 
-  const handleOnPageChange = (newSkip: number, newPage: number) => {
+  useEffect(() => {
+    getItems({skip: 0, take, filters: [category], sort: sort})
+  }, [sort])
+
+  const handleOnPageChange = async (newSkip: number, newPage: number) => {
     scroll.scrollTo(100, {
       duration: 700,
       smooth: true,
     });
 
-    setSkip(newSkip);
     setCurrentPage(newPage);
-    refetch();
+    await getItemsAsync({take, skip: newSkip, filters: [category], sort: sort});
   };
 
   const handlePath = (path: string) => {
     let _path = path;
-    if(_path === "Apple Watch") {
-      _path = "watches"
-    }
-    if(_path === "Apple TV") {
-      _path = "tv"
-    }
-    if(_path === "Смартфоны") {
-      _path = "phones"
-    }
     switch (path) {
       case "Apple Watch":
         _path = "watches"
@@ -134,7 +116,12 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     navigate.push(`/categories/${category}/${_path}`)
   }
 
-  if (isLoadingAll || items?.count === 0) {
+  const setSortType = (value: string) => {
+    const [field, type] = value.split(",")
+    setSort({field: field, type: type as "asc" | "desc"})
+  }
+
+  if (isPendingItems || items?.count === 0) {
     return <div style={{ height: "320vh", width: "100%" }} />;
   }
 
@@ -145,10 +132,17 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
       </h4>
       {
         filters.length > 0 &&
-        <ItemsCategories
-          categoriesItems={filters}
-          onSelect={handlePath}
-        />
+        <div>
+          <ItemsCategories
+            categoriesItems={filters}
+            onSelect={handlePath}
+          />
+          <SortSelect
+            size="large"
+            onSelectChange={setSortType}
+            value={sort ? `${sort?.field},${sort?.type}` : null}
+          />
+        </div>
       }
       <Products
         cards={items?.items}

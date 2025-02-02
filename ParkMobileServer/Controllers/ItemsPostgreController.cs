@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Xml.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkMobileServer.DbContext;
@@ -13,6 +14,13 @@ using ParkMobileServer.Entities.TradeIn;
 using ParkMobileServer.Mappers.BrandMapper;
 using ParkMobileServer.Mappers.CategoryMapper;
 using ParkMobileServer.Mappers.ItemsMapper;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using ParkMobileServer.DTO.FilterDTO;
+using ParkMobileServer.Entities.Filters;
+using ParkMobileServer.DTO.GetItemDTO;
+using ParkMobileServer.Functions;
+using ParkMobileServer.Helpers;
 
 namespace ParkMobileServer.Controllers
 {
@@ -20,106 +28,100 @@ namespace ParkMobileServer.Controllers
 	[Route("api/[controller]")]
 	public class ItemsPostgreController : Controller
 	{
+		public static DistributedCacheEntryOptions _cacheOptions = new ()
+		{
+			AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+		};
+
 		private readonly PostgreSQLDbContext _postgreSQLDbContext;
 		private readonly TelegramBot.TelegramBot _telegramBot;
-		public ItemsPostgreController
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<ItemsPostgreController> _logger;
+        private readonly GetItems _getItemsService;
+		private readonly CreateItems _itemService;
+
+        public ItemsPostgreController
 		(
 			PostgreSQLDbContext postgreSQLDbContext,
-			TelegramBot.TelegramBot telegramBot
-		)
+			TelegramBot.TelegramBot telegramBot,
+            IDistributedCache cache,
+            ILogger<ItemsPostgreController> logger,
+			GetItems getItemsService,
+            CreateItems itemService
+        )
 		{
 			_postgreSQLDbContext = postgreSQLDbContext;
 			_telegramBot = telegramBot;
+			_cache = cache;
+			_getItemsService = getItemsService;
+			_itemService = itemService;
+			_logger = logger;
 		}
-		#region BaseFunctionsToCompeteDB
 
-		[Authorize]
-        [HttpPost("test")]
-        public async Task<bool> PushTestData()
-        {
-            _postgreSQLDbContext.ItemEntities.AddRange(
-                new ItemEntity
-                {
-                    Price = "14 990",
-                    Name = "Watch 6 40mm",
-                    CategoryId = 4,
-                    Description = "Устройство, которое знает вас лучше всех, вернулось с еще более персонализированным контролем самочувствия и улучшенным анализом качества сна. Начните свой день полными сил с функцией оценки сна, которая доступна на Galaxy Watch6.\r\n\r\nБлагодаря увеличенному на 20% экрану получите еще больше информации с одного взгляда на устройство. Уменьшенный на 30% сенсорный безель делает его самым большим среди Galaxy Watch на сегодняшний день и создает больше пространства для самовыражения благодаря кастомизируемым циферблатам.\r\n\r\nСтиль и комфорт объединились в этой тонкой и изящной форме. Дизайн был изменен и переосмыслен, что сделало Galaxy Watch6 ультракомфортным и легким аксессуаром, идеальным для вашего запястья.\r\n\r\nПросто нажмите кнопку, чтобы легко отсоединить ремешок. Переходите от спортивного к повседневному стилю в одно касание. Направляющие ремешка позволяют быстро и точно вставить его, а затем надежно закрепить с приятным щелчком.\r\n\r\nЦарапины не страшны благодаря сверхпрочному сапфировому стеклу Sapphire Crystal Glass. Умные часы готовы ко всему, будь то дождь или солнце. Сверхпрочное сапфировое стекло делает экран устройства прочным и долговечным, а класс защиты IP68 и 5 АТМ означает, что они достаточно прочны, чтобы быть рядом даже в самых смелых приключениях.\r\n\r\nУзнайте о своем сне больше для максимально продуктивного дня. Надевайте Galaxy Watch6 перед сном и следите за фазами сна и другими его показателями, чтобы лучше высыпаться. Теперь вы можете получить доступ к функции оценки и корректировки сна прямо на своем запястье.\r\n\r\nОтслеживание сердечного ритма принесет спокойствие и позволит сосредоточиться на своем дне. Встроенный датчик PPG периодически измеряет частоту сердечных сокращений и сердечный ритм, пока вы носите Galaxy Watch6, и предупредит, если ваш пульс станет слишком высоким или низким. А для более детальных измерений используйте датчик ЭКГ.\r\n\r\nВозьмите проверку артериального давления в привычку\r\n\r\nПоддерживайте здоровый образ жизни, включив быструю проверку артериального давления в свой распорядок дня. Измеряйте давление прямо на запястье с помощью Galaxy Watch6. Никакого дополнительного оборудования не требуется!\r\n\r\nИзучите свой внутренний мир с функцией анализа состава тела. Откажитесь от громоздких устройств — получайте данные о своем теле в любое удобное время с помощью детального анализа состава тела (БИА) на ваших Galaxy Watch6. Эти измерения помогут вам эффективнее заботиться о физическом состоянии своего тела и устанавливать индивидуальные цели в фитнесе.\r\n\r\nФункции безопасности для вашего спокойствия\r\n\r\nВаши Galaxy Watch6 всегда находятся в режиме ожидания на случай чрезвычайной ситуации. Если вы упадете, система обнаружения падения зафиксирует это и спросит, нужна ли вам помощь. В других чрезвычайных ситуациях просто нажмите кнопку «Домой» пять раз, чтобы отправить сигнал SOS в службы экстренной помощи. Когда прибудет помощь, быстро получите доступ к вашей медицинской информации с экрана блокировки одним касанием. Будьте уверены, теперь вы в надежных руках.\r\nЗаписывайте все свои успехи и контролируйте прогресс с помощью Galaxy Watch6. Вы можете выбрать из более чем 90 тренировок, включая плавание и йогу, или создать свою собственную тренировку. Забыли нажать «Старт»? Ваши Galaxy Watch автоматически распознают и запишут некоторые тренировки, такие как бег, ходьба, и езда на велосипеде, чтобы вы не потеряли ценные данные.\r\n\r\nУстановите персональную зону пульса или просто начните бегать, а Galaxy Watch6 измерят частоту сердечных сокращений в зависимости от вашей физической подготовки и оптимизируют зону пульса, которая подходит именно вам. После настройки вы сможете получать уведомления, когда войдете в свою целевую зону пульса, и контролировать нахождение в этой зоне во время тренировок.\r\n\r\nСделайте уникальные Galaxy Watch6. Выбирайте из широкой линейки ремешков в различных стилях и материалах. Вы также можете настроить циферблат, используя любимые цвета, шаблоны и фотографии. Вас ничего не ограничивает, кроме воображения!",
-                    ItemBrandId = 1,
-                    Stock = 3,
-                    Article = "4596394569"
-                },
-                new ItemEntity
-                {
-                    Price = "32 990",
-                    Name = "iPhone 11",
-                    CategoryId = 3,
-                    Description = "Совершенно новая система двух камер со сверхширокоугольной камерой. Ночной режим и потрясающее качество видео. Защита от воды и пыли. Целый день без подзарядки. Шесть прекрасных цветов. 11 станет вашим любимым числом.\r\nСнимайте видео 4K, отличные портреты и захватывающие дух пейзажи с совершенно новой системой двух камер. Делайте красивейшие снимки при слабом освещении в Ночном режиме. Смотрите фото и видео, играйте в игры — на дисплее Liquid Retina HD 6,1 дюйма всё выглядит естественно и реалистично.\r\n\r\nОткрывайте новые возможности игр, дополненной реальности и фотосъёмки благодаря непревзойдённой производительности процессора A13 Bionic. А с мощным аккумулятором, которого хватит на целый день работы, вы сможете делать больше и меньше времени тратить на подзарядку. Устройство защищено от воды (допускается погружение до 2 метров до 30 минут).",
-                    ItemBrandId = 3,
-                    Stock = 2,
-                    Article = "123412343145345",
-					IsPopular = true,
-					IsNewItem = true,
-				},
-                new ItemEntity
-                {
-                    Price = "39 490",
-                    Name = "iPhone 12",
-                    CategoryId = 1,
-                    Description = "Apple iPhone 12 — ультрамощный смартфон от престижного бренда. Девайс получил молниеносный процессор A14 Bionic и впечатляющий дисплей Super Retina XDR от края до края. Набор продвинутых камер эффективно работает даже в условиях слабого освещения. Видеоролики Dolby Vision завораживают реалистичностью.\r\n\r\nФотовозможности гаджета колоссальны. Широкоугольный датчик теперь улавливает значительно больше света. Проработка нюансов очень точная днем и ночью. Портретный режим обеспечивает художественное размытие фона, выделяя самое главное. Смартфон объединяет прорывные возможности с легендарным дизайном. Apple iPhone 12 это выбор активного пользователя.\r\n",
-                    ItemBrandId = 2,
-                    Stock = 5,
-                    Article = "34634563456",
-					IsPopular = true
-                },
-                new ItemEntity
-                {
-                    Price = "15 190",
-                    Name = "AirPods 3 Lightning",
-                    CategoryId = 1,
-                    ItemBrandId = 4,
-                    Description = "AirPods 3 Lightning - это беспроводные наушники в форме вкладышей от компании Apple, которые предлагают ряд улучшенных функций и характеристик по сравнению с предыдущими моделями.\r\n\r\nОсновные характеристики:\r\n\r\nБеспроводная связь: AirPods 3 подключаются к вашему устройству с помощью технологии Bluetooth, обеспечивая стабильное и качественное беспроводное воспроизведение звука.\r\nУлучшенное качество звука: AirPods 3 обладают улучшенным звуком благодаря новому динамическому драйверу, который обеспечивает более глубокие басы и чистые высокие частоты.\r\nАктивное шумоподавление: Наушники оснащены технологией активного шумоподавления, которая позволяет блокировать внешние звуки, обеспечивая вас полным погружением в музыку или звонки.\r\nПрозрачный режим: С помощью прозрачного режима вы можете услышать окружающие звуки без необходимости снимать наушники, что делает их идеальным выбором для использования на улице или в общественном транспорте.\r\nУправление сенсорным нажатием: AirPods 3 управляются сенсорным нажатием, позволяя вам легко управлять воспроизведением музыки, отвечать на звонки и активировать голосового помощника Siri.\r\nЗарядка через разъем Lightning: AirPods 3 поставляются с зарядным футляром, который можно заряжать с помощью кабеля Lightning, обеспечивая быструю и удобную зарядку в любых условиях.\r\n\r\nAirPods 3 Lightning представляют собой идеальное сочетание качества звука, комфорта и удобства использования, что делает их отличным выбором для всех, кто ценит высокое качество звука и инновационные технологии.\r\nзводителя.",
-                    Stock = 4,
-                    Article = "3q4gferg2i43562",
-                    IsNewItem = true,
-                },
-                new ItemEntity
-                {
-                    Price = "102 990",
-                    Name = "MacBook Air 13 2024",
-                    CategoryId = 2,
-                    ItemBrandId = 1,
-                    Description = "Добро пожаловать в мир стильного дизайна и мощной производительности с MacBook Air 13 2024 года. Этот портативный ноутбук предлагает передовые технологии и функции, которые помогут вам оставаться продуктивным в любой обстановке.\r\n\r\nОсобенности:\r\n\r\nПроизводительность нового поколения: Оснащенный процессором M2 от Apple, MacBook Air 13 2024 обеспечивает высокую производительность и быстродействие для выполнения самых требовательных задач.\r\nЯркий и четкий дисплей: 13,3-дюймовый экран Retina с технологией True Tone обеспечивает яркие и насыщенные цвета, а также резкое и четкое изображение для комфортного просмотра контента.\r\nУдобная клавиатура и трекпад: Клавиатура Magic Keyboard с механизмом ножничного переключателя обеспечивает комфортное и точное нажатие, а мультитач трекпад позволяет удобно управлять курсором.\r\nДолгая автономная работа: Благодаря оптимизированной работе аппаратных компонентов и операционной системы macOS, встроенная батарея обеспечивает до 12 часов работы без подзарядки.\r\nБезопасность и конфиденциальность: Встроенные сканеры Touch ID позволяют быстро и безопасно разблокировать устройство и авторизовываться в приложениях и сервисах Apple.\r\nСовременный дизайн и портативность: Стройный и легкий корпус из алюминия делает MacBook Air 13 2024 идеальным спутником для работы, учебы и развлечений в любом месте.",
-                    Stock = 5,
-                    Article = "egkrgow34562",
-					IsPopular = true
-				},
-                new ItemEntity
-                {
-                    Price = "53 490",
-                    Name = "Игровая приставка Sony PlayStation 5 Slim",
-                    CategoryId = 5,
-                    ItemBrandId = 2,
-                    Description = "PlayStation 5 Slim представляет собой истинный прорыв в мире игровых консолей, принципиально отличаясь от своих предшественников благодаря впечатляющим техническим характеристикам и инновационным функциям. Вот некоторые из ключевых особенностей PlayStation 5:\r\n\r\nНевероятная скорость загрузки: Благодаря продвинутому накопителю SSD и уникальной системе ввода-вывода, PlayStation 5 позволяет переходить между игровыми локациями и загружать игры практически мгновенно, устраняя экранные загрузки и обеспечивая плавный игровой процесс.\r\nФотореалистичная графика: С гибридным процессором на основе архитектуры Zen 2 и поддержкой технологии трассировки лучей, PlayStation 5 позволяет разработчикам создавать игры с потрясающей детализацией, дальностью проработки и освещением, а также 4K-разрешением для впечатляющих визуальных эффектов.\r\nТехнология 3D AudioTech: Благодаря мощному звуковому чипу Tempest 3D AudioTech, PlayStation 5 обеспечивает непревзойденное качество звука, создавая трехмерное аудио, которое погружает вас в игровой мир и позволяет услышать каждую деталь звука.\r\nУникальный геймпад DualSense: Новый геймпад DualSense предлагает уникальные функции, такие как адаптивные спусковые курки, улучшенная тактильная отдача и встроенная система микрофонов, что делает игровой процесс еще более интерактивным и захватывающим.\r\nОбратная совместимость и эксклюзивные игры: PlayStation 5 обеспечивает обратную совместимость с играми PlayStation 4 и предлагает широкий выбор эксклюзивных игр, таких как Horizon: Forbidden West, Gran Turismo 7 и Ratchet & Clank Rift Apart, обещая захватывающий игровой опыт как на релизе, так и в будущем.\r\n\r\nPlayStation 5 Slim - это не просто игровая консоль, это новое поколение развлечений, которое открывает перед вами мир возможностей и невероятных приключений.",
-                    Stock = 6,
-                    Article = "flawsogf2345ot245t",
-                    IsNewItem = true,
-                });
+		//[Authorize]
+		//[HttpGet("ConnectData")]
+		//public async Task<IActionResult> ConnectData()
+		//{
+		//	// Получите все записи ItemEntity
+		//	var items = _postgreSQLDbContext.ItemEntities.ToList();
 
-            await _postgreSQLDbContext.SaveChangesAsync();
-            return true;
-        }
-		#endregion
+		//	foreach (var item in items)
+		//	{
+		//		// Перенесите данные в DescriptionEntity
+		//		if (!string.IsNullOrEmpty(item.Description))
+		//		{
+		//			var description = new DescriptionEntity
+		//			{
+		//				Description = item.Description,
+		//				ItemId = item.Id // Устанавливаем связь с ItemEntity
+		//			};
+		//			_postgreSQLDbContext.DescriptionEntity.Add(description);
+
+		//			// Сохраните изменения, чтобы получить Id для DescriptionEntity
+		//			_postgreSQLDbContext.SaveChanges();
+
+		//			// Установите DescriptionId в ItemEntity
+		//			item.DescriptionId = description.Id;
+		//		}
+
+		//		// Перенесите данные в ArticleEntity
+		//		if (!string.IsNullOrEmpty(item.Article))
+		//		{
+		//			var article = new ArticleEntity
+		//			{
+		//				Article = item.Article,
+		//				ItemId = item.Id // Устанавливаем связь с ItemEntity
+		//			};
+		//			_postgreSQLDbContext.ArticleEntity.Add(article);
+
+		//			// Сохраните изменения, чтобы получить Id для ArticleEntity
+		//			_postgreSQLDbContext.SaveChanges();
+
+		//			// Установите ArticleId в ItemEntity
+		//			item.ArticleId = article.Id;
+		//		}
+		//	}
+
+		//	// Сохраните изменения в ItemEntity
+		//	_postgreSQLDbContext.SaveChanges();
+		//	return Ok();
+		//}
+
 		#region Brands&Categories
 		[HttpGet("GetBrands")]
 		public async Task<IActionResult> GetBrandsList()
 		{
 			var items = await _postgreSQLDbContext
-											.ItemBrands
-											.ToListAsync();
-			var brandMapper = new BrandMapper();
-			var mappedItems = brandMapper.MapToDTO(items);
-			return Ok(mappedItems);
+										.ItemBrands
+										.Select(br => new
+										{
+											br.Id,
+											br.Name
+										})
+										.ToListAsync();
+			return Ok(items);
 		}
+
 		[Authorize]
 		[HttpPost("CreateBrand")]
 		public async Task<IActionResult> CreateBrand([FromBody] ItemBrand brand)
@@ -135,37 +137,18 @@ namespace ParkMobileServer.Controllers
 			return Ok();
 		}
 
-        [Authorize]
-        [HttpPost("CreateBaseBrands")]
-		public async Task<IActionResult> CreateBaseBrands()
-		{
-			await _postgreSQLDbContext.ItemBrands.AddRangeAsync(
-				new ItemBrand[] {
-					new () { Name = "Apple" },
-					new () { Name = "Xiaomi"},
-					new () { Name = "Sony" },
-					new () { Name = "Steam" },
-					new () { Name = "Dyson" },
-                    new () { Name = "Yandex" },
-                    new () { Name = "Jbl" },
-                    new () { Name = "Marshall" },
-                    new () { Name = "Microsoft" },
-                    new () { Name = "Nintendo" },
-                });
-
-			await _postgreSQLDbContext.SaveChangesAsync();
-			return Ok();
-		}
-
 		[HttpGet("GetCategories")]
 		public async Task<IActionResult> GetCategoriesList()
 		{
 			var items = await _postgreSQLDbContext
 									.ItemCategories
+									.Select(c => new
+									{
+										c.Id,
+										c.Name
+									})
 									.ToListAsync();
-			var categoryMapper = new CategoryMapper();
-			var mappedItems = categoryMapper.MapToDTO(items);
-			return Ok(mappedItems);
+			return Ok(items);
 		}
 
 		[Authorize]
@@ -183,577 +166,235 @@ namespace ParkMobileServer.Controllers
 			return Ok();
 		}
 
-        [Authorize]
-        [HttpPost("CreateBaseCategories")]
-        public async Task<IActionResult> CreateBaseCategories()
-        {
-            await _postgreSQLDbContext.ItemCategories.AddRangeAsync(
-                new ItemCategory[] {
-                    new () { Name = "Iphone" },
-                    new () { Name = "Ipad"},
-                    new () { Name = "Watch" },
-                    new () { Name = "Mac" },
-                    new () { Name = "Airpods" },
-                    new () { Name = "Accessories" },
-                    new () { Name = "Gadgets" },
-                    new () { Name = "Audio" },
-                    new () { Name = "Phones" },
-                    new () { Name = "Gaming" },
-                    new () { Name = "Health" },
-                    new () { Name = "Tv" },
-                    new () { Name = "Styler" },
-                    new () { Name = "HairDryer" },
-                    new () { Name = "Rectifier" },
-                    new () { Name = "VacuumCleaner" },
-                    new () { Name = "AirPurifiers" },
-                });
-
-            await _postgreSQLDbContext.SaveChangesAsync();
-            return Ok();
-        }
-        #endregion
-        #region Item
-        [Authorize]		
-		[HttpPost("CreateItem")]
-		public async Task<IActionResult> CreateItem([FromBody] ItemEntity item)
+		[Authorize]
+		[HttpPost("CreateFilter")]
+		public async Task<IActionResult> CreateFilter([FromBody] CreateFilterRequest item)
 		{
-            if (item== null)
-            {
-                return BadRequest("Invalid brand data");
-            }
+			if(await _postgreSQLDbContext.Filters.AnyAsync(i => i.Name == item.Name))
+			{
+				_logger.LogError("В фильтрах есть уже запись с таким названием!");
+				return BadRequest("В фильтрах есть уже запись с таким названием!");
+			}
 
-            _postgreSQLDbContext.ItemEntities.Add(item);
-			await _postgreSQLDbContext.SaveChangesAsync();
+			_postgreSQLDbContext
+					.Filters
+					.Add(new() { Name = item.Name });
+
+			await _postgreSQLDbContext
+						.SaveChangesAsync();
 			return Ok();
 		}
 
-		[HttpPost("GetCategoryItems")]
-		public async Task<IActionResult> GetCategoryItems(SearchCategoryItemRequest searchCategoryRequest)
+		[HttpGet("GetFilters")]
+		public async Task<IActionResult> GetFilters()
 		{
-			var _query = searchCategoryRequest.Query;
+			var filters = await _postgreSQLDbContext
+										.Filters
+										.Select(filt => new
+										{
+											filt.Id,
+											filt.Name,
+										})
+										.ToListAsync();
 
-			var splitedQuery = _query.Split("/");
-
-			string category = splitedQuery[0].ToLower();
-			string item = splitedQuery[1].ToLower();
-
-			var brandId = 0;
-			var categoryId = 0;
-
-            IQueryable<ItemEntity> query = _postgreSQLDbContext
-								.ItemEntities;
-
-			switch(category.ToLower())
+			return Ok(filters);
+		}
+        #endregion
+        #region Item
+        [Authorize]
+		[HttpPost("CreateItem")]
+		public async Task<IActionResult> CreateItem([FromBody] ItemDTO itemDto)
+		{
+			try
 			{
-				case "apple": 
-					switch (item.ToLower())
-					{
-						case "iphone":
-                            query = query.Where(queryItem => queryItem.Name.ToLower().Contains(item.ToLower()));
-							break;
-						case "macbook":
-							query = query.Where(queryItem => queryItem.Name.ToLower().Contains(item.ToLower()));
-							break;
-						case "ipad":
-							query = query.Where(queryItem => queryItem.Name.ToLower().Contains(item.ToLower()));
-							break;
-						case "watches":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "watch")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-						case "airpods":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "airpods")).Id;
-							query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-							break;
-                        }
-						case "tv":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "apple")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "tv")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-                    }
-					break;
-				case "samsung":
-					switch (item.ToLower())
-					{
-						case "phones":
-						{
-                            brandId = 11;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "phones")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "headphones":
-						{
-                            brandId = 11;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "watches":
-						{
-                            brandId = 11;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "watch")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-					}
-					break;
-				case "xiaomi":
-					switch (item.ToLower())
-					{
-						case "phones":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "xiaomi")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "phones")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "headphones":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "xiaomi")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-							break;
-                        }
-						case "tv":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "xiaomi")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "tv")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-							break;
-                        }
-					}
-					break;
-				case "dyson":
-					switch(item.ToLower())
-					{
-						case "styler":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "styler")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "hairdryer":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "hairdryer")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-                        case "rectifier":
-                        {
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "rectifier")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-                        case "vacuumcleaner":
-                        {
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "vacuumcleaner")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-                        case "airpurifiers":
-                        {
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "dyson")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "airpurifiers")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-                    }
-					break;
-				case "headphones":
-					switch (item.ToLower())
-					{
-						case "yandex":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "yandex")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "jbl":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "jbl")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "marshall":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "marshall")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "audio")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-                        }
-					}
-					break;
-				case "gaming":
-					switch (item.ToLower())
-					{
-						case "sony":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "sony")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId).Take(5);
-                            break;
-						}
-						case "microsoft":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "microsoft")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "nintendo":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "nintendo")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "steam":
-						{
-                            brandId = (await _postgreSQLDbContext.ItemBrands.FirstAsync(brand => brand.Name.ToLower() == "steam")).Id;
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaming")).Id;
-                            query = query.Where(queryItem => queryItem.ItemBrandId == brandId && queryItem.CategoryId == categoryId);
-                            break;
-						}
-						case "accessories":
-						{
-                            categoryId = (await _postgreSQLDbContext.ItemCategories.FirstAsync(category => category.Name.ToLower() == "gaimingaccessories")).Id;
-                            query = query.Where(queryItem => queryItem.CategoryId == categoryId);
-                            break;
-						}
-					}
-					break;
+				var response = await _itemService.CreateItemAsync(itemDto);
+				return Ok(response);
 			}
-
-			var itemsCount = await query.CountAsync();
-			var items = await query
-								.Skip(searchCategoryRequest.Skip)
-								.Take(searchCategoryRequest.Take)
-								.ToListAsync();
-
-			if(items.Count > 0)
+			catch (Exception ex)
 			{
-				return Ok(new
-				{
-					items = items.Select(item => ItemMapper.MapToDto(item, brandId, categoryId)),
-					count = itemsCount
-				});
+				_logger.LogError("Ошибка! {message}", ex.Message);
+				return BadRequest(ex.Message);
 			}
-			else
-			{
-				return NoContent();
-			}
+		}
 
+		[HttpPost("GetFilteredItems")]
+		public async Task<IActionResult> GetFilteredItems(SearchCategoryItemRequest searchCategoryRequest)
+		{
+			try
+			{
+				var response = await _getItemsService.GetFilteredItemsAsync(searchCategoryRequest);
+				return Ok(response);
+			}
+			catch(Exception ex)
+			{
+				_logger.LogError("Ошибка! {Message}", ex.Message);
+				return BadRequest(ex.Message);
+			}
+        }
+
+		[HttpPost("GetSearchItemsByName")]
+		public async Task<IActionResult> SearchItemsByName(GetSearchItemRequest searchRequest)
+		{
+			try
+			{
+				var response = await _getItemsService.GetSearchItemsByName(searchRequest);
+				return Ok(response);
+			}
+			catch(Exception ex)
+			{
+				_logger.LogError("Ошибка! {Message}", ex.Message);
+				return BadRequest(ex.Message);
+			}
 		}
 
 		[HttpPost("GetItemsByName")]
-		public async Task<IActionResult> GetItemByName(string name, int skip, int take, bool fromSearch = true)
+		public async Task<IActionResult> GetItemByName(GetSearchItemRequest searchRequest)
 		{
-			var splittedName = name.Split(" ");
-
-			var query = _postgreSQLDbContext
-								.ItemEntities
-								.AsQueryable();
-			foreach(var splitValue in splittedName)
+			try
 			{
-				query = query
-							.Where(item => item.Name.ToLower()
-							.Contains(splitValue.ToLower()));
-				if(fromSearch == false)
-				{
-					if(name.ToLower() == "iphone 16" ||  name.ToLower() == "iphone 15" || name.ToLower() == "iphone 14" || name.ToLower() == "iphone 13" || name.ToLower() == "iphone 12" || name.ToLower() == "iphone 11")
-					{
-						query = query
-									.Where(item => !item.Name.ToLower().Contains("max"))
-									.Where(item => !item.Name.ToLower().Contains("pro"));
-					}
-
-					if(name.ToLower() == "iphone 16 pro" || name.ToLower() == "iphone 15 pro")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("max"));
-					}
-
-					if(name.ToLower() == "apple watch ultra 2")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("2024"));
-					}
-					if(name.ToLower() == "apple watch 9")
-					{
-						query = query
-									.Where(item => item.Name.ToLower().Contains("apple watch 9"))
-									.Where(item => !item.Name.ToLower().Contains("49mm"));
-					}
-					if(name.ToLower() == "airpods 2")
-					{
-						query = query
-									.Where(item => item.Name.ToLower().Contains("apple airpods 2"))
-									.Where(item => !item.Name.ToLower().Contains("2024"));
-					}
-                    if (name.ToLower() == "airpods 4")
-                    {
-                        query = query
-                                    .Where(item => item.Name.ToLower().Contains("apple airpods 4"))
-                                    .Where(item => !item.Name.ToLower().Contains("2024"));
-                    }
-                    if (name.ToLower() == "galaxy s")
-					{
-						query = query
-								.Where(item =>
-										item.Name.ToLower().Contains("galaxy s25") ||
-										item.Name.ToLower().Contains("galaxy s24") ||
-										item.Name.ToLower().Contains("galaxy s23") ||
-										item.Name.ToLower().Contains("galaxy s22") ||
-										item.Name.ToLower().Contains("galaxy s21") ||
-										item.Name.ToLower().Contains("galaxy s20"));
-
-                    }
-
-					if (name.ToLower() == "galaxy a")
-					{
-						query = query
-								.Where(item =>
-										item.Name.ToLower().Contains("galaxy a55") ||
-										item.Name.ToLower().Contains("galaxy a35") ||
-										item.Name.ToLower().Contains("galaxy a05") ||
-                                        item.Name.ToLower().Contains("galaxy a06")
-                                );
-					}
-
-					if(name.ToLower() == "xiaomi 14")
-					{
-						query = query
-									.Where(item => !item.Name.ToLower().Contains("ultra"))
-									.Where(item => !item.Name.ToLower().Contains("pro"))
-									.Where(item => !item.Name.ToLower().Contains("14t"));
-					}
-					
-					if(name.ToLower() == "xiaomi 13")
-					{
-						query = query
-									.Where(item => !item.Name.ToLower().Contains("pro"))
-									.Where(item => !item.Name.ToLower().Contains("plus"))
-									.Where(item => !item.Name.ToLower().Contains("13t"));
-					}
-					if(name.ToLower() == "янедкс станция 2")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("лайт"));
-					}
-					if(name.ToLower() == "яндекс станция мини")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("с часами"));
-					}
-					if(name.ToLower() == "яндекс станция лайт")
-					{
-						query = query.Where(item => !item.Name.ToLower().Contains("2"));
-					}
-				}
+				var response = await _getItemsService.GetItemsByNameAsync(searchRequest);
+				return Ok(response);
 			}
-
-			var itemsCount = await query.CountAsync();
-
-			var items = await query
-								.Skip(skip)
-                                .Take(take)										
-								.ToListAsync();
-
-			if(fromSearch == false)
+			catch (Exception ex)
 			{
-                return Ok(new
-                {
-                    items = items,
-                    count = itemsCount
-                });
-            }
-
-			var mappedItems = items.Select(ItemMapper.MatToShortDto).ToList();
-			
-			if(itemsCount == 0)
-			{
-				return BadRequest("Нет товаров с таким именем!");
+				_logger.LogError("Ошибка! {message}", ex.Message);
+				return BadRequest(ex.Message);
 			}
-
-			return Ok(new
-			{
-				items = mappedItems,
-				count = itemsCount
-			});
 		}
 
 		[HttpPost("GetItem/{id}")]
 		public async Task<IActionResult> GetItem(int id)
 		{
-			var item = _postgreSQLDbContext.ItemEntities.FirstOrDefault(item => item.Id == id);
-
-			var brand = await _postgreSQLDbContext
-											.ItemBrands
-											.FirstOrDefaultAsync(brand => brand.Id == item.ItemBrandId);
-			var category = await _postgreSQLDbContext
-												.ItemCategories
-												.FirstOrDefaultAsync(category => category.Id == item.CategoryId);
-
-			var itemDTO = ItemMapper.MapToDto(item, brand.Id, category.Id);
-			return Ok(itemDTO);
+			var item = _postgreSQLDbContext
+								.ItemEntities
+								.Where(item => item.Id == id)
+								.Select(item => new
+								{
+									item.Id,
+									item.Name,
+									item.DiscountPrice,
+									item.Price,
+									item.Image,
+									item.Stock,
+									item.IsPopular,
+									item.IsNewItem,
+									Category = item.Category!.Name,
+									Brand = item.Brand!.Name,
+									item.Article!.Article,
+									item.Description!.Description
+								})
+								.FirstOrDefault();
+			return Ok(item);
 		}
 
 		[Authorize]
 		[HttpDelete("DeleteItem/{id}")]
 		public async Task<IActionResult> DeleteItem (int id )
 		{
-			var item = await _postgreSQLDbContext.ItemEntities.FindAsync(id);
-			
-			if (item == null)
+			try
 			{
-				return BadRequest();
+				var response = await _itemService.DeleteItemAsync(id);
+				return Ok(response);
 			}
-
-			_postgreSQLDbContext.ItemEntities.Remove(item);
-
-			await _postgreSQLDbContext.SaveChangesAsync();
-			return Ok();
+			catch (Exception ex)
+			{
+				_logger.LogError("Ошибка! {message}", ex.Message);
+				return BadRequest(ex.Message);
+			}
 		}
 
 		[Authorize]
 		[HttpPost("ChangeItem")]
-		public async Task<IActionResult> ChangeItem([FromBody] ItemEntity item)
+		public async Task<IActionResult> ChangeItem([FromBody] ItemOneLevelDTO item)
 		{
+			var _item = await _postgreSQLDbContext
+								.ItemEntities
+								.Include(i => i.Description)
+								.Include(i => i.Article)
+								.Include(i => i.Filters)
+								.SingleOrDefaultAsync(i => i.Id == item.id);
 
-			var _item = await _postgreSQLDbContext.ItemEntities.FindAsync(item.Id);
-
-			if(_item == null)
+			if (_item == null)
 			{
 				return BadRequest();
 			}
+
 			_item.Name = item.Name ?? _item.Name;
-            _item.Price = item.Price ?? _item.Price;
-            _item.Article = item.Article ?? _item.Article;
+			_item.Price = item.Price ?? _item.Price;
 			_item.DiscountPrice = item.DiscountPrice ?? _item.DiscountPrice;
-			_item.Description = item.Description ?? _item.Description;
 			_item.Image = item.Image ?? _item.Image;
-            _item.Stock = item.Stock;
-            _item.CategoryId = item.CategoryId;
-			_item.ItemBrandId = item.ItemBrandId;
-			_item.Options = item.Options ?? _item.Options;
+			_item.Stock = item.Stock;
+			_item.CategoryId = item.CategoryId;
+			_item.BrandId = item.BrandId;
 			_item.IsNewItem = item.IsNewItem;
 			_item.IsPopular = item.IsPopular;
+			_item.isInvisible = item.IsInvisible;
+            _item.Filters.Clear();
 
-			_postgreSQLDbContext.ItemEntities.Update(_item);
+            foreach (var filter in item.Filters) {
+				var existingFilter = await _postgreSQLDbContext.Filters
+					.FirstOrDefaultAsync(f => f.Id == filter);
+
+				if (existingFilter != null)
+				{
+					_item.Filters.Add(existingFilter);
+				}
+			}
+
+			if (_item.Article == null)
+			{
+				_item.Article = new() { Article = item.Article };
+			}
+			else
+			{
+				_item.Article.Article = item.Article;
+			}
+
+			if (_item.Description == null)
+			{
+				_item.Description = new() { Description = item.Description };
+			}
+			else
+			{
+				_item.Description.Description = item.Description;
+			}
 
 			await _postgreSQLDbContext.SaveChangesAsync();
+
 			return Ok();
 		}
 
 		[HttpGet("GetPopularItems")]
 		public async Task<IActionResult> GetPopularItems()
 		{
-			var newItems = await _postgreSQLDbContext
-						.ItemEntities
-						.Where(item => item.IsPopular == true)
-						.ToListAsync();
+			var response = await _getItemsService.GetPopularItemsAsync();
 
-			return Ok(newItems);
+            return Ok(response);
 		}
 
-        [HttpGet("GetItems")]
-        public async Task<IActionResult> GetItems(string? category, string? brand, int skip, int take, string name = "")
+        [HttpPost("GetItems")]
+        public async Task<IActionResult> GetItems(GetItemDTO GetItemRequest)
         {
-            int? categoryId = null;
-            int? brandId = null;
+			object response;
 
-            if (category != null && category == "New")
-            {
-                var newItems = await _postgreSQLDbContext
-                                    .ItemEntities
-                                    .Where(item => item.IsNewItem == true && item.Name.ToLower().Contains(name.ToLower()))
-                                    .Skip(skip)
-                                    .Take(take)
-                                    .ToListAsync();
-                var counter = await _postgreSQLDbContext
-                                    .ItemEntities
-                                    .Where(item => item.IsNewItem == true && item.Name.ToLower().Contains(name.ToLower()))
-                                    .CountAsync();
-
-                var mappedItems = newItems.Select(item => ItemMapper.MapToDto(item, item.ItemBrandId, item.CategoryId)).ToList();
-
-                return Ok(new ItemsEntityList
-                {
-                    count = counter,
-                    items = mappedItems,
-                });
+			if(GetItemRequest.category == "New")
+			{
+				response = await _getItemsService.GetNewItemsAsync(GetItemRequest);
+				return Ok(response);
             }
 
-            if (!string.IsNullOrWhiteSpace(category))
-            {
-                categoryId = (await _postgreSQLDbContext
-                                .ItemCategories
-                                .FirstOrDefaultAsync(c => c.Name == category))?
-                                .Id;
-            }
-            if (!string.IsNullOrWhiteSpace(brand))
-            {
-                brandId = (await _postgreSQLDbContext
-                                .ItemBrands
-                                .FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower()))?
-                                .Id;
-				//TODO: Снизу заглушка, т.к. brandId не ищется, если brand = samsung
-				if(brand == "Samsung")
-				{
-					brandId = 11;
-				}
-            }
+			response = await _getItemsService.GetFilteredItemsAsync(GetItemRequest);
 
-            var query = _postgreSQLDbContext.ItemEntities.AsQueryable();
+            return Ok(response);
+		}
 
-            if (categoryId.HasValue)
-            {
-				if(category.ToLower() == "gaming")
-				{
-					query = query.Where(item => item.CategoryId == 10 || item.CategoryId == 18);
-				}
-				else
-				{
-					query = query.Where(item => item.CategoryId == categoryId.Value);
-				}
-            }
+		[HttpGet("GetItemsForAdmin")]
+		public async Task<IActionResult> GetItemsForAdmin(int skip, int take, string name = "") {
 
-            if (brandId.HasValue)
-            {
-                query = query.Where(item => item.ItemBrandId == brandId.Value);
-            }
+			var response = await _getItemsService.GetItemsForAdmin(skip,take,name);
 
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                query = query.Where(item => item.Name.ToLower().Contains(name.ToLower()));
-            }
-
-            var count = await query.CountAsync();
-
-            var items = await query
-                                .Skip(skip)
-                                .Take(take)
-                                .ToListAsync();
-
-            var itemsDTO = items.Select(item => ItemMapper.MapToDto(item, item.ItemBrandId, item.CategoryId)).ToList();
-
-            return Ok(new ItemsEntityList()
-            {
-                count = count,
-                items = itemsDTO
-            });
-        }
+            return Ok(response);
+		}
         #endregion
         #region TelegrammAlerts
         [HttpPost("orderData")]
@@ -933,19 +574,6 @@ namespace ParkMobileServer.Controllers
 			}
 		}
 
-		[HttpPost("{id}/image")]
-        public async Task<IActionResult> GetImageData(int id)
-        {
-            var item = await _postgreSQLDbContext.ItemEntities.FindAsync(id);
-            if (item == null || item.Image == null)
-            {
-                return NotFound();
-            }
-
-            var imageContentType = "image/jpeg"; // или другой тип, который у вас
-            return File(item.Image, imageContentType); // Используйте метод File для отправки изображения
-        }
-
 		[Authorize]
 		[HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFileCollection files, [FromForm] string sliderName)
@@ -953,7 +581,7 @@ namespace ParkMobileServer.Controllers
             if (files == null || files.Count == 0)
                 return BadRequest("No files uploaded.");
 
-            var slider = new Slider { Name = sliderName, Images = new List<SliderImage>() };
+            var slider = new Slider ();
 
             foreach (var file in files)
             {
@@ -961,105 +589,101 @@ namespace ParkMobileServer.Controllers
                 {
                     await file.CopyToAsync(memoryStream);
                     var imageBytes = memoryStream.ToArray();
-
-                    slider.Images.Add(new SliderImage { ImageData = imageBytes });
-                }
+					slider.Name = sliderName;
+					slider.ImageData = imageBytes;
+				}
             }
 
             _postgreSQLDbContext.Sliders.Add(slider);
             await _postgreSQLDbContext.SaveChangesAsync();
 
+            await _cache.RemoveAsync("sliderImages");
+			await _cache.RemoveAsync("sliderImagesMobile");
+
             return Ok(new { sliderId = slider.Id });
         }
 
         [HttpPost("sliderImages")]
-        public async Task<IActionResult> GetSliderImages([FromBody] bool? isForAdmin = false)
+        public async Task<IActionResult> GetSliderImages([FromQuery] bool? isForAdmin = false)
         {
-            var images = await _postgreSQLDbContext
-									.SliderImages
-									.ToListAsync();
-			var imageUrls = images
-							.Where(image => image.ImageData != null);
-			var selectedSlidesQuery = await _postgreSQLDbContext
-											.Sliders
-											.ToListAsync();
-			List<Slider> selectedSlides = new ();
+			const string cacheKey = "sliderImages";
 
-			if(isForAdmin == false)
-			{
-                selectedSlides = selectedSlidesQuery
-										.Where(slider => !slider.Name.Contains("Mobile"))
-										.ToList();
-            }
-			else
-			{
-                selectedSlides = selectedSlidesQuery
-                        .Where(slider => slider.Name != null)
-                        .ToList();
+            var cachedData = await _cache.GetStringAsync(cacheKey);
+
+			if (cachedData != null)
+            {
+                var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
+                return Ok(slides);
             }
 
-            var responseData = new List<SliderImage>();
-            foreach (var data in images)
-			{
-				if(selectedSlides.Any(slide => slide.Id == data.Id))
-				{
-					data.Slider = null;
-					responseData.Add(data);
-				}
-			}
-			
-			if(responseData.Count == 0)
+			var sliderImageQuery = await _postgreSQLDbContext
+											   .Sliders
+											   .ToListAsync();
+
+			List<Slider> selectedSlides = isForAdmin == false ?
+												sliderImageQuery
+														.Where(slider => !slider.Name.Contains("Mobile"))
+														.ToList() :
+												sliderImageQuery;
+
+            if (selectedSlides.Count == 0)
 			{
 				return BadRequest();
 			}
 
-			return Ok(responseData);
-        }
+            var serializedData = JsonConvert.SerializeObject(selectedSlides);
+            await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
 
-		[HttpGet("MobileSliderImages")]
-		public async Task<IActionResult> GetMobileSliderImages()
-		{
-			var sliders = await _postgreSQLDbContext.Sliders.ToListAsync();
-			var selectedSlides = sliders
-									.Where(slide => slide.Name.Contains("Mobile"))
-									.ToList();
-
-			var responseData = new List<SliderImage>();
-
-			var selectedData = await _postgreSQLDbContext
-										.SliderImages
-										.ToListAsync();
-			foreach(var data in selectedData)
-			{
-				if(selectedSlides.Any(slide => slide.Id  == data.Id))
-				{
-					data.Slider = null;
-					responseData.Add(data);
-				}
-			}
-			if(responseData.Count == 0)
-			{
-				return BadRequest();
-			} 
-			return Ok(responseData);
+			return Ok(selectedSlides);
 		}
 
-		[HttpDelete("sliderImage/{id}")]
+        [HttpGet("MobileSliderImages")]
+        public async Task<IActionResult> GetMobileSliderImages()
+        {
+			const string cacheKey = "sliderImagesMobile";
+
+			var cachedData = await _cache.GetStringAsync(cacheKey);
+
+			if (cachedData != null)
+            {
+                var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
+                return Ok(slides);
+            }
+
+			var sliders = await _postgreSQLDbContext
+										.Sliders
+                                        .Where(item => item.Name.Contains("Mobile"))
+                                        .Select(item => new
+										{
+											item.Id,
+											item.Name,
+											image = item.ImageData
+										})
+										.ToListAsync();
+
+            if (sliders.Count == 0)
+            {
+                return BadRequest();
+            }
+
+            var serializedData = JsonConvert.SerializeObject(sliders);
+            await _cache.SetStringAsync(cacheKey, serializedData, _cacheOptions);
+
+            return Ok(sliders);
+        }
+
+        [HttpDelete("sliderImage/{id}")]
 		public async Task<IActionResult> DeleteSliderImage(int id)
 		{
 			var _itemToDelete = await _postgreSQLDbContext
-											.SliderImages
-											.FindAsync(id);
-			var _itemNameToDelete = await _postgreSQLDbContext
 											.Sliders
 											.FindAsync(id);
-			if(_itemToDelete == null || _itemNameToDelete == null) 
+			if(_itemToDelete == null) 
 			{
 				return NotFound();
 			}
 
-            _postgreSQLDbContext.SliderImages.Remove(_itemToDelete);
-			_postgreSQLDbContext.Sliders.Remove(_itemNameToDelete);
+			_postgreSQLDbContext.Sliders.Remove(_itemToDelete);
 			await _postgreSQLDbContext.SaveChangesAsync();
 			return Ok();
 		}

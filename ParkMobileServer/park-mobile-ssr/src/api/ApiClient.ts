@@ -3,6 +3,9 @@ import { RepairRequestType } from "@/hooks/useAddRepairRequest";
 import { TradeInType } from "@/Store/TradeInStore";
 import { CardItemType, CardType, RecivedCardDataType } from "@/Types/CardType";
 import { RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
+import { GetItemByNameType } from "@/Types/GetItemByName";
+import { GetItemsMainMenuType } from "@/Types/GetItemsMainMenu";
+import { GetItemType } from "@/Types/GetItemType";
 import { OrderItem } from "@/Types/OrderItem";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
 import { SliderResponse } from "@/Types/SliderResponse";
@@ -63,16 +66,8 @@ class ApiClient {
         return response.data;
     }
 
-    async GetItems(skip: number, take: number, category: string = "", brand: string = "") {
-        const response = await this.client.get<RecivedCardDataType>(
-            `${POSTGRE_ITEMS_PATH}/GetItems`, {
-                params: {
-                    skip: skip,
-                    take: take,
-                    category: category,
-                    brand: brand
-                }
-            });
+    async GetItems(item: GetItemsMainMenuType) {
+        const response = await this.client.post<RecivedCardDataType>(`${POSTGRE_ITEMS_PATH}/GetItems`, item);
         return response.data;
     }
 
@@ -85,14 +80,12 @@ class ApiClient {
         return response.data
     }
 
-    async GetItemsAdmin(skip: number, take: number, category: string = "", brand: string = "", searchKeyWord: string = "") {
+    async GetItemsAdmin(skip: number, take: number, searchKeyWord: string = "") {
         const response = await this.client.get<RecivedCardDataAdminType>(
-            `${POSTGRE_ITEMS_PATH}/GetItems`, {
+            `${POSTGRE_ITEMS_PATH}/GetItemsForAdmin`, {
                 params: {
                     skip: skip,
                     take: take,
-                    category: category,
-                    brand: brand,
                     name: searchKeyWord
                 }
             });
@@ -104,13 +97,13 @@ class ApiClient {
         return response.data;
     }
 
-    async GetItemsCostil(skip: number, take: number, category: string = "") {
-        const response = await this.client.get<RecivedCardDataType>(`${POSTGRE_ITEMS_PATH}/GetItems?skip=${skip}&take=${take}&${category}`);
+    async GetFilteredItems(item: GetItemType) {
+        const response = await this.client.post<RecivedCardDataType>(`${POSTGRE_ITEMS_PATH}/GetFilteredItems`, item);
         return response.data;
     }
 
-    async GetSearchItems(tag: string, skip: number, take: number, fromSearch: boolean = true) {
-        const response = await this.client.post<SearchItemsResponseType>(`${POSTGRE_ITEMS_PATH}/GetItemsByName?skip=${skip}&take=${take}&name=${tag}&fromSearch=${fromSearch}`)
+    async GetSearchItems(item: GetItemByNameType) {
+        const response = await this.client.post<SearchItemsResponseType>(`${POSTGRE_ITEMS_PATH}/GetItemsByName`, item)
         return response.data;
     }
 
@@ -122,11 +115,7 @@ class ApiClient {
     }
 
     async GetSliderData(isForAdmin: boolean = false) {
-        const response = await this.client.post<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/sliderImages`, isForAdmin, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await this.client.post<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/sliderImages?isForAdmin=${isForAdmin}`);
         return response.data
     }
 
@@ -208,6 +197,16 @@ class ApiClient {
     async PostCategory(name: string) {
         const response = await this.authClient.post(`${POSTGRE_ITEMS_PATH}/CreateCategory`, {name})
         return response.data
+    }
+
+    async GetFilters() {
+        const response = await this.client.get(`${POSTGRE_ITEMS_PATH}/GetFilters`);
+        return response.data;
+    }
+
+    async PostFilter(name: string) {
+        const response = await this.authClient.post(`${POSTGRE_ITEMS_PATH}/CreateFilter`, {name: name})
+        return response.data;
     }
 }
 

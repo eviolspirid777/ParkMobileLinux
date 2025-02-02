@@ -1,6 +1,7 @@
 "use client";
 import {
   Button,
+  Checkbox,
   // ColorPicker,
   Form,
   GetProp,
@@ -13,7 +14,7 @@ import {
   UploadProps,
 } from "antd";
 import styles from "./ModalWindow.module.scss";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { apiClient } from "@/api/ApiClient";
@@ -21,8 +22,9 @@ import { CardItemDTO } from "@/Entities/CardItemDTO";
 import { FormItemChange } from "../MenuPage";
 import { useUpdatePhoto } from "@/hooks/useUpdatePhoto";
 import { CardTypeAdmin } from "@/Types/CardTypeAdmin";
-import { useGetItemsAdmin } from "@/hooks/useGetItemsAdmin";
 import Image from "next/image"
+import { useAtom } from "jotai";
+import { FiltersAtom } from "@/Store/Filters";
 // import { AggregationColor } from "antd/es/color-picker/color";
 
 type BrandAndOptions = {
@@ -37,6 +39,7 @@ type ModalWindowProps = {
   brandsOptions: BrandAndOptions[];
   categoriesOptions: BrandAndOptions[];
   handleDelete: (id: number) => void;
+  refetchItems: () => void;
 };
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -48,18 +51,15 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   brandsOptions,
   categoriesOptions,
   handleDelete,
+  refetchItems,
 }) => {
-  const { refetchItemsList } = useGetItemsAdmin();
   const { updatePhoto } = useUpdatePhoto();
+
+  const [filtersFromStore] = useAtom(FiltersAtom);
+  const filters = filtersFromStore?.map(el => ({ label: el.name, value: el.id }))
 
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
-
-  const [currentSelectOption] = useState<string>();
-
-  useEffect(() => {
-    form.setFieldValue("optionValue", "");
-  }, [currentSelectOption]);
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -79,17 +79,17 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         discountPrice: newItem.discountPrice,
         description: newItem.description,
         categoryId: newItem.categoryId,
-        itemBrandId: newItem.brandId,
+        brandId: newItem.brandId,
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
-        // options: _options,
+        isInvisible: newItem.isInvisible,
+        filters: newItem.filters ?? []
       };
       try {
         await apiClient.UpdateItem(mappedItem);
         setTimeout(() => {
-          refetchItemsList();
+          refetchItems();
         }, 2000);
-        refetchItemsList();
       } catch (error) {
         message.info(`Ошибка с запросом! ${error}`);
       } finally {
@@ -106,14 +106,15 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         discountPrice: newItem.discountPrice,
         description: newItem.description,
         categoryId: newItem.categoryId,
-        itemBrandId: newItem.brandId,
+        brandId: newItem.brandId,
         isPopular: newItem.isPopular,
         isNewItem: newItem.isNewItem,
-        // options: _options,
+        isInvisible: newItem.isInvisible,
+        filters: newItem.filters ?? []
       };
       try {
         await apiClient.AddItem(mappedItem);
-        refetchItemsList();
+        refetchItems();
       } catch (error) {
         message.info(`Ошибка с запросом! ${error}`);
       } finally {
@@ -138,7 +139,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
       } finally {
         setLoading(false);
         setTimeout(() => {
-          refetchItemsList();
+          refetchItems();
         }, 2000);
       }
     } else if (info.file.status === "error") {
@@ -167,7 +168,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
       onCancel={closeModal}
       onClose={closeModal}
       footer={null}
-      width={900}
+      width={1400}
       centered
     >
       <Form
@@ -177,7 +178,8 @@ export const ModalWindow: FC<ModalWindowProps> = ({
           {
             ...selectedItem,
             stock: selectedItem.count,
-
+            isInvisible: selectedItem.isInvisible,
+            filters: selectedItem.filters?.map(el => el.id)
           } :
           {}}
         onFinish={handleFinishForm}
@@ -252,21 +254,16 @@ export const ModalWindow: FC<ModalWindowProps> = ({
             >
               <Input placeholder="Артикул" />
             </Form.Item>
+            <Form.Item
+              name="isInvisible"
+              label="Не отображать в списке товаров?"
+              valuePropName="checked"
+              layout="horizontal"
+            >
+              <Checkbox />
+            </Form.Item>
           </div>
           <div>
-            {/* <Form.Item label="Опция" name="optionName">
-              <Select
-                placeholder="Опция"
-                options={selectOptions}
-                onChange={setCurrentSelectOption}
-              />
-            </Form.Item>
-            <Form.Item
-              label={currentSelectOption === "color" ? "Цвет" : "Значение"}
-              name="optionValue"
-            >
-              {currentSelectOption === "color" ? <ColorPicker /> : <Input />}
-            </Form.Item> */}
             <Form.Item label="Популярный" name="isPopular">
               <Select
                 options={[
@@ -309,26 +306,41 @@ export const ModalWindow: FC<ModalWindowProps> = ({
               />
             </Form.Item>
           </div>
+          <div>
+            <Form.Item
+              name="filters"
+              label="Фильтры"
+            >
+              <Select
+                placeholder="Выберите фильтры"
+                mode="multiple"
+                options={filters}
+              />
+            </Form.Item>
+          </div>
         </div>
         <Form.Item>
           <div className={styles["button-block"]}>
-            <Popconfirm
-              title="Удалить"
-              description="Вы уверены, что хотите удалить товар?"
-              onConfirm={handleDelete.bind(this, selectedItem?.key ?? -1)}
-              okText="Да"
-              cancelText="Нет"
-            >
-              <Button
-                color="danger"
-                variant="solid"
-                style={{
-                  marginRight: "30%",
-                }}
+            {
+              selectedItem &&
+              <Popconfirm
+                title="Удалить"
+                description="Вы уверены, что хотите удалить товар?"
+                onConfirm={handleDelete.bind(this, selectedItem?.key ?? -1)}
+                okText="Да"
+                cancelText="Нет"
               >
-                Удалить
-              </Button>
-            </Popconfirm>
+                <Button
+                  color="danger"
+                  variant="solid"
+                  style={{
+                    marginRight: "30%",
+                  }}
+                >
+                  Удалить
+                </Button>
+              </Popconfirm> 
+            }
             <Button onClick={closeModal}>Отменить</Button>
             <Button type="primary" htmlType="submit">
               Сохранить

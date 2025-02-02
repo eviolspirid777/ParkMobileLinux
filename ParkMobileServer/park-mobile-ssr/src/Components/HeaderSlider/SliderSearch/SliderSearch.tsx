@@ -6,6 +6,7 @@ import { LoadingComponent } from "@/Shared/Components/Loading/Loading";
 type SliderSearchProps = {
   onInputChange: (values: string) => void;
   isSuccess: boolean;
+  isError?: boolean;
   foundItemsCount: number;
 };
 

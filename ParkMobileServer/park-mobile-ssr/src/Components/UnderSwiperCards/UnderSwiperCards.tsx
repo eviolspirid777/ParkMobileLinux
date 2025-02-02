@@ -1,3 +1,4 @@
+"use client"
 import { useAtom } from "jotai";
 import styles from "./UnderSwiperCards.module.scss";
 

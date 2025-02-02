@@ -631,19 +631,25 @@ body {
 
 @font-face {
     font-family: "SF-Pro-Display-Regular";
-    src: url("../assets/Fonts/SF-Pro-Display-Regular.otf");
+    src: url("/fonts/SF-Pro-Display-Regular.otf");
     font-display: swap;
 }
 
 @font-face {
     font-family: "SF-Pro-Display-Regular_light";
-    src: url("../assets/Fonts/SF-Pro-Display-Light.otf");
+    src: url("/fonts/SF-Pro-Display-Light.otf");
     font-display: swap;
 }
 
 @font-face {
     font-family: "SF-Pro-Display-Heavy";
-    src: url("../assets/Fonts/SF-Pro-Display-Heavy.otf");
+    src: url("/fonts/SF-Pro-Display-Heavy.otf");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Montserrat-Regular";
+    src: url("/fonts/Montserrat/Montserrat-Regular.ttf");
     font-display: swap;
 }
 

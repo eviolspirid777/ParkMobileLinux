@@ -12,15 +12,23 @@ import ImageData from "next/image";
 import { accentColorAtom } from "@/Store/AccentColor";
 import { useAtom } from "jotai";
 
+
 export const SwiperList = () => {
   const [images, setImages] = useState<string[]>([]);
   const [accentColor, setAccentColor] = useAtom(accentColorAtom)
+  const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
-    fetchImages(window.screen.width).then((fetchedImages) => {
-      setImages(fetchedImages);
-    });
-  }, []);
+    setIsRendered(true)
+  }, [])
+
+  useEffect(() => {
+    if(isRendered) {
+      fetchImages(window.screen.width).then((fetchedImages) => {
+        setImages(fetchedImages);
+      });
+    }
+  }, [isRendered]);
 
   const handleSlideChange = (swiper: { realIndex: number }) => {
     const currentIndex = swiper.realIndex;
@@ -45,31 +53,42 @@ export const SwiperList = () => {
 
   return (
     <div style={{ backgroundColor: accentColor || "transparent" }}>
-      <Swiper
-        navigation={true}
-        pagination={{ clickable: true }}
-        modules={[Navigation, Pagination, Autoplay]}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        loop={true}
-        className="mySwiper"
-        onSlideChange={handleSlideChange}
-      >
-        {images.map((image, index) => (
-          <SwiperSlide key={index}>
-            <ImageData
-              className={styles["image-container"]}
-              src={`data:image/jpeg;base64,${image}`}
-              alt="swiper_image"
-              width={1200}
-              height={300}
-              layout="relative"
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {
+        images.length > 0 ?
+        <Swiper
+          navigation={true}
+          pagination={{ clickable: true }}
+          modules={[Navigation, Pagination, Autoplay]}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          className="mySwiper"
+          onSlideChange={handleSlideChange}
+        >
+          {images.length > 0 && images.map((image, index) => (
+            <SwiperSlide key={index}>
+              <ImageData
+                className={styles["image-container"]}
+                src={`data:image/jpeg;base64,${image}`}
+                alt="swiper_image"
+                width={1200}
+                height={300}
+                quality={100}
+                layout="relative"
+                priority
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        :
+        <div
+          style={{
+            minHeight: "400px"
+          }}
+        />
+      }
     </div>
   );
 };

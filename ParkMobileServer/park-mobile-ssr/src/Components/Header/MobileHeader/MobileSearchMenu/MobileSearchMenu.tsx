@@ -82,12 +82,12 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
 
   const handleInputChange = debounce(async (value: string) => {
     setInputValue(value);
-    await mutateSearchedItems({ tag: value, skip: skip, take: take });
+    await mutateSearchedItems({ name: value, skip: skip, take: take });
   }, 700);
 
   useEffect(() => {
     if (inputValue) {
-      mutateSearchedItems({ tag: inputValue, skip: skip, take: take });
+      mutateSearchedItems({ name: inputValue, skip: skip, take: take });
     }
   }, [skip]);
 
