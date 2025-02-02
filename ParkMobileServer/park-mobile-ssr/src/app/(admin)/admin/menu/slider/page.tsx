@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, Form, Table } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { apiClient } from '@/api/ApiClient';
-import { useGetSliders } from '@/hooks/useGetSliders';
 import { SliderResponse } from '@/Types/SliderResponse';
 import { ColumnsType } from 'antd/es/table';
 import { useDeleteSliderImage } from '@/hooks/useDeleteSliderImage';
+import { useGetSlidersAdmin } from '@/hooks/useGetSliders';
 
 const Page = () => {
   //TODO: Добавить конвертер изображения в формат WEBP не на стороне пользователя, а на стороне админа. Тогда будет быстрее грузиться, т.к. будет конвертить и сохранять в бд
@@ -17,7 +17,7 @@ const Page = () => {
     isSliderSuccess,
     refetchSlider,
     sliderResponse
-  } = useGetSliders()
+  } = useGetSlidersAdmin()
 
   const {
     deleteSlideAsync,
@@ -29,7 +29,7 @@ const Page = () => {
   }, [isSliderSuccess,])
 
   useEffect(() => {
-    refetchSlider(true);
+    refetchSlider();
   }, [isDeleteSlideSuccess])
   
 
@@ -57,7 +57,7 @@ const Page = () => {
 
       alert('Files uploaded successfully');
       setTimeout(() => {
-        refetchSlider(true);
+        refetchSlider();
       }, 1000)
     } catch (error) {
       console.error('Error uploading files:', error);

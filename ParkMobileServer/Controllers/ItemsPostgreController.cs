@@ -603,14 +603,31 @@ namespace ParkMobileServer.Controllers
             return Ok(new { sliderId = slider.Id });
         }
 
+		[HttpPost("sliderImagesAdmin")]
+        public async Task<IActionResult> GetSliderImagesAdmin()
+        {
+            var sliderImageQuery = await _postgreSQLDbContext
+                                               .Sliders
+                                               .ToListAsync();
+
+            List<Slider> selectedSlides = sliderImageQuery;
+
+            if (selectedSlides.Count == 0)
+            {
+                return BadRequest();
+            }
+
+            return Ok(selectedSlides);
+        }
+
         [HttpPost("sliderImages")]
-        public async Task<IActionResult> GetSliderImages([FromQuery] bool? isForAdmin = false)
+        public async Task<IActionResult> GetSliderImages()
         {
 			const string cacheKey = "sliderImages";
 
 			var cachedData = await _cache.GetStringAsync(cacheKey);
 
-			if (cachedData != null && isForAdmin == false)
+			if (cachedData != null)
 			{
 				var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
 				return Ok(slides);
@@ -620,11 +637,9 @@ namespace ParkMobileServer.Controllers
 											   .Sliders
 											   .ToListAsync();
 
-			List<Slider> selectedSlides = isForAdmin == false ?
-												sliderImageQuery
-														.Where(slider => !slider.Name.Contains("Mobile"))
-														.ToList() :
-												sliderImageQuery;
+			List<Slider> selectedSlides =	sliderImageQuery
+												.Where(slider => !slider.Name.Contains("Mobile"))
+												.ToList();
 
             if (selectedSlides.Count == 0)
 			{
