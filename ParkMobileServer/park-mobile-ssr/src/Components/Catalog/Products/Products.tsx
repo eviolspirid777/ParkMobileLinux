@@ -9,6 +9,7 @@ import { ProductModal } from "./ProductModal/ProductModal";
 import { useGetItemById } from "@/hooks/useGetItemById";
 import { ConfigProvider, Pagination } from "antd";
 import { SearchItemShortType } from "@/Types/SearchItemShortType";
+import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 // import Image from "next/image";
 
@@ -69,6 +70,7 @@ export const Products: FC<ProductsType> = ({
     take: 16,
   });
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+  const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
 
   const [openProductCard, setOpenProductCard] = useState<{
     state: boolean;
@@ -80,6 +82,7 @@ export const Products: FC<ProductsType> = ({
   useEffect(() => {
     if (openProductCard.id !== null) {
       mutate(openProductCard.id);
+      setIsItemOpened(true)
     }
   }, [openProductCard.id]);
 

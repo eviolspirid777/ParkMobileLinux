@@ -29,3 +29,16 @@
     }
   }
 }
+
+@media (max-width: 1024px) {
+  .product-container {
+    padding-top: 17%;
+    &-header {
+      padding-left: 4%;
+    }
+  }
+
+  .categories-and-sort-block {
+    margin-left: 5%;
+  }
+}

@@ -653,12 +653,6 @@ namespace ParkMobileServer.Controllers
 			var sliders = await _postgreSQLDbContext
 										.Sliders
                                         .Where(item => item.Name.Contains("Mobile"))
-                                        .Select(item => new
-										{
-											item.Id,
-											item.Name,
-											image = item.ImageData
-										})
 										.ToListAsync();
 
             if (sliders.Count == 0)

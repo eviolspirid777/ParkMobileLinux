@@ -123,7 +123,9 @@ const ItemPage = () => {
       </div>
       {
         filters && filters.length > 0 &&
-        <div>
+        <div
+          className={styles["categories-and-sort-block"]}
+        >
           <ItemsCategories
             categoriesItems={filters}
             onSelect={handleFilterSelect}

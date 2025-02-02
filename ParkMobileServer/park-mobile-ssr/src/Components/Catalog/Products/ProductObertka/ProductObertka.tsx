@@ -132,7 +132,9 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
       </h4>
       {
         filters.length > 0 &&
-        <div>
+        <div
+          className={styles["categories-and-sort-block"]}
+        >
           <ItemsCategories
             categoriesItems={filters}
             onSelect={handlePath}

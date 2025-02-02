@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import { shopBucketAtom } from "@/Store/ShopBucket";
 import { debounce } from "lodash";
 import { ConfigProvider, Pagination } from "antd";
+import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 type MobileSearchMenuProps = {
   isOpened: boolean;
@@ -36,6 +37,7 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
   }>({ state: false, id: null });
 
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+  const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
 
   const handleAddToBucket = () => {
     if (cardData && Array.isArray(shopBucket)) {
@@ -72,6 +74,7 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
     if (item.id) {
       mutate(item.id);
       setOpenProductCard((prevState) => ({ ...prevState, state: true }));
+      setIsItemOpened(true)
     }
   };
 

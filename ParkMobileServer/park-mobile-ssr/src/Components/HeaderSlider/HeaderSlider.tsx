@@ -17,6 +17,7 @@ import { TradeInModal } from "../Help/TradeInComponent/TradeInModal/TradeInModal
 import { RepairModal } from "../Help/RepairModal/RepairModal";
 import { RepairRequestType, useAddRepairRequest } from "@/hooks/useAddRepairRequest";
 import { ConfigProvider, Pagination } from "antd";
+import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 type HeaderSliderProps = {
   isContentVisible: boolean;
@@ -64,6 +65,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
   }>({ state: false, id: null });
 
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+  const [, setIsItemOpened] = useAtom(isItemOpenedAtom);
 
   const handleAddToBucket = () => {
     if (cardData && Array.isArray(shopBucket)) {
@@ -100,6 +102,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
     if (item.id) {
       mutate(item.id);
       setOpenProductCard((prevState) => ({ ...prevState, state: true }));
+      setIsItemOpened(true)
     }
   };
 

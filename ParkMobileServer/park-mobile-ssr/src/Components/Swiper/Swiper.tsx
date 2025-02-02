@@ -50,7 +50,7 @@ export const SwiperList = () => {
 
   useEffect(() => {
     if(mobileSliderData) {
-      setImages(mobileSliderData.map(data => data.image))
+      setImages(mobileSliderData.map(data => data.imageData))
     }
     else if(sliderData) {
       setImages(sliderData.map(data => data.imageData))

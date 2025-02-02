@@ -8,7 +8,7 @@ import { GetItemsMainMenuType } from "@/Types/GetItemsMainMenu";
 import { GetItemType } from "@/Types/GetItemType";
 import { OrderItem } from "@/Types/OrderItem";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
-import { SliderResponse, SliderResponseMobile } from "@/Types/SliderResponse";
+import { SliderResponse } from "@/Types/SliderResponse";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
@@ -120,7 +120,7 @@ class ApiClient {
     }
 
     async GetMobileSliderData() {
-        const response = await this.client.get<SliderResponseMobile[]>(`${POSTGRE_ITEMS_PATH}/MobileSliderImages`);
+        const response = await this.client.get<SliderResponse[]>(`${POSTGRE_ITEMS_PATH}/MobileSliderImages`);
         return response.data;
     }
 

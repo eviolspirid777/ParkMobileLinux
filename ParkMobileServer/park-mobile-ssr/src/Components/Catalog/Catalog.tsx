@@ -80,12 +80,7 @@ export const Catalog = () => {
       {
         !isPendingItems && 
         <div
-          style={{
-            width:"100%",
-            alignSelf: "flex-start",
-            marginLeft: "26%",
-            paddingBottom: "4rem"
-          }}
+          className={styles["sort-block"]}
         >
           <SortSelect
             size="large"

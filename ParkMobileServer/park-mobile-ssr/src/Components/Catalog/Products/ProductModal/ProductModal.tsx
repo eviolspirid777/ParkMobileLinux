@@ -9,6 +9,8 @@ import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { OrderForm } from "./OrderForm/OrderForm";
 import { OrderItem } from "@/Types/OrderItem";
 import { usePostOrderItem } from "@/hooks/usePostOrderItem";
+import { useAtom } from "jotai";
+import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 type OpenProductCard = {
   state: boolean;
@@ -31,6 +33,7 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
+  const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
   
   const {
     postOrderItemAsync,
@@ -44,6 +47,11 @@ export const ProductModal: FC<ProductModalProps> = ({
   const computedCarDataNewPriceWithPercent = () => {
     const number = CardData?.discountPrice ? Math.round(parseInt(CardData.discountPrice) * 1.06) : Math.round(parseInt(CardData?.price ?? "") * 1.06);
     return convertToIntlFormat(number);
+  }
+
+  const handleCloseModal = () => {
+    setIsItemOpened(false)
+    closeModal();
   }
   
   const handleAddItem = () => {
@@ -126,8 +134,8 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
       {contextHolder}
       <Modal
         open={openProductCard.state}
-        onCancel={closeModal}
-        onClose={closeModal}
+        onCancel={handleCloseModal}
+        onClose={handleCloseModal}
         centered={true}
         footer={null}
         title={null}
