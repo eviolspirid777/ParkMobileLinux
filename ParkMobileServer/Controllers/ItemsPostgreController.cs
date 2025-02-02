@@ -610,7 +610,7 @@ namespace ParkMobileServer.Controllers
 
             var cachedData = await _cache.GetStringAsync(cacheKey);
 
-			if (cachedData != null)
+			if (cachedData != null && isForAdmin == false)
             {
                 var slides = JsonConvert.DeserializeObject<List<Slider>>(cachedData);
                 return Ok(slides);
@@ -685,7 +685,9 @@ namespace ParkMobileServer.Controllers
 
 			_postgreSQLDbContext.Sliders.Remove(_itemToDelete);
 			await _postgreSQLDbContext.SaveChangesAsync();
-			return Ok();
+            await _cache.RemoveAsync("sliderImages");
+            await _cache.RemoveAsync("sliderImagesMobile");
+            return Ok();
 		}
 		#endregion
 	}}
