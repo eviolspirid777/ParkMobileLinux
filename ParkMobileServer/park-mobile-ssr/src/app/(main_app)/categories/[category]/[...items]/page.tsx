@@ -15,7 +15,7 @@ import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
 import { SortType } from "@/Types/SortType";
 
 const convertFilter = (item: string) => {
-  return item.replaceAll("%20", " ")
+  return item.replaceAll("%20", " ").replaceAll("%22", "\"")
 }
 
 const ItemPage = () => {
