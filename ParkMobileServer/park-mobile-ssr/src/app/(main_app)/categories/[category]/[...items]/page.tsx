@@ -30,6 +30,15 @@ const ItemPage = () => {
           if(items.includes("phones")) {
             _items = "SamsungPhones";
           }
+          if(items.includes("Galaxy%20S")) {
+            _items = "Galaxy S"
+          }
+          if (items.includes("Galaxy%20A")) {
+            _items = "Galaxy A"
+          }
+          if(items.includes("Galaxy%20Z")) {
+            _items = "Galaxy Z"
+          }
           if(items.includes("headphones")) {
             _items = "SamsungHeadphones"
           }
@@ -40,6 +49,27 @@ const ItemPage = () => {
         if(category === "Xiaomi") {
           if(items.includes("phones")) {
             _items = "XiaomiPhones";
+          }
+          if(items.includes("Xiaomi%2014%20Ultra")) {
+            _items = "Xiaomi 14 Ultra"
+          }
+          if (items.includes("Xiaomi%2014")) {
+            _items = "Xiaomi 14"
+          }
+          if(items.includes("Xiaomi%2014T%20Pro")) {
+            _items = "Xiaomi 14T Pro"
+          }
+          if(items.includes("Xiaomi%2014T")) {
+            _items = "Xiaomi 14T"
+          }
+          if (items.includes("Xiaomi%2013%20Pro%20Plus")) {
+            _items = "Xiaomi 13 Pro Plus"
+          }
+          if(items.includes("Xiaomi%2013%20Pro")) {
+            _items = "Xiaomi 13 Pro"
+          }
+          if(items.includes("Xiaomi%2013T")) {
+            _items = "Xiaomi 13T"
           }
           if(items.includes("headphones")) {
             _items = "XiaomiHeadphones"
@@ -121,22 +151,23 @@ const ItemPage = () => {
           Каталог
         </h4>
       </div>
-      {
-        filters && filters.length > 0 &&
-        <div
-          className={styles["categories-and-sort-block"]}
-        >
+      <div
+        className={styles["categories-and-sort-block"]}
+      >
+        {
+          filters && filters.length > 0 &&
           <ItemsCategories
+            key={filters.length}
             categoriesItems={filters}
             onSelect={handleFilterSelect}
           />
-          <SortSelect
-            size="large"
-            onSelectChange={setSortType}
-            value={sort ? `${sort?.field},${sort?.type}` : null}
-          />
-        </div>
-      }
+        }
+        <SortSelect
+          size="large"
+          onSelectChange={setSortType}
+          value={sort ? `${sort?.field},${sort?.type}` : null}
+        />
+      </div>
       {
         isLoadingAll ?
         <div style={{
