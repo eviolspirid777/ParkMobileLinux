@@ -320,7 +320,7 @@ namespace ParkMobileServer.Controllers
 			}
 
 			_item.Name = item.Name ?? _item.Name;
-			_item.Price = item.Price ?? _item.Price;
+			_item.Price = item.Price;
 			_item.DiscountPrice = item.DiscountPrice ?? _item.DiscountPrice;
 			_item.Image = item.Image ?? _item.Image;
 			_item.Stock = item.Stock;
