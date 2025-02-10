@@ -5,8 +5,8 @@ export type DataType = {
   image: string;
   name: string;
   count: number;
-  price: string;
-  discountPrice?: string;
+  price: number;
+  discountPrice?: number;
   article: string;
   color?: undefined;
   memory?: undefined;

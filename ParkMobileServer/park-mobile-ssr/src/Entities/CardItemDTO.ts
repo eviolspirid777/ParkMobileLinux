@@ -1,10 +1,10 @@
 export type CardItemDTO = {
     id: number;
     name: string,
-    price: string,
+    price: number,
+    discountPrice?: number,
     article?: string,
     image?: string,
-    discountPrice?: string,
     description?: string,
     stock: number,
     categoryId: number,

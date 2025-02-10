@@ -9,7 +9,7 @@ import { ProductModal } from "@/Components/Catalog/Products/ProductModal/Product
 import { FC, useEffect, useRef, useState } from "react";
 import { SearchItemShortType } from "@/Types/SearchItemShortType";
 import { useAtom } from "jotai";
-import { shopBucketAtom } from "@/Store/ShopBucket";
+import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { debounce } from "lodash";
 import { ConfigProvider, Pagination } from "antd";
 import { isItemOpenedAtom } from "@/Store/OpenedItem";
@@ -41,7 +41,7 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
 
   const handleAddToBucket = () => {
     if (cardData && Array.isArray(shopBucket)) {
-      setShopBucket((previousShopBucket) => {
+      setShopBucket((previousShopBucket: DataType[]) => {
         if (previousShopBucket.some((item) => item.id === cardData.id)) {
           const newData = previousShopBucket.map((element) => {
             if (element.id === cardData.id) {
@@ -49,10 +49,8 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
             }
             return element;
           });
-
           return newData;
         }
-
         return [
           ...previousShopBucket,
           {
@@ -62,7 +60,10 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
             count: 1,
             image: cardData.image!,
             price: cardData.price!,
-            discountPrice: cardData.discountPrice ?? "",
+            discountPrice:
+              typeof cardData.discountPrice === "string"
+                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
+                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
           },
         ];
       });

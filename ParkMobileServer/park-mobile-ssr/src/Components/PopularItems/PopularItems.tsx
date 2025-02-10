@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useGetPopularItems } from "@/hooks/useGetPopularItems";
 import { ProductModal } from "../Catalog/Products/ProductModal/ProductModal";
 import { useAtom } from "jotai";
-import { shopBucketAtom } from "@/Store/ShopBucket";
+import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { useGetItemById } from "@/hooks/useGetItemById";
 
 import Image from "next/image"
@@ -34,7 +34,7 @@ export const PopularItems = () => {
 
   const handleAddToBucket = () => {
     if (cardData && Array.isArray(shopBucket)) {
-      setShopBucket((previousShopBucket) => {
+      setShopBucket((previousShopBucket: DataType[]) => {
         if (previousShopBucket.some((item) => item.id === cardData.id)) {
           const newData = previousShopBucket.map((element) => {
             if (element.id === cardData.id) {
@@ -42,10 +42,8 @@ export const PopularItems = () => {
             }
             return element;
           });
-
           return newData;
         }
-
         return [
           ...previousShopBucket,
           {
@@ -55,7 +53,10 @@ export const PopularItems = () => {
             count: 1,
             image: cardData.image!,
             price: cardData.price!,
-            discountPrice: cardData.discountPrice ?? "",
+            discountPrice:
+              typeof cardData.discountPrice === "string"
+                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
+                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
           },
         ];
       });

@@ -85,8 +85,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         name: card.name,
         count: 1,
         article: (card as CardType).article ?? "",
-        price: card.price,
-        discountPrice: card.discountPrice
+        price: card.price as number,
+        discountPrice: card.discountPrice as number
       };
   
       return [...previousBucket, newItem];

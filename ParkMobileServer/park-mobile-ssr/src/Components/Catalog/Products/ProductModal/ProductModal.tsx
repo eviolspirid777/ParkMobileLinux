@@ -45,7 +45,7 @@ export const ProductModal: FC<ProductModalProps> = ({
   }, [])
   
   const computedCarDataNewPriceWithPercent = () => {
-    const number = CardData?.discountPrice ? Math.round(parseInt(CardData.discountPrice) * 1.06) : Math.round(parseInt(CardData?.price ?? "") * 1.06);
+    const number = CardData?.discountPrice ? Math.round(CardData.discountPrice * 1.06) : Math.round(CardData?.price ?? 1 * 1.06);
     return convertToIntlFormat(number);
   }
 
@@ -192,7 +192,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
               {
                 CardData ?
                 <>
-                  <strong className={CardData?.discountPrice && styles["discount"]}>
+                  <strong className={String(CardData?.discountPrice) && styles["discount"]}>
                     {convertToIntlFormat(CardData?.price)} ₽
                   </strong>
                   {CardData?.discountPrice && (
@@ -246,8 +246,10 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
             <div
               className={styles["MarkdownContent"]}
               style={{
-                maxHeight: `${(isRendered && window.innerWidth > 1024) ? modalHeight - 350 : modalHeight - 500}px`,
+                maxHeight: `${(isRendered && window.innerWidth > 1024) ? modalHeight - 300 : modalHeight - 500}px`,
                 overflow: "auto",
+                padding: "0% 5% 0% 0%",
+                textAlign: "justify"
               }}
             >
               <MarkdownRenderer content={CardData?.description ?? ""} />

@@ -12,7 +12,7 @@ import { ProductModal } from "../Catalog/Products/ProductModal/ProductModal";
 import { SearchItemShortType } from "@/Types/SearchItemShortType";
 import { useGetItemById } from "@/hooks/useGetItemById";
 import { useAtom } from "jotai";
-import { shopBucketAtom } from "@/Store/ShopBucket";
+import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { TradeInModal } from "../Help/TradeInComponent/TradeInModal/TradeInModal";
 import { RepairModal } from "../Help/RepairModal/RepairModal";
 import { RepairRequestType, useAddRepairRequest } from "@/hooks/useAddRepairRequest";
@@ -69,7 +69,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
 
   const handleAddToBucket = () => {
     if (cardData && Array.isArray(shopBucket)) {
-      setShopBucket((previousShopBucket) => {
+      setShopBucket((previousShopBucket: DataType[]) => {
         if (previousShopBucket.some((item) => item.id === cardData.id)) {
           const newData = previousShopBucket.map((element) => {
             if (element.id === cardData.id) {
@@ -77,10 +77,8 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
             }
             return element;
           });
-
           return newData;
         }
-
         return [
           ...previousShopBucket,
           {
@@ -90,7 +88,10 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
             count: 1,
             image: cardData.image!,
             price: cardData.price!,
-            discountPrice: cardData.discountPrice ?? "",
+            discountPrice:
+              typeof cardData.discountPrice === "string"
+                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
+                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
           },
         ];
       });

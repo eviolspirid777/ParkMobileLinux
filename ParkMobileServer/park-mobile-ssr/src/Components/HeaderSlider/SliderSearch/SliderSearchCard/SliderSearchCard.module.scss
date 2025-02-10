@@ -25,6 +25,32 @@
     }
 }
 
+.product-card-text-block {
+    cursor: pointer;
+    display: flex;
+    flex-flow: column nowrap;
+    &-price {
+        text-align: center;
+        font-family: "SF-Pro-Display-Regular_light";
+        color: #454545;
+        padding-top: 10px;
+        letter-spacing: 1px;
+        &-block {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 15px;
+        }
+    }
+}
+
+.discount {
+    font-size: 1rem !important;
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
 @media (max-width: 1024px) {
     .slider-search-card {
         width: 100%;

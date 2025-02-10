@@ -12,11 +12,11 @@ type ShopBucketMobileProps = {
         image: string;
         name: string;
         count: number;
-        price: string;
+        price: number;
+        discountPrice?: number;
         article: string;
         color?: undefined;
         memory?: undefined;
-        discountPrice?: string;
       }
     | {
         image: string;
@@ -24,9 +24,9 @@ type ShopBucketMobileProps = {
         count: number;
         color: string;
         memory: string;
-        price: string;
+        price: number;
+        discountPrice?: number;
         article: string;
-        discountPrice?: string;
       }
   )[];
   handleItemCount: (el: DataType, type: "minus" | "plus") => void;
@@ -84,7 +84,7 @@ export const ShopBucketMobile: FC<ShopBucketMobileProps> = ({
                 />
               </div>
               <div className={styles["item-block-price"]}>
-                <span className={el.discountPrice && styles["discount"]}>
+                <span className={String(el.discountPrice) && styles["discount"]}>
                   {convertToIntlFormat(el.price)} ₽
                 </span>
                 {el.discountPrice && <span>{el.discountPrice} ₽</span>}

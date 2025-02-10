@@ -22,9 +22,9 @@ import { useGetFilters } from "@/hooks/useGetFilters";
 export type FormItemChange = {
   article: string;
   description: string;
-  discountPrice: string;
   name: string;
-  price: string;
+  price: number;
+  discountPrice?: number;
   stock: number;
   categoryId: number;
   brandId: number;

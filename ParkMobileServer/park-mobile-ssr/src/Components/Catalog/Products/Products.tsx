@@ -112,10 +112,8 @@ export const Products: FC<ProductsType> = ({
             }
             return element;
           });
-
           return newData;
         }
-
         return [
           ...previousShopBucket,
           {
@@ -125,7 +123,10 @@ export const Products: FC<ProductsType> = ({
             count: 1,
             image: cardData.image!,
             price: cardData.price!,
-            discountPrice: cardData.discountPrice ?? "",
+            discountPrice:
+              typeof cardData.discountPrice === "string"
+                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
+                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
           },
         ];
       });

@@ -18,7 +18,20 @@ export const SliderSearchCard: FC<SliderSearchCardType> = ({
       <Image src={`data:image/jpeg;base64,${card.image}`} alt={card.name} width={70} height={70}/>
       <div className={styles["slider-search-card-info"]}>
         <span>{card.name}</span>
-        <strong>{convertToIntlFormat(card.price)} ₽</strong>
+        <div className={styles["product-card-text-block-price-block"]}>
+          <span
+            className={`${styles["product-card-text-block-price"]} ${
+              card.discountPrice && styles["discount"]
+            }`}
+          >
+            {convertToIntlFormat(card.price)} ₽
+          </span>
+          {card.discountPrice && (
+            <span className={styles["product-card-text-block-price"]}>
+              {convertToIntlFormat(card.discountPrice)} ₽
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

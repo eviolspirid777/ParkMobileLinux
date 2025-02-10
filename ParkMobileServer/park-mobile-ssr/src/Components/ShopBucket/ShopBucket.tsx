@@ -54,11 +54,11 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const handleItemsCost = () => {
     let total = shopBucket.reduce((accumulator, item) => {
       if(item.discountPrice) {
-        const price = parseFloat(item.discountPrice.split(" ").join(""));
+        const price = item.discountPrice;
         const count = item.count || 0;
         return accumulator + price * count;
       }
-      const price = parseFloat(item.price.split(" ").join(""));
+      const price = item.price;
       const count = item.count || 0;
       return accumulator + price * count;
     }, 0);
@@ -246,7 +246,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                       </div>
                       <div className={styles["item-block-price"]}>
                         <span
-                          className={el.discountPrice && styles["discount"]}
+                          className={String(el.discountPrice) && styles["discount"]}
                         >
                           {convertToIntlFormat(el.price)} ₽
                         </span>
@@ -523,7 +523,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                             <div>
                               <span className={styles["item-block-price"]}>
                                 <span
-                                  className={el.discountPrice && styles["discount"]}
+                                  className={String(el.discountPrice) && styles["discount"]}
                                 >
                                   {convertToIntlFormat(el.price)} ₽
                                 </span>
