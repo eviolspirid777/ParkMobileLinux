@@ -15,7 +15,7 @@ import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
 import { SortType } from "@/Types/SortType";
 
 const convertFilter = (item: string) => {
-  return item.replaceAll("%20", " ").replaceAll("%22", "\"")
+  return decodeURIComponent(item.replaceAll("%20", " ").replaceAll("%22", "\""))
 }
 
 const ItemPage = () => {
@@ -77,6 +77,9 @@ const ItemPage = () => {
           if(items.includes("tv")) {
             _items = "XiaomiTv";
           }
+        }
+        if(items.includes("yandex")) {
+          _items = decodeURIComponent(items.slice(-1) as string ?? "")
         }
         return ItemsFilters.get(_items as string) as string[] ?? []
       }

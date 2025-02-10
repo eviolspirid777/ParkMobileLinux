@@ -70,6 +70,8 @@ ol.policy-block {
 
 @media (max-width: 1024px) {
   .policy-confidential-block {
+    margin: 0px;
+    padding-top: 17%;
     & h2 {
       text-align: center;
     }

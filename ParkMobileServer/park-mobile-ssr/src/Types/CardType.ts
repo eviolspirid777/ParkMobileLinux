@@ -22,7 +22,7 @@ export type CardItemType = {
     image?: string,
     name?: string,
     price: number,
-    discountPrice?: number,
+    discountPrice?: number | null,
     description?: string,
     categoryName?: string,
     brandName?: string,

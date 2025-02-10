@@ -17,7 +17,7 @@ import { useGetItemById } from "@/hooks/useGetItemById";
 import Image from "next/image"
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { Skeleton } from "antd";
-import { isItemOpenedAtom } from "@/Store/OpenedItem";
+// import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 export const PopularItems = () => {
   const { 
@@ -28,7 +28,7 @@ export const PopularItems = () => {
   const [isClient, setIsClient] = useState(false);
 
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
-  const [, setIsItemOpened] = useAtom(isItemOpenedAtom);
+  // const [, setIsItemOpened] = useAtom(isItemOpenedAtom);
 
   const { cardData, mutate } = useGetItemById();
 
@@ -79,7 +79,7 @@ export const PopularItems = () => {
       id: id,
       state: true,
     });
-    setIsItemOpened(true)
+    // setIsItemOpened(true)
   };
 
   return (

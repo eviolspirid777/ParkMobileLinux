@@ -14,7 +14,7 @@ import { MobileHeaderAbout } from "./MobileHeaderBlocks/About/MobileHeaderAbout"
 import { MobileHeaderHelp } from "./MobileHeaderBlocks/Help/MobileHeaderHelp";
 import { MobileHeaderSubscribe } from "./MobileHeaderBlocks/Subscribe/MobileHeaderSubscribe";
 import { MobileSearchMenu } from "./MobileSearchMenu/MobileSearchMenu";
-import { isItemOpenedAtom } from "@/Store/OpenedItem";
+// import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 type MobileHeaderProps = {
   handleMainMenuRoute: () => void;
@@ -30,7 +30,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
   setTradeInOpen,
 }) => {
   const [shopBucket] = useAtom(shopBucketAtom);
-  const [isItemOpened, ] = useAtom(isItemOpenedAtom)
+  // const [isItemOpened, ] = useAtom(isItemOpenedAtom)
 
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   
@@ -97,7 +97,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
   return (
     <>
     {
-      !isItemOpened &&
+      // !isItemOpened &&
       <>
         <nav>
           <div className={styles["navbar"]}>
@@ -170,7 +170,10 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                 <li>
                   <a
                     className={styles["request"]}
-                    onClick={setTradeInOpen.bind(null, true)}
+                    onClick={() => {
+                      setTradeInOpen(true)
+                      setIsMenuOpened(false);
+                    }}
                   >
                     Заявка на Трейд-Ин
                   </a>
@@ -178,7 +181,10 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                 <li>
                   <a
                     className={styles["request"]}
-                    onClick={setDeviceFixOpen.bind(null, true)}
+                    onClick={() => {
+                      setDeviceFixOpen(true);
+                      setIsMenuOpened(false);
+                    }}
                   >
                     Заявка на ремонт
                   </a>

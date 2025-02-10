@@ -246,7 +246,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                       </div>
                       <div className={styles["item-block-price"]}>
                         <span
-                          className={String(el.discountPrice) && styles["discount"]}
+                          className={el.discountPrice !== null ? styles["discount"] : ""}
                         >
                           {convertToIntlFormat(el.price)} ₽
                         </span>
@@ -523,7 +523,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                             <div>
                               <span className={styles["item-block-price"]}>
                                 <span
-                                  className={String(el.discountPrice) && styles["discount"]}
+                                  className={el.discountPrice !== null ? styles["discount"] : ""}
                                 >
                                   {convertToIntlFormat(el.price)} ₽
                                 </span>

@@ -84,7 +84,7 @@ export const ShopBucketMobile: FC<ShopBucketMobileProps> = ({
                 />
               </div>
               <div className={styles["item-block-price"]}>
-                <span className={String(el.discountPrice) && styles["discount"]}>
+                <span className={el.discountPrice !== null ? styles["discount"] : ""}>
                   {convertToIntlFormat(el.price)} ₽
                 </span>
                 {el.discountPrice && <span>{el.discountPrice} ₽</span>}

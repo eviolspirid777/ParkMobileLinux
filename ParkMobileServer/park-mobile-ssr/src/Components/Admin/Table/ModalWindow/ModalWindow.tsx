@@ -69,6 +69,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
   );
 
   const handleFinishForm = async (newItem: FormItemChange) => {
+    //EDIT
     if (selectedItem) {
       const mappedItem: CardItemDTO = {
         id: selectedItem?.key ?? 0,
@@ -76,7 +77,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         price: newItem.price,
         stock: newItem.stock,
         article: newItem.article,
-        discountPrice: newItem.discountPrice,
+        discountPrice: (newItem.discountPrice as string) === "" ? null : parseFloat(newItem.discountPrice as string),
         description: newItem.description,
         categoryId: newItem.categoryId,
         brandId: newItem.brandId,
@@ -103,7 +104,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         price: newItem.price,
         stock: newItem.stock,
         article: newItem.article,
-        discountPrice: newItem.discountPrice,
+        discountPrice: (newItem.discountPrice as string) === "" ? null : parseFloat(newItem.discountPrice as string),
         description: newItem.description,
         categoryId: newItem.categoryId,
         brandId: newItem.brandId,

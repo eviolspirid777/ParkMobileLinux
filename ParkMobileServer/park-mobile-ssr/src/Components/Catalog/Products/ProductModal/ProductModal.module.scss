@@ -263,6 +263,13 @@
 }
 
 @media (min-width:401px) and (max-width: 1024px) {
+    .item-modal-window {
+        border: none;
+        background-color: transparent;
+        min-width: 90%;
+        height: 73%;
+    }
+
     .item-container {
         grid-template-columns: 1fr;
         grid-template-rows: none;

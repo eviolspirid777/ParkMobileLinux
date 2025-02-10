@@ -170,6 +170,9 @@ export const TradeInModal: FC<TradeInModalProps> = ({ handleClose, open }) => {
       width="100%"
       centered={true}
       footer={null}
+      style={{
+        height:"73%"
+      }}
     >
       <div className={styles["trade-in-modal-content"]}>
         <div className={styles["steps"]}>
@@ -180,7 +183,14 @@ export const TradeInModal: FC<TradeInModalProps> = ({ handleClose, open }) => {
               },
             }}
           >
-            <Steps items={items} {...handleDisplayDataAttributes()} />
+            <Steps
+              items={items}
+              style={isRendered && window.screen.width ? {
+                height: "300px",
+                overflow: "auto"
+              } : {}}
+              {...handleDisplayDataAttributes()}
+            />
           </ConfigProvider>
         </div>
         <div className={styles["content"]}>

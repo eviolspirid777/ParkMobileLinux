@@ -9,8 +9,8 @@ import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { OrderForm } from "./OrderForm/OrderForm";
 import { OrderItem } from "@/Types/OrderItem";
 import { usePostOrderItem } from "@/hooks/usePostOrderItem";
-import { useAtom } from "jotai";
-import { isItemOpenedAtom } from "@/Store/OpenedItem";
+// import { useAtom } from "jotai";
+// import { isItemOpenedAtom } from "@/Store/OpenedItem";
 
 type OpenProductCard = {
   state: boolean;
@@ -33,7 +33,7 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
-  const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
+  // const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
   
   const {
     postOrderItemAsync,
@@ -50,12 +50,13 @@ export const ProductModal: FC<ProductModalProps> = ({
   }
 
   const handleCloseModal = () => {
-    setIsItemOpened(false)
+    // setIsItemOpened(false)
     closeModal();
   }
   
   const handleAddItem = () => {
     handleAddToBucket();
+    // setIsItemOpened(false);
     
     api.destroy();
 
@@ -192,7 +193,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
               {
                 CardData ?
                 <>
-                  <strong className={String(CardData?.discountPrice) && styles["discount"]}>
+                  <strong className={CardData?.discountPrice !== null ? styles["discount"] : ""}>
                     {convertToIntlFormat(CardData?.price)} ₽
                   </strong>
                   {CardData?.discountPrice && (
