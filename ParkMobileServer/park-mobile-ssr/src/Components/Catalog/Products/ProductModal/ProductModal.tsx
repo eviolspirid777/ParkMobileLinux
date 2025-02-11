@@ -142,7 +142,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
         title={null}
         closeIcon={
           isRendered && window.screen.width > 1024 ? null : (
-            <i className="fa-solid fa-xmark" />
+            <i className="fa-solid fa-xmark" style={{ marginTop: "25px" }}/>
           )
         }
         className={styles["item-modal-window"]}
