@@ -267,21 +267,32 @@
         border: none;
         background-color: transparent;
         min-width: 90%;
-        height: 73%;
+        max-height: 60%;
     }
 
     .item-container {
         grid-template-columns: 1fr;
         grid-template-rows: none;
+        max-height: 65vh;
+        min-height: 65vh;
+
+        &-data {
+            gap: 10px;
+            & header {
+                h3 {
+                    font-size: 1rem;
+                }
+
+                article {
+                    font-size: .75rem;
+                }
+            }
+        }
 
         &-image {
             align-self: center;
             justify-self: center;
             width: 140px;
         }
-    }
-
-    .MarkdownContent {
-        max-height: 25%;
     }
 }

@@ -1,7 +1,7 @@
 .mobile-search {
-    position: absolute;
+    position: fixed;
     z-index: 3;
-    padding-top: 12.5%;
+    padding-top: 13.5%;
     &-container {
         display: flex;
         flex-flow: row nowrap;
@@ -10,7 +10,7 @@
         padding-top: 10px;
         gap: 10px;
         width: 100vw;
-        height: 5vh;
+        height: 7vh;
         background-color: white;
     
         & input {

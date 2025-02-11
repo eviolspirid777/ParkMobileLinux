@@ -247,7 +247,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
             <div
               className={styles["MarkdownContent"]}
               style={{
-                maxHeight: `${(isRendered && window.innerWidth > 1024) ? modalHeight - 300 : modalHeight - 500}px`,
+                maxHeight: `${(isRendered && window.screen.width > 1024) ? modalHeight - 300 : modalHeight - (modalHeight * 0.85)}px`,
                 overflow: "auto",
                 padding: "0% 5% 0% 0%",
                 textAlign: "justify"
