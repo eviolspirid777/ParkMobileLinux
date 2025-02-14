@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using ParkMobileServer.Functions;
+using ParkMobileServer.CDEKHttp;
 
 /*
  * Команды для развертывания докера на серваке
@@ -29,7 +30,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
 			});
             builder.Services.AddStackExchangeRedisCache(options =>
             {
@@ -43,6 +44,7 @@ namespace ParkMobileServer
             });
             builder.Services.AddScoped<GetItems>();
 			builder.Services.AddScoped<CreateItems>();
+			builder.Services.AddSingleton<CdekHttp>();
             
 			
 			builder.WebHost.UseUrls("http://*:3001");

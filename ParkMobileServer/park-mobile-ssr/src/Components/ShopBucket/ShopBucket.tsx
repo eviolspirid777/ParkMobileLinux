@@ -168,6 +168,9 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       values = { ...values, items: [...itemsToProceed] };
 
       await apiClient.OrderData(values);
+      // await apiClient.AutorizeCDEK();
+      // await apiClient.GetAdressesCDEK({city_code: 116})
+
       setShopBucket([]);
       localStorage.removeItem("shopBucket");
     } catch (error) {
@@ -297,7 +300,10 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
         >
           <div className={styles["submit-shopping-block"]}>
             <div className={styles["submit-shopping-block-data"]}>
-              <Form onFinish={handleFinish} form={form}>
+              <Form
+                form={form}
+                onFinish={handleFinish}
+              >
                 <div className={styles["submit-shopping-block-data-user-info"]}>
                   <strong>Контактная информация</strong>
                   <div

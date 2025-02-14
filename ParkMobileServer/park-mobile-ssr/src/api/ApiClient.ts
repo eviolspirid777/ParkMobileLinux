@@ -14,28 +14,19 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
-const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
-// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
-// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
+// const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
+// const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
+// const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
+const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
+const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
+const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"
 
 const CDEK_PATH = `https://api.cdek.ru/v2`;
-
-//origin
-// const ClientCredentials = {
-//     login: "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI",
-//     password: "gCfbHZSUPizoOevkwSJNMIi0bO17iwav"
-// }
-
-//test
-const ClientCredentials = {
-    login: "wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP",
-    password: "RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5"
-}
 
 class ApiClient {
     client: AxiosInstance;
     authClient: AxiosInstance;
+    cdekClient: AxiosInstance;
     sessionToken: string | null;
 
     constructor() {
@@ -45,6 +36,11 @@ class ApiClient {
             },
         });
         this.authClient = axios.create()
+        this.cdekClient = axios.create({
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
         // this.sessionToken = localStorage.getItem("sessionToken") ?? null; //TODO: с этой строчкой потом можно добавить запоминание сессии
         this.sessionToken = null;
     }
@@ -69,19 +65,13 @@ class ApiClient {
 
     async AutorizeCDEK() {
         try {
-            const loginCDEKResponse = await this.client.post<SdekAutorizeResponse>(`${CDEK_PATH}/oauth/token`, null, {
-                params: {
-                    client_id: ClientCredentials.login,
-                    client_secret: ClientCredentials.password,
-                    grant_type: "client_credentials"
-                }
-            })
+            const loginCDEKResponse = await this.cdekClient.get<SdekAutorizeResponse>(`${CDKEK_PATH_LOCAL}/autorize`)
 
             const {access_token, expires_in} = loginCDEKResponse.data;
             
-            this.client.defaults.headers.common["Authorization"] = `Bearer ${access_token}`
+            this.cdekClient.defaults.headers.common["Authorization"] = `Bearer ${access_token}`
             setTimeout(() => {
-                this.client.defaults.headers.common["Authorization"] = null
+                this.cdekClient.defaults.headers.common["Authorization"] = null
             }, expires_in * 1000)
         }
         catch (error) {
@@ -253,12 +243,12 @@ class ApiClient {
 
     //#region SDEK
     async GetRegions() {
-        const response = await this.client.get(`${CDEK_PATH}/location/regions`)
+        const response = await this.cdekClient.get(`${CDEK_PATH}/location/regions`)
         return response.data;
     }
 
     async GetCityCodeByName(name: string) {
-        const response = await this.client.get(`${CDEK_PATH}/location/suggest/cities`, {
+        const response = await this.cdekClient.get(`${CDEK_PATH}/location/suggest/cities`, {
             params: {
                 name
             }
@@ -267,46 +257,46 @@ class ApiClient {
     }
 
     async GetAdressesCDEK(data: GetAdressesCDEKParams)  {
-        const response = await this.client.get(`${CDEK_PATH}/deliverypoints`, {
+        const response = await this.cdekClient.get(`${CDEK_PATH}/deliverypoints`, {
             params: data
         })
         return response.data;
     }
 
     async GetCDEKInformationByIm (data: GetCDEKInformationByImType) {
-        const response = await this.client.get(`${CDEK_PATH}/orders`, {
+        const response = await this.cdekClient.get(`${CDEK_PATH}/orders`, {
             params: data
         });
         return response.data;
     }
 
     async GetCDEKInformationByUuid (uuid: string) {
-        const response = await this.client.get(`${CDEK_PATH}/orders/${uuid}`);
+        const response = await this.cdekClient.get(`${CDEK_PATH}/orders/${uuid}`);
         return response.data;
     }
 
     async PostCDEKForm(data: SdekPostTypeBase) {
-        const response = await this.client.post(`${CDEK_PATH}/orders`, data);
+        const response = await this.cdekClient.post(`${CDEK_PATH}/orders`, data);
         return response.data;
     }
 
     async PostCDEKClientReturn(uuid: string, tariff_code: number) {
-        const response = await this.client.post(`${CDEK_PATH}/orders/${uuid}/clientReturn`, tariff_code);
+        const response = await this.cdekClient.post(`${CDEK_PATH}/orders/${uuid}/clientReturn`, tariff_code);
         return response.data;
     }
 
     async PostCDEKRefuse(uuid: string) {
-        const response = await this.client.post(`${CDEK_PATH}/orders/${uuid}/refusal`);
+        const response = await this.cdekClient.post(`${CDEK_PATH}/orders/${uuid}/refusal`);
         return response.data
     }
 
     async PostCDEKDeliveryCalculatorPrice(data: PostCDEKDeliveryPriceType) {
-        const response = await this.client.post(`${CDEK_PATH}/calculator/tarifflist`, data);
+        const response = await this.cdekClient.post(`${CDEK_PATH}/calculator/tarifflist`, data);
         return response.data
     }
 
     async PostCDEKDeliveryCalculatorTariff(data: PostCDEKDeliveryTariffType) {
-        const response = await this.client.post(`${CDEK_PATH}/calculator/tariff`, data);
+        const response = await this.cdekClient.post(`${CDEK_PATH}/calculator/tariff`, data);
         return response.data
     }
 
