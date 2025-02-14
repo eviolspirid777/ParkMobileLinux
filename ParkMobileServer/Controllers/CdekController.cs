@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ParkMobileServer.CDEKHttp;
 using ParkMobileServer.Entities.Cdek;
+using static ParkMobileServer.Entities.Cdek.ServicesClass;
 
 namespace ParkMobileServer.Controllers
 {
@@ -32,11 +33,25 @@ namespace ParkMobileServer.Controllers
         }
 
         [HttpGet("Addresses")]
-        public async  Task<IActionResult> GetAdresses([FromQuery] AdressesRequestQueryParams req)
+        public async Task<IActionResult> GetAdresses([FromQuery] AdressesRequestQueryParams req)
         {
             try
             {
                 var response = await _cdekHttp.GetAdressesCDEKAsync(req);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("PostOrder")]
+        public async Task<IActionResult> PostOrder([FromBody] PostCDEKDeliveryRequest data)
+        {
+            try
+            {
+                var response = await _cdekHttp.PostCDEKFormAsync(data);
                 return Ok(response);
             }
             catch (Exception ex)

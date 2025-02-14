@@ -14,12 +14,12 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-// const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
-// const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
-// const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
-const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
-const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
-const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"
+const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
+const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
+const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
+// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
+// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
+// const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"
 
 const CDEK_PATH = `https://api.cdek.ru/v2`;
 
@@ -257,9 +257,14 @@ class ApiClient {
     }
 
     async GetAdressesCDEK(data: GetAdressesCDEKParams)  {
-        const response = await this.cdekClient.get(`${CDEK_PATH}/deliverypoints`, {
+        const response = await this.cdekClient.get(`${CDKEK_PATH_LOCAL}/Addresses`, {
             params: data
         })
+        return response.data;
+    }
+
+    async PostCDEKForm(data: SdekPostTypeBase) {
+        const response = await this.cdekClient.post(`${CDKEK_PATH_LOCAL}/PostOrder`, data);
         return response.data;
     }
 
@@ -272,11 +277,6 @@ class ApiClient {
 
     async GetCDEKInformationByUuid (uuid: string) {
         const response = await this.cdekClient.get(`${CDEK_PATH}/orders/${uuid}`);
-        return response.data;
-    }
-
-    async PostCDEKForm(data: SdekPostTypeBase) {
-        const response = await this.cdekClient.post(`${CDEK_PATH}/orders`, data);
         return response.data;
     }
 

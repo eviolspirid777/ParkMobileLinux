@@ -1,5 +1,7 @@
 ﻿using ParkMobileServer.Entities.Cdek;
+using System.Text;
 using System.Text.Json;
+using static ParkMobileServer.Entities.Cdek.ServicesClass;
 
 namespace ParkMobileServer.CDEKHttp
 {
@@ -20,7 +22,7 @@ namespace ParkMobileServer.CDEKHttp
         {
             var parameters = new Dictionary<string, string>
             {
-                {"client_id", "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI" },
+                { "client_id", "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI" },
                 { "client_secret", "gCfbHZSUPizoOevkwSJNMIi0bO17iwav" },
                 { "grant_type", "client_credentials" }
             };
@@ -86,17 +88,21 @@ namespace ParkMobileServer.CDEKHttp
             return cdekJson;
         }
 
-        public async Task<string> PostCDEKForm()
+        public async Task<string> PostCDEKFormAsync(PostCDEKDeliveryRequest data)
         {
-            var response = await _httpClient.PostAsync($"{CDEK_API}/orders", null);
+            // Сериализуем объект data в JSON
+            var jsonContent = JsonSerializer.Serialize(data);
+
+            // Создаем StringContent из сериализованного JSON
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"{CDEK_API}/orders", httpContent);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception();
             }
             response.EnsureSuccessStatusCode();
             var cdekJson = await response.Content.ReadAsStringAsync();
-
-            //var result = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(cdekJson);
 
             return cdekJson;
         }
