@@ -134,7 +134,9 @@ namespace ParkMobileServer.Functions
                                     item.Stock,
                                     item.Image,
                                     item.Price,
-                                    item.DiscountPrice
+                                    item.DiscountPrice,
+                                    item.IsPopular,
+                                    item.IsNewItem
                                 })
                                 .ToListAsync();
 

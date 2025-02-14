@@ -17,6 +17,7 @@ export type AuthorizationType = {userName: string, password: string}
 const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
 const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
 const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
+
 // const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
 // const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
 // const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"

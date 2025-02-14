@@ -45,8 +45,10 @@ export const ProductModal: FC<ProductModalProps> = ({
   }, [])
   
   const computedCarDataNewPriceWithPercent = () => {
-    const number = CardData?.discountPrice ? Math.round(CardData.discountPrice * 1.06) : Math.round(CardData?.price ?? 1 * 1.06);
-    return convertToIntlFormat(number);
+    if(CardData?.price) {
+      const number = CardData?.discountPrice ? Math.ceil(CardData.discountPrice * 1.06 / 100) * 100 : Math.ceil(CardData?.price * 1.06 / 100) * 100;
+      return convertToIntlFormat(number);
+    }
   }
 
   const handleCloseModal = () => {
@@ -117,10 +119,9 @@ useEffect(() => {
   };
 }, [openProductCard.state]);
 
-const handleCreditPrice = (price: string | undefined | number) => {
-  if (typeof price == "string") {
-    const _price = Number((price as string).split(" ").join(""));
-    return ((_price * 1.31) / 36 + 1).toFixed();
+const handleCreditPrice = () => {
+  if(CardData?.price) {
+    return CardData?.discountPrice ? convertToIntlFormat(((CardData.discountPrice * 1.31) / 36 + 1).toFixed()) : convertToIntlFormat(((CardData?.price * 1.31) / 36 + 1).toFixed())
   }
 };
 
@@ -239,7 +240,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
                 <div className={styles["credit"]}>
                   <span>Доступно</span>
                   <a>в кредит</a>
-                  <span>от {handleCreditPrice(CardData?.price)} ₽/мес.</span>
+                  <span>от {handleCreditPrice()} ₽/мес.</span>
                 </div>
               </> :
               <Skeleton />
