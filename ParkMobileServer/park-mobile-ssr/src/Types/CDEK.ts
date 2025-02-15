@@ -76,29 +76,95 @@ export type PostCDEKDeliveryTariffType = {
   }[]
 }
 
+export type GetLocationsCDEKResponse = {
+  city_uuid: string,
+  code: number,
+  full_name: string,
+}
+
+export type CdekPointType = {
+  originalEvent: {
+    target: {
+      geometry: {
+        _coordinates: number[]
+      }
+    }
+  }
+}
+
+export type GetAdressesCDEKResponse = {
+  address_comment: string,
+  allowed_cod: boolean,
+  code: string,
+  dimensions: {
+    depth: number,
+    width: number,
+    height: number,
+  }[],
+  fulfillment: boolean,
+  have_cash: boolean,
+  have_cashless: boolean,
+  have_fast_payment_system: boolean,
+  is_dressing_room: boolean,
+  is_handout: boolean,
+  is_ltl: boolean,
+  is_reception: boolean,
+  location: {
+    address: string,
+    address_full: string,
+    city: string,
+    city_code: number,
+    city_uuid: string,
+    country_code: string,
+    fias_guid: string,
+    latitude: number,
+    longitude: number,
+    postal_code: string,
+    region: string,
+    region_code: number
+  },
+  name: string,
+  nearest_station: string,
+  note: string,
+  owner_code: string,
+  phones: {
+    number: string
+  }[],
+  take_only: boolean,
+  type: string,
+  uuid: string,
+  weight_max: number,
+  weight_min: number,
+  work_time: string,
+  work_time_list: {
+    day: number,
+    time: string
+  }[]
+}
+
 export type GetAdressesCDEKParams = {
   code?: string,
   type?: string,
-  postal_code?: string,
-  city_code?: number,
-  country_code?: string,
-  region_code?: number,
-  have_cashless?: boolean,
-  have_cash?: boolean,
-  allowed_cod?: boolean,
-  is_dressing_room?: boolean,
-  weight_max?: number,
-  weight_min?: number,
-  lang?: string,
-  take_only?: boolean,
-  is_handout?: boolean,
-  is_reception?: boolean,
-  is_marketplace?: boolean,
-  is_ltl?: boolean,
-  fulfillment?: boolean,
-  fias_guid?: string,
-  size?: string,
-  page?: string
+  PostalCode?: string,
+  CityCode?: number,
+  CountryCode?: string,
+  RegionCode?: number,
+  HaveCashless?: boolean,
+  HaveCash?: boolean,
+  AllowedCod?: boolean,
+  IsDressingRoom?: boolean,
+  WeightMax?: number,
+  WeightMin?: number,
+  Lang?: string,
+  TakeOnly?: boolean,
+  IsHandout?: boolean,
+  IsReception?: boolean,
+  IsMarketplace?: boolean,
+  IsLtl?: boolean,
+  Fulfillment?: boolean,
+  FiasGuid?: string,
+  Size?: string,
+  Page?: string
 }
 
 export type GetCDEKInformationByImType = {

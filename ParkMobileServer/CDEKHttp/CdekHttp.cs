@@ -1,4 +1,6 @@
 ﻿using ParkMobileServer.Entities.Cdek;
+using System;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using static ParkMobileServer.Entities.Cdek.ServicesClass;
@@ -34,23 +36,31 @@ namespace ParkMobileServer.CDEKHttp
                 { "client_secret", _client_secret },
                 { "grant_type", "client_credentials" }
             };
+
             var content = new FormUrlEncodedContent(parameters);
 
             var response = await _httpClient.PostAsync($"{CDEK_API}/oauth/token", content);
-            if(!response.IsSuccessStatusCode)
+
+            if (!response.IsSuccessStatusCode)
             {
-                throw new Exception();
+                throw new Exception("Ошибка при получении токена авторизации.");
             }
+
             response.EnsureSuccessStatusCode();
 
             var cdekJson = await response.Content.ReadAsStringAsync();
-
             var deserializedObject = JsonSerializer.Deserialize<CdekAutorizeResponse>(cdekJson);
 
             if (deserializedObject != null)
             {
-                _httpClient.DefaultRequestHeaders.Add("authorization", $"Bearer {deserializedObject.access_token}");
+                if (_httpClient.DefaultRequestHeaders.Contains("Authorization"))
+                {
+                    _httpClient.DefaultRequestHeaders.Remove("Authorization");
+                }
+
+                _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"Bearer {deserializedObject.access_token}");
             }
+
             return cdekJson;
         }
 
@@ -78,7 +88,7 @@ namespace ParkMobileServer.CDEKHttp
             if (parameters.IsLtl.HasValue) queryParameters.Add(new KeyValuePair<string, string>("is_ltl", parameters.IsLtl.Value ? "true" : "false"));
             if (parameters.Fulfillment.HasValue) queryParameters.Add(new KeyValuePair<string, string>("fulfillment", parameters.Fulfillment.Value ? "true" : "false"));
             if (!string.IsNullOrEmpty(parameters.FiasGuid)) queryParameters.Add(new KeyValuePair<string, string>("fias_guid", parameters.FiasGuid));
-            if (!string.IsNullOrEmpty(parameters.Size)) queryParameters.Add(new KeyValuePair<string, string>("size", parameters.Size));
+            if (parameters.Size.HasValue) queryParameters.Add(new KeyValuePair<string, string>("size", parameters.Size.ToString()));
             if (parameters.Page.HasValue) queryParameters.Add(new KeyValuePair<string, string>("page", parameters.Page.ToString()));
 
             var requestUri = QueryString.Create(queryParameters).ToString();
@@ -113,6 +123,40 @@ namespace ParkMobileServer.CDEKHttp
             var cdekJson = await response.Content.ReadAsStringAsync();
 
             return cdekJson;
+        }
+
+        public async Task<bool> DeleteOrderAsync(string uuid)
+        {
+            var response = await _httpClient.DeleteAsync($"{CDEK_API}/orders/{uuid}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> RefuseOrderAsync(string uuid)
+        {
+            var response = await _httpClient.PostAsync($"{CDEK_API}/orders/{uuid}/refusal", null);
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<string> GetLocationsByNameAsync(string name)
+        {
+            var response = await _httpClient.GetAsync($"{CDEK_API}/location/suggest/cities?name={name}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception();
+            }
+            response.EnsureSuccessStatusCode();
+
+           var locations = await response.Content.ReadAsStringAsync();
+           return locations;
         }
     }
 }

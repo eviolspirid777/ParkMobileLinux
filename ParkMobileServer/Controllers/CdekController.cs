@@ -59,5 +59,26 @@ namespace ParkMobileServer.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("Refusal")]
+        public async Task<IActionResult> Refusal([FromQuery] string uuid)
+        {
+            var response = await _cdekHttp.RefuseOrderAsync(uuid);
+            return Ok(response);
+        }
+
+        [HttpDelete("DeleteOrder")]
+        public async Task<IActionResult> DeleteOrder([FromQuery] string uuid)
+        {
+            var response = await _cdekHttp.DeleteOrderAsync(uuid);
+            return Ok(response);
+        }
+
+        [HttpPost("Locations")]
+        public async Task<IActionResult> GetLocations([FromBody] CdekLocationsRequest data)
+        {
+            var response = await _cdekHttp.GetLocationsByNameAsync(data.Name);
+            return Ok(response);
+        }
     }
 }

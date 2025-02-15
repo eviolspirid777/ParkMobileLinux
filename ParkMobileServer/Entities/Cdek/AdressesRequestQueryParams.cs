@@ -22,7 +22,7 @@
             public bool? IsLtl { get; set; }
             public bool? Fulfillment { get; set; }
             public string? FiasGuid { get; set; }
-            public string? Size { get; set; }
+            public int? Size { get; set; }
             public int? Page { get; set; }
     }
 }

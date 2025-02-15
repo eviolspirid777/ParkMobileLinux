@@ -3,7 +3,7 @@ import { RepairRequestType } from "@/hooks/useAddRepairRequest";
 import { TradeInType } from "@/Store/TradeInStore";
 import { CardItemType, CardType, RecivedCardDataType } from "@/Types/CardType";
 import { RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
-import { GetAdressesCDEKParams, GetCDEKInformationByImType, PostCDEKDeliveryPriceType, PostCDEKDeliveryTariffType, SdekAutorizeResponse, SdekPostTypeBase } from "@/Types/CDEK";
+import { GetAdressesCDEKParams, GetAdressesCDEKResponse, GetLocationsCDEKResponse, SdekAutorizeResponse, SdekPostTypeBase } from "@/Types/CDEK";
 import { GetItemByNameType } from "@/Types/GetItemByName";
 import { GetItemsMainMenuType } from "@/Types/GetItemsMainMenu";
 import { GetItemType } from "@/Types/GetItemType";
@@ -14,15 +14,15 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
-const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
-const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
+// const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
+// const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
+// const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
 
-// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
-// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
-// const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"
+const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
+const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
+const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"
 
-const CDEK_PATH = `https://api.cdek.ru/v2`;
+// const CDEK_PATH = `https://api.cdek.ru/v2`;
 
 class ApiClient {
     client: AxiosInstance;
@@ -243,22 +243,8 @@ class ApiClient {
     }
 
     //#region SDEK
-    async GetRegions() {
-        const response = await this.cdekClient.get(`${CDEK_PATH}/location/regions`)
-        return response.data;
-    }
-
-    async GetCityCodeByName(name: string) {
-        const response = await this.cdekClient.get(`${CDEK_PATH}/location/suggest/cities`, {
-            params: {
-                name
-            }
-        })
-        return response.data;
-    }
-
     async GetAdressesCDEK(data: GetAdressesCDEKParams)  {
-        const response = await this.cdekClient.get(`${CDKEK_PATH_LOCAL}/Addresses`, {
+        const response = await this.cdekClient.get<GetAdressesCDEKResponse[]>(`${CDKEK_PATH_LOCAL}/Addresses`, {
             params: data
         })
         return response.data;
@@ -269,37 +255,76 @@ class ApiClient {
         return response.data;
     }
 
-    async GetCDEKInformationByIm (data: GetCDEKInformationByImType) {
-        const response = await this.cdekClient.get(`${CDEK_PATH}/orders`, {
-            params: data
-        });
+    async PostRefusalCDEK(uuid: string)  {
+        const response = await this.cdekClient.post(`${CDKEK_PATH_LOCAL}/Refusal`, null, {
+            params: {
+                uuid
+            }
+        })
         return response.data;
     }
 
-    async GetCDEKInformationByUuid (uuid: string) {
-        const response = await this.cdekClient.get(`${CDEK_PATH}/orders/${uuid}`);
+    async DeleteOrderCDEK(uuid: string)  {
+        const response = await this.cdekClient.delete(`${CDKEK_PATH_LOCAL}/DeleteOrder`, {
+            params: {
+                uuid
+            }
+        })
         return response.data;
     }
 
-    async PostCDEKClientReturn(uuid: string, tariff_code: number) {
-        const response = await this.cdekClient.post(`${CDEK_PATH}/orders/${uuid}/clientReturn`, tariff_code);
+    async GetLocationsCDEK(name: string)  {
+        const response = await this.cdekClient.post<GetLocationsCDEKResponse[]>(`${CDKEK_PATH_LOCAL}/Locations`, {
+            name
+        })
         return response.data;
     }
 
-    async PostCDEKRefuse(uuid: string) {
-        const response = await this.cdekClient.post(`${CDEK_PATH}/orders/${uuid}/refusal`);
-        return response.data
-    }
+    // async GetRegions() {
+    //     const response = await this.cdekClient.get(`${CDEK_PATH}/location/regions`)
+    //     return response.data;
+    // }
 
-    async PostCDEKDeliveryCalculatorPrice(data: PostCDEKDeliveryPriceType) {
-        const response = await this.cdekClient.post(`${CDEK_PATH}/calculator/tarifflist`, data);
-        return response.data
-    }
+    // async GetCityCodeByName(name: string) {
+    //     const response = await this.cdekClient.get(`${CDEK_PATH}/location/suggest/cities`, {
+    //         params: {
+    //             name
+    //         }
+    //     })
+    //     return response.data;
+    // }
 
-    async PostCDEKDeliveryCalculatorTariff(data: PostCDEKDeliveryTariffType) {
-        const response = await this.cdekClient.post(`${CDEK_PATH}/calculator/tariff`, data);
-        return response.data
-    }
+    // async GetCDEKInformationByIm (data: GetCDEKInformationByImType) {
+    //     const response = await this.cdekClient.get(`${CDEK_PATH}/orders`, {
+    //         params: data
+    //     });
+    //     return response.data;
+    // }
+
+    // async GetCDEKInformationByUuid (uuid: string) {
+    //     const response = await this.cdekClient.get(`${CDEK_PATH}/orders/${uuid}`);
+    //     return response.data;
+    // }
+
+    // async PostCDEKClientReturn(uuid: string, tariff_code: number) {
+    //     const response = await this.cdekClient.post(`${CDEK_PATH}/orders/${uuid}/clientReturn`, tariff_code);
+    //     return response.data;
+    // }
+
+    // async PostCDEKRefuse(uuid: string) {
+    //     const response = await this.cdekClient.post(`${CDEK_PATH}/orders/${uuid}/refusal`);
+    //     return response.data
+    // }
+
+    // async PostCDEKDeliveryCalculatorPrice(data: PostCDEKDeliveryPriceType) {
+    //     const response = await this.cdekClient.post(`${CDEK_PATH}/calculator/tarifflist`, data);
+    //     return response.data
+    // }
+
+    // async PostCDEKDeliveryCalculatorTariff(data: PostCDEKDeliveryTariffType) {
+    //     const response = await this.cdekClient.post(`${CDEK_PATH}/calculator/tariff`, data);
+    //     return response.data
+    // }
 
     //#endregion SDEK
 }

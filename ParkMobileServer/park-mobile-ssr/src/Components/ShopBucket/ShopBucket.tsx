@@ -21,6 +21,7 @@ import { apiClient } from "@/api/ApiClient";
 import { useForm } from "antd/es/form/Form";
 import Image from "next/image"
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
+import { AddressesAtom } from "@/Store/AddressesStore";
 
 type ShopBucketType = {
   handleShopBag: () => void;
@@ -38,6 +39,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [cityOptions, setCityOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  const [, setAddresses] = useAtom(AddressesAtom);
 
   const [form] = useForm();
 
@@ -144,11 +146,23 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     debouncedFetchSuggestions(value);
   };
 
+  const handleAddresses = async (value: string) => {
+    debounceAddresses(value)
+  }
+
+  const debounceAddresses = 
+  debounce(async (searchTerm: string) => {
+    await apiClient.AutorizeCDEK()
+    const locations = await apiClient.GetLocationsCDEK(searchTerm);
+    const foundCode = locations.at(0)?.code
+    const adresses = await apiClient.GetAdressesCDEK({ CityCode: foundCode })
+    setAddresses(adresses)
+  }, 1000);
+
   const debouncedFetchSuggestions = 
     debounce(async (searchTerm: string) => {
       await fetchSuggestions(searchTerm);
     }, 1000);
-  ;
 
   const handlePayment = (event: RadioChangeEvent) => {
     if (event.target.value === "card") {
@@ -351,6 +365,20 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                   <div>
                     { deliveryType !== "krasnodar-self-delivery" &&
                       <div>
+                        <Form.Item
+                          name="country"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Выберите город!"
+                            }
+                          ]}
+                        >
+                          <Input
+                            placeholder="Город"
+                            onChange={(event) => handleAddresses(event.target.value)}
+                          />
+                        </Form.Item>
                         <Form.Item
                           name="city"
                           rules={[
