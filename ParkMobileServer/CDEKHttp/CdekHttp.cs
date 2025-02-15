@@ -10,9 +10,17 @@ namespace ParkMobileServer.CDEKHttp
     {
         const string CDEK_API = "https://api.cdek.ru/v2";
 
+        private string _client_id;
+        private string _client_secret;
+
         private HttpClient _httpClient;
-        public CdekHttp()
+        public CdekHttp(
+            string client_id,
+            string client_secret
+        )
         {
+            _client_id = client_id;
+            _client_secret = client_secret;
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         }
@@ -22,8 +30,8 @@ namespace ParkMobileServer.CDEKHttp
         {
             var parameters = new Dictionary<string, string>
             {
-                { "client_id", "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI" },
-                { "client_secret", "gCfbHZSUPizoOevkwSJNMIi0bO17iwav" },
+                { "client_id", _client_id },
+                { "client_secret", _client_secret },
                 { "grant_type", "client_credentials" }
             };
             var content = new FormUrlEncodedContent(parameters);

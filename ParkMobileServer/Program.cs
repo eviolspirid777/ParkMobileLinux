@@ -44,7 +44,12 @@ namespace ParkMobileServer
             });
             builder.Services.AddScoped<GetItems>();
 			builder.Services.AddScoped<CreateItems>();
-			builder.Services.AddSingleton<CdekHttp>();
+			builder.Services.AddSingleton(provider =>
+			{
+				const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
+				const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
+                return new CdekHttp(client_id, client_secret);
+			});
             
 			
 			builder.WebHost.UseUrls("http://*:3001");
