@@ -11,7 +11,7 @@ import {
   RadioChangeEvent,
 } from "antd";
 import styles from "./ShopBucket.module.scss";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { DataType, shopBucketAtom } from "@/Store/ShopBucket";
 import { useAtom } from "jotai";
 import { deliveryOptions } from "./DeliveryTypes/ShopBucketDeliveryOptions";
@@ -28,6 +28,15 @@ type ShopBucketType = {
   open: boolean;
 };
 
+type YandexSuggestType = {
+  title: {
+    text: string
+  },
+  subtitle: {
+    text: string
+  }
+}
+
 const translationKeyDictionary = new Map([
   ["article", "артикул"]
 ])
@@ -39,11 +48,16 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [cityOptions, setCityOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  const [cities, setCities] = useState<{ city: string, street: string }[]>();
   const [, setAddresses] = useAtom(AddressesAtom);
 
   const [form] = useForm();
 
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(() => {});
+  }, [])
 
   const parsKey = (k: string) => {
     return translationKeyDictionary.get(k);
@@ -94,12 +108,19 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
 
       if (data.results) {
         const arr = data.results.map(
-          (el: { title: { text: string } }, index: number) => ({
+          (el: YandexSuggestType, index: number) => ({
             label: el.title.text,
             value: `${index}|||${el.title.text}`,
           })
         );
-        setCityOptions(arr); // Обновление состояния
+        const cities = data.results.map(
+          (el: YandexSuggestType) => ({
+            city: el.subtitle.text,
+            street: el.title.text
+          })
+        )
+        setCities(cities);
+        setCityOptions(arr);
       }
     } catch (error) {
       console.error("Error fetching suggestions:", error);
@@ -171,6 +192,11 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       setPaymentType("cash");
     }
   };
+
+  const handleSelect = (_: unknown, newValue: {label: string, value: string}) => {
+    const city = cities?.find(item => item.street === newValue.label)?.city
+    handleAddresses(city ?? newValue.label)
+  }
 
   const handleFinish = async (values: object) => {
     try {
@@ -366,20 +392,6 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                     { deliveryType !== "krasnodar-self-delivery" &&
                       <div>
                         <Form.Item
-                          name="country"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Выберите город!"
-                            }
-                          ]}
-                        >
-                          <Input
-                            placeholder="Город"
-                            onChange={(event) => handleAddresses(event.target.value)}
-                          />
-                        </Form.Item>
-                        <Form.Item
                           name="city"
                           rules={[
                             {
@@ -392,6 +404,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                             options={cityOptions}
                             showSearch
                             onSearch={handleChange}
+                            onSelect={handleSelect}
                             filterOption={() => true}
                             placeholder="Укажите адрес доставки"
                             style={{ height: "38px" }}
