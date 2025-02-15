@@ -216,6 +216,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     } catch (error) {
       console.error(error);
     } finally {
+      form.resetFields();
       setChildDrawer((prev) => !prev);
       handleShopBag();
     }
@@ -338,7 +339,9 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
             },
           }}
         >
-          <div className={styles["submit-shopping-block"]}>
+          <div
+            className={styles["submit-shopping-block"]}
+          >
             <div className={styles["submit-shopping-block-data"]}>
               <Form
                 form={form}
