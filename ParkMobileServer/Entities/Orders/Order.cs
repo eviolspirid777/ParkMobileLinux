@@ -6,10 +6,9 @@ namespace ParkMobileServer.Entities.Orders
 	{
         [Key]
         public int Id { get; set; }
-        public DateTime OrderDate { get; set; }
-        public string CustomerId { get; set; } // Идентификатор покупателя (если есть)
-
-        // Связь с продуктами
-        public ICollection<OrderItemEntity> OrderItems { get; set; } = new List<OrderItemEntity>();
+        public string? Comment {get;set;}
+        public string? Article {get;set;}
+        public bool State { get; set; } = false;
+        public List<OrderItem> Items {get; set;} = new();
     }
 }

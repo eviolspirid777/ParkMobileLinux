@@ -44,8 +44,15 @@ namespace ParkMobileServer.DbContext
 								j => j.HasOne<ItemEntity>().WithMany().HasForeignKey("ItemId"),
 								j => j.ToTable("ItemFilters")
 							);
+
+			modelBuilder.Entity<Order>()
+							.HasMany(o => o.Items)
+							.WithOne(i => i.Order)
+							.OnDelete(DeleteBehavior.Cascade);
         }
         public DbSet<ItemEntity> ItemEntities { get; set; } = null!;
+		public DbSet<Order> Order { get; set; } = null!;
+		public DbSet<OrderItem> OrderItem { get; set; } = null!;
 		public DbSet<DescriptionEntity> DescriptionEntity { get; set; } = null!;
 		public DbSet<ArticleEntity> ArticleEntity { get; set; } = null!;
         public DbSet<ItemCategory> ItemCategories { get; set; } = null!;

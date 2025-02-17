@@ -30,7 +30,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkMacosConnection"));
 			});
             builder.Services.AddStackExchangeRedisCache(options =>
             {
