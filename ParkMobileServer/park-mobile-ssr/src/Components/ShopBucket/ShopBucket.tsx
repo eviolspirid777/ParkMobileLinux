@@ -233,13 +233,14 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
         tariff_code: Tariffs_SDEK.StorageToStorage,
         type: deliveryTypes.InternetShop,
         comment: values.description,
+        number: `${Math.round(Math.random() * 1000)}`,
         shipment_point: "KSD11",
         delivery_point: deliveryPoint ? deliveryPoint.code : null,
         seller: {
           name: "Безганс Эмиль Владимирович",
           inn: "090108428776",
           ownership_form: "16",
-          phone: "+79337772777",
+          phone: "89337772777",
           address: "г. Краснодар, ул.Советская, 36"
         },
         recipient: {
