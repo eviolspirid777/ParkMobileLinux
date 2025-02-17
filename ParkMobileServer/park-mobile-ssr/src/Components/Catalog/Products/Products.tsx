@@ -122,6 +122,7 @@ export const Products: FC<ProductsType> = ({
             article: cardData.article!,
             count: 1,
             image: cardData.image!,
+            weight: cardData.weight,
             price: cardData.price!,
             discountPrice:
               typeof cardData.discountPrice === "string"

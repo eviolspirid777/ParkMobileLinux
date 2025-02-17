@@ -76,6 +76,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         name: newItem.name,
         price: newItem.price,
         stock: newItem.stock,
+        weight: newItem.weight,
         article: newItem.article,
         discountPrice: (newItem.discountPrice as string) === "" ? null : parseFloat(newItem.discountPrice as string),
         description: newItem.description,
@@ -104,6 +105,7 @@ export const ModalWindow: FC<ModalWindowProps> = ({
         price: newItem.price,
         stock: newItem.stock,
         article: newItem.article,
+        weight: newItem.weight,
         discountPrice: (newItem.discountPrice as string) === "" ? null : parseFloat(newItem.discountPrice as string),
         description: newItem.description,
         categoryId: newItem.categoryId,
@@ -316,6 +318,15 @@ export const ModalWindow: FC<ModalWindowProps> = ({
                 placeholder="Выберите фильтры"
                 mode="multiple"
                 options={filters}
+              />
+            </Form.Item>
+            <Form.Item
+              name="weight"
+              label="Вес(гм)"
+              rules={[{required: true, message: "Введите вес товара!"}]}
+            >
+              <Input
+                placeholder="Введите вес товара(в граммах)"
               />
             </Form.Item>
           </div>

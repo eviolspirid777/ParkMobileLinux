@@ -44,6 +44,7 @@ namespace ParkMobileServer.Functions
                 isInvisible = itemDto.IsInvisible,
                 CategoryId = itemDto.CategoryId,
                 BrandId = itemDto.BrandId,
+                Weight = itemDto.Weight,
                 Description = new DescriptionEntity { Description = itemDto.Description },
                 Article = new ArticleEntity { Article = itemDto.Article }
             };
@@ -67,8 +68,8 @@ namespace ParkMobileServer.Functions
         public async Task<bool> DeleteItemAsync(int id)
         {
             var item = await _postgreSQLDbContext
-                            .ItemEntities
-                            .FindAsync(id);
+                                        .ItemEntities
+                                        .FindAsync(id);
 
             var article = await _postgreSQLDbContext
                                         .ArticleEntity

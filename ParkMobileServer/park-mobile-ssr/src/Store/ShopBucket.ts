@@ -6,6 +6,7 @@ export type DataType = {
   name: string;
   count: number;
   price: number;
+  weight: number,
   discountPrice?: number;
   article: string;
   color?: undefined;

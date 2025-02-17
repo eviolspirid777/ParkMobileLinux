@@ -278,6 +278,7 @@ namespace ParkMobileServer.Controllers
 									item.Stock,
 									item.IsPopular,
 									item.IsNewItem,
+									item.Weight,
 									Category = item.Category!.Name,
 									Brand = item.Brand!.Name,
 									item.Article!.Article,
@@ -329,6 +330,7 @@ namespace ParkMobileServer.Controllers
 			_item.IsNewItem = item.IsNewItem;
 			_item.IsPopular = item.IsPopular;
 			_item.isInvisible = item.IsInvisible;
+			_item.Weight = item.Weight;
             _item.Filters.Clear();
 
             foreach (var filter in item.Filters) {

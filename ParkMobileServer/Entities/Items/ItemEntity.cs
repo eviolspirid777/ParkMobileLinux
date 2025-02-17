@@ -12,6 +12,7 @@ namespace ParkMobileServer.Entities.Items
         public decimal? DiscountPrice { get; set; }
         public byte[]? Image { get; set; }
         public int Stock { get; set; }
+        public int? Weight { get; set; }
         public bool IsPopular { get; set; } = false;
         public bool IsNewItem { get; set; } = false;
         public bool isInvisible { get; set; } = false;

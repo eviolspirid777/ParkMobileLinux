@@ -397,6 +397,7 @@ namespace ParkMobileServer.Functions
                     item.BrandId,
                     item.CategoryId,
                     item.Stock,
+                    item.Weight,
                     Description = item.Description!.Description,
                     Article = item.Article!.Article,
                     Filters = item.Filters.Select(f => new {

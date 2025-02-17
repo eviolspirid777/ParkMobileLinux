@@ -14,6 +14,7 @@ namespace ParkMobileServer.DTO.ItemDTO
         public bool IsPopular { get; set; } = false;
         public bool IsNewItem { get; set; } = false;
         public bool IsInvisible { get; set; } = false;
+        public int Weight { get; set; }
 
         public int CategoryId { get; set; }
         public int BrandId { get; set; }

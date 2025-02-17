@@ -84,6 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         image: card.image,
         name: card.name,
         count: 1,
+        weight: (card as CardType).weight,
         article: (card as CardType).article ?? "",
         price: card.price as number,
         discountPrice: card.discountPrice as number

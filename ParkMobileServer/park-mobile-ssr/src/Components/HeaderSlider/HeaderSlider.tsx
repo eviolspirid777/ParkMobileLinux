@@ -88,6 +88,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
             count: 1,
             image: cardData.image!,
             price: cardData.price!,
+            weight: cardData.weight,
             discountPrice:
               typeof cardData.discountPrice === "string"
                 ? parseFloat(cardData.discountPrice) // Преобразуем строку в число

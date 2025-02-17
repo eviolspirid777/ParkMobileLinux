@@ -59,6 +59,7 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
             article: cardData.article!,
             count: 1,
             image: cardData.image!,
+            weight: cardData.weight,
             price: cardData.price!,
             discountPrice:
               typeof cardData.discountPrice === "string"

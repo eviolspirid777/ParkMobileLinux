@@ -177,6 +177,28 @@ export type GetCDEKInformationByImType = {
   im_number: string
 }
 
+export type ItemType = {
+  name: string,
+  ware_key: string,
+  marking?: string,
+  payment: {
+    value: number,
+    vat_sum?: number,
+    vat_rate?: number,
+  },
+  weight: number,
+  weight_gross?: number,
+  amount: number,
+  name_i18n?: string,
+  brand?: string,
+  country_code?: string,
+  material?: string,
+  wifi_gsm?: boolean,
+  url?: string,
+  cost: number,
+  feacn_code?: string,
+}
+
 export type SdekPostTypeBase = {
   type?: deliveryTypes,
   number?: string,
@@ -280,36 +302,16 @@ export type SdekPostTypeBase = {
     code?: string,
     parameter?: string,
   }[],
-  packagaes?: {
-    number?: string,
-    weight?: number,
-    length?: number,
-    width?: number,
+  packages?: {
+    number: string,
+    weight: number,
+    length: number,
+    width: number,
     weight_volume?: number,
     weight_calc?: number,
     height?: number,
     comment?: string,
     package_id?: string,
-    items: {
-      name?: string,
-      ware_key?: string,
-      marking?: string,
-      payment: {
-        value: number,
-        vat_sum?: number,
-        vat_rate?: number,
-      },
-      weight?: number,
-      weight_gross?: number,
-      amount?: number,
-      name_i18n?: string,
-      brand?: string,
-      country_code?: string,
-      material?: string,
-      wifi_gsm?: boolean,
-      url?: string,
-      cost?: number,
-      feacn_code?: string,
-    }
-  },
+    items: ItemType[]
+  }[],
 }

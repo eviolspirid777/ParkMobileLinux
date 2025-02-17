@@ -30,6 +30,7 @@ export type FormItemChange = {
   brandId: number;
   optionName?: string;
   optionValue: string | AggregationColor;
+  weight?: number,
   isPopular?: boolean;
   isNewItem?: boolean,
   isInvisible?: boolean,
@@ -161,6 +162,7 @@ export const MenuPage = () => {
             key: el.id!,
             name: el.name!,
             article: el.article!,
+            weight: el.weight!,
             count: el.stock!,
             price: el.price!,
             discountPrice: el.discountPrice,
@@ -189,6 +191,7 @@ export const MenuPage = () => {
         count: 0,
         image: "",
         isNewItem: false,
+        weight: 0,
         isPopular: false,
         isInvisible: false,
         name: "",
@@ -203,6 +206,7 @@ export const MenuPage = () => {
         article: "",
         count: 0,
         image: "",
+        weight: 0,
         isNewItem: false,
         isPopular: false,
         isInvisible: false,
