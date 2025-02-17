@@ -30,7 +30,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
 			});
             builder.Services.AddStackExchangeRedisCache(options =>
             {
@@ -46,8 +46,12 @@ namespace ParkMobileServer
 			builder.Services.AddScoped<CreateItems>();
 			builder.Services.AddSingleton(provider =>
 			{
-				const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
-				const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
+				//TEST
+				const string client_id = "wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP";
+				const string client_secret = "RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5";
+                //PRODUCTION
+				//const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
+				//const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
                 return new CdekHttp(client_id, client_secret);
 			});
             

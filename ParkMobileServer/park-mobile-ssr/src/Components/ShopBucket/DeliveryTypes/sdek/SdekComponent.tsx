@@ -1,7 +1,8 @@
 "use client"
 import { AddressesAtom } from "@/Store/AddressesStore";
+import { deliveryPointAtom } from "@/Store/DeliveryPoint";
 import { shopBucketAtom } from "@/Store/ShopBucket";
-import { CdekPointType, GetAdressesCDEKResponse } from "@/Types/CDEK";
+import { CdekPointType } from "@/Types/CDEK";
 import { Map, YMaps, Placemark } from "@pbe/react-yandex-maps";
 import { Form, Input } from "antd";
 import { useAtom } from "jotai";
@@ -10,8 +11,10 @@ import { useEffect, useState } from "react";
 export const SdekComponent = () => {
   const [ addresses ] = useAtom(AddressesAtom);
   const [ userCoords, setUserCoords ] = useState<{longitude: number, latitude: number}>({ latitude: 0, longitude: 0 })
-  const [ selectedItem, setSelectedItem ] = useState<GetAdressesCDEKResponse>();
-
+  const [ selectedItem, setSelectedItem ] = useAtom(deliveryPointAtom);
+  useEffect(() => {
+    console.log(selectedItem)
+  }, [selectedItem])
   const [ shopBucket ] = useAtom(shopBucketAtom);
 
   useEffect(() => {
@@ -57,33 +60,29 @@ export const SdekComponent = () => {
             />
           </Form.Item>
         </div>
-        {
-          userCoords.latitude !== 0 && userCoords.longitude !== 0 ?
-          <Map
-            key={`${addresses?.length}-${userCoords.latitude}`}
-            defaultState={{
-              center: [userCoords.latitude, userCoords.longitude],
-              zoom: 14,
-            }}
-            width="100%"
-            height="360px"
-            onLoad={(ymaps) => {
-              console.log(ymaps);
-            }}
-          >
-            {
-              addresses?.map((address, index) => 
-                <Placemark
-                  key={index}
-                  geometry={[address.location.latitude, address.location.longitude]}
-                  // properties={{ iconContent: "ПВЗ" }}
-                  options={{ preset: `islands#${userCoords.latitude === address.location.latitude && userCoords.longitude === address.location.longitude ? "red" : "green"}DotIcon` }}
-                  onClick={(event: CdekPointType) => handlePlacemarkClick(event)}
-                />)
-            }
-          </Map> : 
-          null
-        }
+        <Map
+          key={`${addresses?.length}-${userCoords.latitude}`}
+          defaultState={{
+            center: [userCoords.latitude, userCoords.longitude],
+            zoom: 14,
+          }}
+          width="100%"
+          height="360px"
+          onLoad={(ymaps) => {
+            console.log(ymaps);
+          }}
+        >
+          {
+            addresses?.map((address, index) => 
+              <Placemark
+                key={index}
+                geometry={[address.location.latitude, address.location.longitude]}
+                // properties={{ iconContent: "ПВЗ" }}
+                options={{ preset: `islands#${userCoords.latitude === address.location.latitude && userCoords.longitude === address.location.longitude ? "red" : "green"}DotIcon` }}
+                onClick={(event: CdekPointType) => handlePlacemarkClick(event)}
+              />)
+          }
+        </Map>
         <div style={{ marginTop: "10px" }}>
           <Form.Item
             name="reciver"

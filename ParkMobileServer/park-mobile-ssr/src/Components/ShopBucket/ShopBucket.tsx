@@ -22,11 +22,29 @@ import { useForm } from "antd/es/form/Form";
 import Image from "next/image"
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { AddressesAtom } from "@/Store/AddressesStore";
+import { deliveryTypes, SdekPostTypeBase, Tariffs_SDEK } from "@/Types/CDEK";
+import { deliveryPointAtom } from "@/Store/DeliveryPoint";
 
 type ShopBucketType = {
   handleShopBag: () => void;
   open: boolean;
 };
+
+type FormValuesType = {
+  city: string,
+  deliveryType: "sdek-delivery" | "krasnodar-self-delivery" | "krasnodar-delivery",
+  description: string,
+  email: string,
+  paymentType: "transfer" | "cash",
+  personName: string,
+  postmat?: string,
+  reciver: string,
+  telephone: string,
+  items: {
+    ProductId: number;
+    Quantity: number;
+  }[]
+}
 
 type YandexSuggestType = {
   title: {
@@ -42,6 +60,10 @@ const translationKeyDictionary = new Map([
 ])
 
 export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
+  const [ deliveryPoint ] = useAtom(deliveryPointAtom);
+  const [, setAddresses] = useAtom(AddressesAtom);
+  const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+
   const [childDrawer, setChildDrawer] = useState(false);
   const [paymentType, setPaymentType] = useState("cash");
   const [deliveryType, setDeliveryType] = useState<"sdek-delivery" | "krasnodar-self-delivery" | "krasnodar-delivery">("krasnodar-self-delivery");
@@ -49,11 +71,8 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     { label: string; value: string }[]
   >([]);
   const [cities, setCities] = useState<{ city: string, street: string }[]>();
-  const [, setAddresses] = useAtom(AddressesAtom);
 
   const [form] = useForm();
-
-  const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(() => {});
@@ -198,7 +217,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     handleAddresses(city ?? newValue.label)
   }
 
-  const handleFinish = async (values: object) => {
+  const handleFinish = async (values: FormValuesType) => {
     try {
       const itemsToProceed = shopBucket.map((item) => ({
         ProductId: item.id,
@@ -210,6 +229,33 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       await apiClient.OrderData(values);
       // await apiClient.AutorizeCDEK();
       // await apiClient.GetAdressesCDEK({city_code: 116})
+      const testObj: SdekPostTypeBase = {
+        tariff_code: Tariffs_SDEK.StorageToStorage,
+        type: deliveryTypes.InternetShop,
+        comment: values.description,
+        shipment_point: "KSD11", //Номер ПВЗ НА КОТОРЫЙ БУДЕТ ПРОИСХОДИТЬ ПРИВОЗ ЭМИЛЕМ
+        delivery_point: deliveryPoint ? deliveryPoint.code : null,
+        seller: {
+          name: "Безганс Эмиль Владимирович",
+          inn: "090108428776",
+          ownership_form: "16",
+          phone: "+79337772777",
+          address: "г. Краснодар, ул.Советская, 36"
+        },
+        recipient: {
+          name: values.reciver,
+          contragent_type: "INDIVIDUAL",
+          email: values.email ?? null,
+          phones: [{
+            number: values.telephone
+          }]
+        },
+      }
+      console.group("GROUPED");
+      console.log(testObj)
+      console.log(values)
+      console.groupEnd();
+      await apiClient.PostCDEKForm(testObj)
 
       setShopBucket([]);
       localStorage.removeItem("shopBucket");

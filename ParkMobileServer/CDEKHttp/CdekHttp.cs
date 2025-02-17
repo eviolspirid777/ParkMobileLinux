@@ -10,7 +10,11 @@ namespace ParkMobileServer.CDEKHttp
 
     public class CdekHttp
     {
-        const string CDEK_API = "https://api.cdek.ru/v2";
+        //PROD
+        //const string CDEK_API = "https://api.cdek.ru/v2";
+
+        //TEST
+        const string CDEK_API = "https://api.edu.cdek.ru/v2";
 
         private string _client_id;
         private string _client_secret;

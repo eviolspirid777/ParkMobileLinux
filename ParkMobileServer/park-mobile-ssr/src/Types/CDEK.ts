@@ -1,6 +1,11 @@
-export const enum deliveryTypes {
-  "internet-shop" = 1,
-  "delivery" = 2,
+export enum deliveryTypes {
+  InternetShop = 1,
+  Delivery = 2,
+}
+
+export enum Tariffs_SDEK {
+  StorageToStorage = 136,
+  DoorToStorage = 138,
 }
 
 export type SdekAutorizeResponse = {
@@ -173,23 +178,22 @@ export type GetCDEKInformationByImType = {
 }
 
 export type SdekPostTypeBase = {
-  uuid: string,
   type?: deliveryTypes,
   number?: string,
   accompanying_number?: string,
-  tariff_code: number,
+  tariff_code: Tariffs_SDEK.DoorToStorage | Tariffs_SDEK.StorageToStorage,
   comment?: string,
   shipment_point?: string,
-  delivery_point?: string,
+  delivery_point: string | null,
   date_invoice?: string,
   shipper_name?: string,
   shipper_address?: string,
-  delivery_recipient_cost: {
+  delivery_recipient_cost?: {
     value: number,
     vat_sum?: number,
     vat_rate?: number
   },
-  delivery_recipient_cost_adv: {
+  delivery_recipient_cost_adv?: {
     threshold?: number,
     sum?: number,
     vat_sum?: number,
@@ -206,7 +210,7 @@ export type SdekPostTypeBase = {
     tin?: string,
     passport_date_of_birth?: string,
     email?: string,
-    phones?: {
+    phones: {
       number: string,
       additional?: string,
     }[],
@@ -229,7 +233,7 @@ export type SdekPostTypeBase = {
     tin?: string,
     passport_date_of_birth?: string,
     email?: string,
-    phones?: {
+    phones: {
       number: string,
       additional?: string,
     }[]
@@ -252,7 +256,7 @@ export type SdekPostTypeBase = {
     address: string,
     postal_code?: string
   },
-  to_location: {
+  to_location?: {
     code?: number,
     city_uuid?: string,
     city?: string,
@@ -269,43 +273,43 @@ export type SdekPostTypeBase = {
     payment_limit?: number,
     address: string,
     postal_code?: string,
-    services: {
-      code?: string,
-      parameter?: string,
-    }[],
-    packagaes: {
-      number?: string,
-      weight?: number,
-      length?: number,
-      width?: number,
-      weight_volume?: number,
-      weight_calc?: number,
-      height?: number,
-      comment?: string,
-      package_id?: string,
-      items: {
-        name?: string,
-        ware_key?: string,
-        marking?: string,
-        payment: {
-          value: number,
-          vat_sum?: number,
-          vat_rate?: number,
-        },
-        weight?: number,
-        weight_gross?: number,
-        amount?: number,
-        name_i18n?: string,
-        brand?: string,
-        country_code?: string,
-        material?: string,
-        wifi_gsm?: boolean,
-        url?: string,
-        cost?: number,
-        feacn_code?: string,
-      }
-    },
     is_client_return?: boolean,
     developer_key?: string,
   }
+  services?: {
+    code?: string,
+    parameter?: string,
+  }[],
+  packagaes?: {
+    number?: string,
+    weight?: number,
+    length?: number,
+    width?: number,
+    weight_volume?: number,
+    weight_calc?: number,
+    height?: number,
+    comment?: string,
+    package_id?: string,
+    items: {
+      name?: string,
+      ware_key?: string,
+      marking?: string,
+      payment: {
+        value: number,
+        vat_sum?: number,
+        vat_rate?: number,
+      },
+      weight?: number,
+      weight_gross?: number,
+      amount?: number,
+      name_i18n?: string,
+      brand?: string,
+      country_code?: string,
+      material?: string,
+      wifi_gsm?: boolean,
+      url?: string,
+      cost?: number,
+      feacn_code?: string,
+    }
+  },
 }

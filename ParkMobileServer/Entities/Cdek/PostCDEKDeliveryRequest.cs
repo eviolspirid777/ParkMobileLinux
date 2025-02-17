@@ -140,7 +140,6 @@ namespace ParkMobileServer.Entities.Cdek
         }
         public class PostCDEKDeliveryRequest
         {
-            public string Uuid { get; set; }
             public int? Type { get; set; }
             public string? Number { get; set; }
             public string? Accompanying_number { get; set; }
