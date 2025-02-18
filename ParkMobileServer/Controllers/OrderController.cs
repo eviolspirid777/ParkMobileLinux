@@ -24,8 +24,9 @@ namespace ParkMobileServer.Controllers
         [HttpGet("Orders")]
         public async Task<IActionResult> GetOrders()
         {
-            var orders = _postgreSQLDbContext
-                                                        .Order;
+            var orders = await _postgreSQLDbContext
+                                    .Order
+                                    .ToListAsync();
             return Ok(orders);
         }
 
@@ -40,8 +41,8 @@ namespace ParkMobileServer.Controllers
                 }
             }
             await _postgreSQLDbContext
-                                        .Order
-                                        .AddAsync(data);
+                                .Order
+                                .AddAsync(data);
 
             await _postgreSQLDbContext.SaveChangesAsync();
             return Ok();
@@ -52,8 +53,8 @@ namespace ParkMobileServer.Controllers
         public async Task<IActionResult> GetOrderById([FromQuery] int id)
         {
             var response = await _postgreSQLDbContext
-                                                    .Order
-                                                    .FindAsync(id);
+                                            .Order
+                                            .FindAsync(id);
 
             return Ok(response);
         }
@@ -70,6 +71,8 @@ namespace ParkMobileServer.Controllers
             _postgreSQLDbContext
                             .Order
                             .Remove(order);
+
+            await _postgreSQLDbContext.SaveChangesAsync();
             return Ok();
         }
     }
