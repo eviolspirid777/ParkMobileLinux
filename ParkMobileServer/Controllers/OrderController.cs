@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ParkMobileServer.DbContext;
+using ParkMobileServer.DTO.Order;
 using ParkMobileServer.Entities.Orders;
-using System.Data.Entity;
+//using System.Data.Entity;
 
 namespace ParkMobileServer.Controllers
 {
@@ -24,10 +24,44 @@ namespace ParkMobileServer.Controllers
         [HttpGet("Orders")]
         public async Task<IActionResult> GetOrders()
         {
+            //TODO: Посмотри почему ToListAsync не работает, возможно проблема в ENUM
             var orders = await _postgreSQLDbContext
-                                    .Order
-                                    .ToListAsync();
+                                            .Orders
+                                            .AsNoTracking()
+                                            .Select(order => new OrderShortDTO {
+                                                Id = order.Id,
+                                                Comment = order.Comment,
+                                                Payment = order.Payment,
+                                                State = order.State
+                                            })
+                                            .ToListAsync();
             return Ok(orders);
+        }
+
+        //[Authorize]
+        [HttpPost("GetOrderById")]
+        public async Task<IActionResult> GetOrderById([FromQuery] int id)
+        {
+            //TODO: не включается o.items в итоговый запрос
+            var response = await _postgreSQLDbContext
+                                                    .Orders
+                                                    .Include(o => o.Items)
+                                                    .Select(order => new
+                                                    {
+                                                        order.Id,
+                                                        order.Comment,
+                                                        order.State,
+                                                        order.Payment,
+                                                        items = order.Items.Select(item => new { item.Id, item.Count}),
+                                                    })
+                                                    .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (response == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(response);
         }
 
         //[Authorize]
@@ -41,7 +75,7 @@ namespace ParkMobileServer.Controllers
                 }
             }
             await _postgreSQLDbContext
-                                .Order
+                                .Orders
                                 .AddAsync(data);
 
             await _postgreSQLDbContext.SaveChangesAsync();
@@ -49,27 +83,16 @@ namespace ParkMobileServer.Controllers
         }
 
         //[Authorize]
-        [HttpPost("GetOrderById")]
-        public async Task<IActionResult> GetOrderById([FromQuery] int id)
-        {
-            var response = await _postgreSQLDbContext
-                                            .Order
-                                            .FindAsync(id);
-
-            return Ok(response);
-        }
-
-        //[Authorize]
         [HttpDelete("DeleteOrderById/{id}")]
         public async Task<IActionResult> DeleteOrderById(int id)
         {
-            var order = await _postgreSQLDbContext.Order.FindAsync(id);
+            var order = await _postgreSQLDbContext.Orders.FindAsync(id);
             if(order == null)
             {
                 return BadRequest("Не найдена запись");
             }
             _postgreSQLDbContext
-                            .Order
+                            .Orders
                             .Remove(order);
 
             await _postgreSQLDbContext.SaveChangesAsync();

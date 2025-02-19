@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ParkMobileServer.DbContext;
@@ -11,9 +12,11 @@ using ParkMobileServer.DbContext;
 namespace ParkMobileServer.Migrations
 {
     [DbContext(typeof(PostgreSQLDbContext))]
-    partial class PostgreSQLDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250219130140_AddIsCreditField")]
+    partial class AddIsCreditField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,18 +200,21 @@ namespace ParkMobileServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Article")
+                        .HasColumnType("text");
+
                     b.Property<string>("Comment")
                         .HasColumnType("text");
 
-                    b.Property<int?>("Payment")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsCredit")
+                        .HasColumnType("boolean");
 
-                    b.Property<int?>("State")
-                        .HasColumnType("integer");
+                    b.Property<bool>("State")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("ParkMobileServer.Entities.Orders.OrderItem", b =>
@@ -232,7 +238,7 @@ namespace ParkMobileServer.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("ParkMobileServer.Entities.Slider", b =>

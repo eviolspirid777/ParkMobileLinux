@@ -51,8 +51,8 @@ namespace ParkMobileServer.DbContext
 							.OnDelete(DeleteBehavior.Cascade);
         }
         public DbSet<ItemEntity> ItemEntities { get; set; } = null!;
-		public DbSet<Order> Order { get; set; } = null!;
-		public DbSet<OrderItem> OrderItem { get; set; } = null!;
+		public DbSet<Order> Orders { get; set; } = null!;
+		public DbSet<OrderItem> OrderItems { get; set; } = null!;
 		public DbSet<DescriptionEntity> DescriptionEntity { get; set; } = null!;
 		public DbSet<ArticleEntity> ArticleEntity { get; set; } = null!;
         public DbSet<ItemCategory> ItemCategories { get; set; } = null!;
