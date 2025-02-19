@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ParkMobileServer.Entities.Orders
 {
-    [Table("OrderItems")]
     public class OrderItem
     {
         [Key]

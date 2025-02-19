@@ -24,13 +24,13 @@ namespace ParkMobileServer.Controllers
         [HttpGet("Orders")]
         public async Task<IActionResult> GetOrders()
         {
-            //TODO: Посмотри почему ToListAsync не работает, возможно проблема в ENUM
             var orders = await _postgreSQLDbContext
-                                            .Orders
+                                            .Order
                                             .AsNoTracking()
                                             .Select(order => new OrderShortDTO {
                                                 Id = order.Id,
-                                                Comment = order.Comment,
+                                                Address = order.Address,
+                                                PvzCode = order.PvzCode,
                                                 Payment = order.Payment,
                                                 State = order.State
                                             })
@@ -42,19 +42,27 @@ namespace ParkMobileServer.Controllers
         [HttpPost("GetOrderById")]
         public async Task<IActionResult> GetOrderById([FromQuery] int id)
         {
-            //TODO: не включается o.items в итоговый запрос
             var response = await _postgreSQLDbContext
-                                                    .Orders
-                                                    .Include(o => o.Items)
-                                                    .Select(order => new
-                                                    {
-                                                        order.Id,
-                                                        order.Comment,
-                                                        order.State,
-                                                        order.Payment,
-                                                        items = order.Items.Select(item => new { item.Id, item.Count}),
-                                                    })
-                                                    .FirstOrDefaultAsync(o => o.Id == id);
+                                            .Order
+                                            .AsNoTracking()
+                                            .Include(o => o.Items)
+                                            .Include(o => o.Client)
+                                            .Select(order => new
+                                            {
+                                                order.Id,
+                                                order.PvzCode,
+                                                order.Address,
+                                                order.State,
+                                                order.Payment,
+                                                items = order.Items.Select(item => new { item.ItemId, item.Count}),
+                                                client = new {
+                                                    order.Client.Comment,
+                                                    order.Client.ClientName,
+                                                    order.Client.Email,
+                                                    order.Client.Telephone
+                                                }
+                                            })
+                                            .FirstOrDefaultAsync(o => o.Id == id);
 
             if (response == null)
             {
@@ -75,7 +83,7 @@ namespace ParkMobileServer.Controllers
                 }
             }
             await _postgreSQLDbContext
-                                .Orders
+                                .Order
                                 .AddAsync(data);
 
             await _postgreSQLDbContext.SaveChangesAsync();
@@ -86,13 +94,15 @@ namespace ParkMobileServer.Controllers
         [HttpDelete("DeleteOrderById/{id}")]
         public async Task<IActionResult> DeleteOrderById(int id)
         {
-            var order = await _postgreSQLDbContext.Orders.FindAsync(id);
+            var order = await _postgreSQLDbContext
+                                    .Order
+                                    .FindAsync(id);
             if(order == null)
             {
                 return BadRequest("Не найдена запись");
             }
             _postgreSQLDbContext
-                            .Orders
+                            .Order
                             .Remove(order);
 
             await _postgreSQLDbContext.SaveChangesAsync();

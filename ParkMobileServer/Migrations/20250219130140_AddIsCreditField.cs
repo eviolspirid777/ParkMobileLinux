@@ -12,7 +12,7 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.AddColumn<bool>(
                 name: "IsCredit",
-                table: "Orders",
+                table: "Order",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
@@ -23,7 +23,7 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsCredit",
-                table: "Orders");
+                table: "Order");
         }
     }
 }

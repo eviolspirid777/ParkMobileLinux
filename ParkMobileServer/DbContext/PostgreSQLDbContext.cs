@@ -49,10 +49,17 @@ namespace ParkMobileServer.DbContext
 							.HasMany(o => o.Items)
 							.WithOne(i => i.Order)
 							.OnDelete(DeleteBehavior.Cascade);
+
+			modelBuilder.Entity<Order>()
+							.HasOne(o => o.Client)
+							.WithOne(c => c.Order)
+							.HasForeignKey<OrderClient>(c => c.OrderId)
+							.OnDelete(DeleteBehavior.Cascade);
         }
         public DbSet<ItemEntity> ItemEntities { get; set; } = null!;
-		public DbSet<Order> Orders { get; set; } = null!;
-		public DbSet<OrderItem> OrderItems { get; set; } = null!;
+		public DbSet<Order> Order { get; set; } = null!;
+		public DbSet<OrderItem> OrderItem { get; set; } = null!;
+		public DbSet<OrderClient> OrderClient {get;set;} = null!;
 		public DbSet<DescriptionEntity> DescriptionEntity { get; set; } = null!;
 		public DbSet<ArticleEntity> ArticleEntity { get; set; } = null!;
         public DbSet<ItemCategory> ItemCategories { get; set; } = null!;

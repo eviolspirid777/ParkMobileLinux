@@ -18,9 +18,13 @@ namespace ParkMobileServer.Entities.Orders
 	{
         [Key]
         public int Id { get; set; }
-        public string? Comment {get;set;}
+        public string? Address {get; set;} = string.Empty;
+        public string? PvzCode {get;set;} = string.Empty;
+
         public OrderPayment? Payment { get; set; } = null;
         public OrderState? State { get; set; } = null!;
+        public int ClientId {get;set;}
+        public OrderClient? Client { get; set; }
         public ICollection<OrderItem> Items {get; set;} = [];
     }
 }

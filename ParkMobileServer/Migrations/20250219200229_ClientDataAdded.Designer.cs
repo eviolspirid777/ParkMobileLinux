@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ParkMobileServer.DbContext;
@@ -11,9 +12,11 @@ using ParkMobileServer.DbContext;
 namespace ParkMobileServer.Migrations
 {
     [DbContext(typeof(PostgreSQLDbContext))]
-    partial class PostgreSQLDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250219200229_ClientDataAdded")]
+    partial class ClientDataAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,38 +200,29 @@ namespace ParkMobileServer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
                     b.Property<int>("ClientId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
                     b.Property<int?>("Payment")
                         .HasColumnType("integer");
-
-                    b.Property<string>("PvzCode")
-                        .HasColumnType("text");
 
                     b.Property<int?>("State")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ParkMobileServer.Entities.Orders.OrderClient", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
                     b.Property<string>("ClientName")
                         .HasColumnType("text");
 
-                    b.Property<string>("Comment")
+                    b.Property<string>("Address")
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -240,7 +234,7 @@ namespace ParkMobileServer.Migrations
                     b.Property<string>("Telephone")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("ClientName");
 
                     b.HasIndex("OrderId")
                         .IsUnique();
@@ -269,7 +263,7 @@ namespace ParkMobileServer.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("ParkMobileServer.Entities.Slider", b =>
