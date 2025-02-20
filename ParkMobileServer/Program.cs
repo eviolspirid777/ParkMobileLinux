@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using ParkMobileServer.Functions;
 using ParkMobileServer.CDEKHttp;
+using ParkMobileServer.SignalR.Orders;
+using ParkMobileServer.Services;
 
 /*
  * Команды для развертывания докера на серваке
@@ -30,7 +32,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
             builder.Services.AddStackExchangeRedisCache(options =>
             {
@@ -54,18 +56,10 @@ namespace ParkMobileServer
 				//const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
                 return new CdekHttp(client_id, client_secret);
 			});
-            
 			
 			builder.WebHost.UseUrls("http://*:3001");
 
-            //builder.Services.AddHttpsRedirection(options =>
-            //{
-            //    options.HttpsPort = 5001;
-            //});
-
             builder.Services.AddControllers();
-
-			//TODO: Redis можно прикрутить и не париться(возможно это и зафиксит баг с оптимизацией слайдера)
 
 			string secretKey = builder.Configuration["JwtSecret"];
 			if (string.IsNullOrEmpty(secretKey))
@@ -92,18 +86,32 @@ namespace ParkMobileServer
 				};
 			});
 
-			var app = builder.Build();
-
-			app.UseCors(cors => cors
-						.AllowAnyOrigin()
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin", policy =>
+                {
+                    //policy.WithOrigins("http://localhost:3000") // Разрешаем конкретный домен клиента
+                    //      .AllowAnyHeader()
+                    //      .AllowAnyMethod()
+                    //      .AllowCredentials(); // Разрешаем передачу cookies и авторизационных данных
+					policy
+						.AllowAnyHeader()
 						.AllowAnyMethod()
-						.AllowAnyHeader());
+						.AllowCredentials();
+                });
+            });
 
-			//app.UseHttpsRedirection();
+            builder.Services.AddSignalR();
+            builder.Services.AddScoped<OrderService>();
+
+            var app = builder.Build();
+
+			app.UseCors("AllowSpecificOrigin");
 
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app.MapHub<OrdersHub>("/OrdersHub");
 			app.MapControllers();
 
 			app.Run();

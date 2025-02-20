@@ -1,13 +1,16 @@
 "use client";
-import { Layout, Menu } from "antd";
+import { Badge, Layout, Menu, MenuProps } from "antd";
 import "../../../App.scss";
-import { bottomMenu, navLinks } from "../NavigateLinks";
+import { LogoutOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 
 import styles from "./Layout.module.scss";
 import { apiClient } from "@/api/ApiClient";
 import { useSession } from "@/Shared/Hooks/useSession";
-import { useLayoutEffect } from "react";
+import { createElement, useLayoutEffect } from "react";
+import { useAtom } from "jotai";
+import { ordersCountAtom } from "@/Store/OrdersStore";
+import { useOrdersCount } from "@/hooks/useOrdersCount";
 
 const { Content, Sider } = Layout;
 
@@ -32,6 +35,88 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const { sessionToken, logout } = useSession();
+
+  useOrdersCount();
+  const [ ordersCount ] = useAtom(ordersCountAtom);
+
+  const navLinks: MenuProps["items"] = [
+    {
+      key: "_group1",
+      label: "Товары",
+      type: "group",
+      children: [
+        {
+          key: "items",
+          icon: <i className="fa-solid fa-boxes-stacked" />,
+          label: "Товары",
+        },
+      ],
+    },
+    {
+      key: "_group2",
+      label: "Класс",
+      type: "group",
+      children: [
+        {
+          key: "brands",
+          icon: <i className="fa-solid fa-table" />,
+          label: "Бренды",
+        },
+        {
+          key: "categories",
+          icon: <i className="fa-solid fa-list" />,
+          label: "Категории",
+        },
+        {
+          key: "filters",
+          icon: <i className="fa-solid fa-filter"/>,
+          label: "Фильтры"
+        }
+      ],
+    },
+    {
+      key: "_group3",
+      label: "Слайдер",
+      type: "group",
+      children: [
+        {
+          key: "slider",
+          icon: <i className="fa-solid fa-photo-film" />,
+          label: "Изображения",
+        },
+      ],
+    },
+    {
+      key: "_group4",
+      label: "Заказы",
+      type: "group",
+      children: [
+        {
+          key: "orders",
+          icon: <i className="fa-solid fa-box" />,
+          label: (
+            <Badge
+              count={ordersCount}
+              offset={[70,7]}
+            >
+              <span
+                style={{
+                  color: "white"
+                }}
+              >
+                Заказы
+              </span>
+            </Badge>
+          )
+        }
+      ]
+    }
+  ];
+
+  const bottomMenu: MenuProps["items"] = [
+    { key: "/admin", icon: createElement(LogoutOutlined), label: "Выйти" },
+  ];
+
 
   useLayoutEffect(() => {
     if (!sessionToken) {
@@ -66,6 +151,7 @@ export default function RootLayout({
                 </span>
               </div>
               <Menu
+                key={ordersCount}
                 className={styles["menu-style"]}
                 theme="dark"
                 mode="inline"

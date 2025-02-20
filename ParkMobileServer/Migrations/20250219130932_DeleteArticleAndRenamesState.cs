@@ -12,15 +12,15 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Article",
-                table: "Order");
+                table: "Orders");
 
             migrationBuilder.DropColumn(
                 name: "State",
-                table: "Order");
+                table: "Orders");
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsApproved",
-                table: "Order",
+                table: "Orders",
                 type: "boolean",
                 nullable: true);
         }
@@ -31,17 +31,17 @@ namespace ParkMobileServer.Migrations
 
             migrationBuilder.DropColumn(
                 name: "IsApproved",
-                table: "Order");
+                table: "Orders");
 
             migrationBuilder.AddColumn<string>(
                 name: "Article",
-                table: "Order",
+                table: "Orders",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "State",
-                table: "Order",
+                table: "Orders",
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);

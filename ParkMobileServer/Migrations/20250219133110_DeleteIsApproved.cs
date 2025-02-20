@@ -12,7 +12,7 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsApproved",
-                table: "Order");
+                table: "Orders");
         }
 
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.AddColumn<bool>(
                 name: "IsApproved",
-                table: "Order",
+                table: "Orders",
                 type: "boolean",
                 nullable: true);
         }

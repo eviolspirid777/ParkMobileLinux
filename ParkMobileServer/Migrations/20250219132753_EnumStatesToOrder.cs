@@ -12,17 +12,17 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsCredit",
-                table: "Order");
+                table: "Orders");
 
             migrationBuilder.AddColumn<int>(
                 name: "Payment",
-                table: "Order",
+                table: "Orders",
                 type: "integer",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "State",
-                table: "Order",
+                table: "Orders",
                 type: "integer",
                 nullable: true);
         }

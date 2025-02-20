@@ -18,12 +18,12 @@ namespace ParkMobileServer.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "Comment",
-                table: "Order",
+                table: "Orders",
                 newName: "PvzCode");
 
             migrationBuilder.AddColumn<string>(
                 name: "Address",
-                table: "Order",
+                table: "Orders",
                 type: "text",
                 nullable: true);
         }
@@ -39,7 +39,7 @@ namespace ParkMobileServer.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "PvzCode",
-                table: "Order",
+                table: "Orders",
                 newName: "Comment");
 
             migrationBuilder.AddPrimaryKey(

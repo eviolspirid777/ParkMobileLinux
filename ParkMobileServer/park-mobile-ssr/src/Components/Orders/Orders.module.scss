@@ -1,0 +1,36 @@
+$decline-color: red;
+$accept-color: green;
+$active-opacity: 0.7;
+$active-scale: scale(0.9);
+
+.button-block {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+
+  & i {
+    height: 30px;
+    width: 30px;
+    padding-top: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    &:first-child {
+      padding-left: 5px;
+      border: 1px solid $accept-color;
+      background-color: fade-out($accept-color, 0.7);
+      &:active {
+        transform: $active-scale;
+        opacity: $active-opacity;
+      }
+    }
+    &:last-child {
+      padding-left: 9px;
+      border: 1px solid $decline-color;
+      background-color: fade-out($decline-color, 0.7);
+      &:active {
+        transform: $active-scale;
+        opacity: $active-opacity;
+      }
+    }
+  }
+}

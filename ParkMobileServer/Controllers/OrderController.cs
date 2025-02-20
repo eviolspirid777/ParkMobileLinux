@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using ParkMobileServer.DbContext;
 using ParkMobileServer.DTO.Order;
 using ParkMobileServer.Entities.Orders;
-//using System.Data.Entity;
+using ParkMobileServer.Mappers.OrderMapper;
+using ParkMobileServer.Services;
 
 namespace ParkMobileServer.Controllers
 {
@@ -12,12 +13,15 @@ namespace ParkMobileServer.Controllers
     public class OrderController : ControllerBase
     {
 		private readonly PostgreSQLDbContext _postgreSQLDbContext;
+        private readonly OrderService _orderService;
         public OrderController
         (
-            PostgreSQLDbContext postgreSQLDbContext
+            PostgreSQLDbContext postgreSQLDbContext,
+            OrderService orderService
         )
         {
             _postgreSQLDbContext = postgreSQLDbContext;
+            _orderService = orderService;
         }
 
         //[Authorize]
@@ -25,15 +29,9 @@ namespace ParkMobileServer.Controllers
         public async Task<IActionResult> GetOrders()
         {
             var orders = await _postgreSQLDbContext
-                                            .Order
+                                            .Orders
                                             .AsNoTracking()
-                                            .Select(order => new OrderShortDTO {
-                                                Id = order.Id,
-                                                Address = order.Address,
-                                                PvzCode = order.PvzCode,
-                                                Payment = order.Payment,
-                                                State = order.State
-                                            })
+                                            .Select(order => OrderMappers.MapToShortOrder(order))
                                             .ToListAsync();
             return Ok(orders);
         }
@@ -43,25 +41,10 @@ namespace ParkMobileServer.Controllers
         public async Task<IActionResult> GetOrderById([FromQuery] int id)
         {
             var response = await _postgreSQLDbContext
-                                            .Order
+                                            .Orders
                                             .AsNoTracking()
                                             .Include(o => o.Items)
                                             .Include(o => o.Client)
-                                            .Select(order => new
-                                            {
-                                                order.Id,
-                                                order.PvzCode,
-                                                order.Address,
-                                                order.State,
-                                                order.Payment,
-                                                items = order.Items.Select(item => new { item.ItemId, item.Count}),
-                                                client = new {
-                                                    order.Client.Comment,
-                                                    order.Client.ClientName,
-                                                    order.Client.Email,
-                                                    order.Client.Telephone
-                                                }
-                                            })
                                             .FirstOrDefaultAsync(o => o.Id == id);
 
             if (response == null)
@@ -69,7 +52,7 @@ namespace ParkMobileServer.Controllers
                 return BadRequest();
             }
 
-            return Ok(response);
+            return Ok(OrderMappers.MapToOrder(response));
         }
 
         //[Authorize]
@@ -83,10 +66,13 @@ namespace ParkMobileServer.Controllers
                 }
             }
             await _postgreSQLDbContext
-                                .Order
+                                .Orders
                                 .AddAsync(data);
 
             await _postgreSQLDbContext.SaveChangesAsync();
+
+            await _orderService.BroadcastOrderCountAsync();
+
             return Ok();
         }
 
@@ -95,14 +81,14 @@ namespace ParkMobileServer.Controllers
         public async Task<IActionResult> DeleteOrderById(int id)
         {
             var order = await _postgreSQLDbContext
-                                    .Order
+                                    .Orders
                                     .FindAsync(id);
             if(order == null)
             {
                 return BadRequest("Не найдена запись");
             }
             _postgreSQLDbContext
-                            .Order
+                            .Orders
                             .Remove(order);
 
             await _postgreSQLDbContext.SaveChangesAsync();

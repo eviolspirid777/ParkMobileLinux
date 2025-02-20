@@ -7,6 +7,7 @@ import { GetAdressesCDEKParams, GetAdressesCDEKResponse, GetLocationsCDEKRespons
 import { GetItemByNameType } from "@/Types/GetItemByName";
 import { GetItemsMainMenuType } from "@/Types/GetItemsMainMenu";
 import { GetItemType } from "@/Types/GetItemType";
+import { Order } from "@/Types/Order";
 import { OrderItem } from "@/Types/OrderItem";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
 import { SliderResponse } from "@/Types/SliderResponse";
@@ -14,13 +15,17 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-// const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`
-// const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`
-// const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek"
+const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`;
+const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`;
+const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek";
+const ORDERS_ITEMS_PATH = "https://parkmobile.store/api/api/Order";
+export const SIGNAL_R_ORDERS = "https://parkmobile.store/api"; 
 
-const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`
-const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`
-const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek"
+// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`;
+// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`;
+// const ORDERS_ITEMS_PATH = "http://localhost:3001/api/Order";
+// const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek";
+// export const SIGNAL_R_ORDERS = "http://localhost:3001/OrdersHub"; 
 
 // const CDEK_PATH = `https://api.cdek.ru/v2`;
 
@@ -327,6 +332,28 @@ class ApiClient {
     // }
 
     //#endregion SDEK
+
+    //#region Orders
+    async GetOrders() {
+        const response = await this.client.get<Omit<Order, "Client" | "Items">[]>(`${ORDERS_ITEMS_PATH}/Orders`)
+        return response.data
+    }
+
+    async GetOrderById() {
+        const response = await this.client.get<Order>(`${ORDERS_ITEMS_PATH}/GetOrderById`)
+        return response.data;
+    }
+
+    async PostOrder(order: Order) {
+        const response = await this.client.post(`${ORDERS_ITEMS_PATH}/PostOrder`, order)
+        return response.data;
+    }
+
+    async DeleteOrder(id: number) {
+        const response = await this.client.delete(`${ORDERS_ITEMS_PATH}/DeleteOrderById/${id}`)
+        return response.data;
+    }
+    //#endregion
 }
 
 export const apiClient = new ApiClient;

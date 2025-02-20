@@ -12,7 +12,7 @@ namespace ParkMobileServer.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "ClientId",
-                table: "Order",
+                table: "Orders",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
@@ -33,7 +33,7 @@ namespace ParkMobileServer.Migrations
                     table.ForeignKey(
                         name: "FK_OrderClient_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Order",
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -53,7 +53,7 @@ namespace ParkMobileServer.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ClientId",
-                table: "Order");
+                table: "Orders");
         }
     }
 }

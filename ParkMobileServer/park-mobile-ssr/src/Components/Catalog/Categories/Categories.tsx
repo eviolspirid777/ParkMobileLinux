@@ -141,6 +141,21 @@ export const Categories: FC<CategoriesProps> = ({
       case "Xiaomi":
         newFilter = "Xiaomi"
         break;
+      case "Стайлеры":
+        newFilterAlias = "styler"
+        break;
+      case "Фены":
+        newFilterAlias = "hairdryer"
+        break;
+      case "Выпрямители":
+        newFilterAlias = "rectifier"
+        break;
+      case "Пылесосы":
+        newFilterAlias = "vacuumcleaner"
+        break;
+      case "Очистители воздуха":
+        newFilterAlias = "airpurifiers"
+        break;
     }
     const newCategories = ItemsFiltersForMainMenu.get(newFilter) ?? []
     setCategories(prev => newCategories ?? prev)
