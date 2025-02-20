@@ -19,7 +19,7 @@ const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`;
 const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`;
 const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek";
 const ORDERS_ITEMS_PATH = "https://parkmobile.store/api/api/Order";
-export const SIGNAL_R_ORDERS = "https://parkmobile.store/api/api/OrdersHub"; 
+export const SIGNAL_R_ORDERS = "https://parkmobile.store/api/OrdersHub"; 
 
 // const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`;
 // const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`;
