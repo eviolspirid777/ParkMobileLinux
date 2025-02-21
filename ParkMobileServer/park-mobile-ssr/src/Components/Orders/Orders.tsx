@@ -114,14 +114,20 @@ export const Orders = () => {
       <h2>Ждут рассмотрения</h2>
       <Table
         columns={columns}
+        size="small"
         dataSource={orders?.filter(el => el.state === null)}
-
+        pagination={{
+          pageSize: 8,
+        }}
       />
       <h2>Рассмотрены</h2>
       <Table
         columns={columns}
         size="small"
         dataSource={orders?.filter(el => el.state !== null)}
+        pagination={{
+          pageSize: 8,
+        }}
       />
       <ApproveModal
         open={open}
