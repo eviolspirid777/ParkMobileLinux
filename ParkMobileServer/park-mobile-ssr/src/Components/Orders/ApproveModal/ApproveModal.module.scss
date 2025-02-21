@@ -1,0 +1,13 @@
+.item-block {
+  margin-top: 20px;
+  & > span {
+    padding: 0 0 30px 0px;
+  }
+}
+
+.button-block {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  direction: rtl;
+}

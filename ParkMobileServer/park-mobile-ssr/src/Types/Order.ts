@@ -21,11 +21,11 @@ export enum OrderState
 }
 
 export type Order = {
-  id: number
+  id?: number
   address: string,
   pvzCode: string,
   payment: OrderPayment,
-  state: OrderState,
+  state: OrderState | null,
   client: OrderClient, 
   items?: OrderItem[],
 }
@@ -42,4 +42,4 @@ export type OrderItem = {
   count: number
 }
 
-export type OrderTableData = Omit<Order, "Client" | "Items"> & { buttonBlock: ReactNode };
+export type OrderTableData = Omit<Order, "client" | "items"> & { buttonBlock: ReactNode };

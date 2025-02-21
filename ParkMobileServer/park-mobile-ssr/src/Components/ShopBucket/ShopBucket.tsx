@@ -24,6 +24,7 @@ import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { AddressesAtom } from "@/Store/AddressesStore";
 import { deliveryTypes, ItemType, SdekPostTypeBase, Tariffs_SDEK } from "@/Types/CDEK";
 import { deliveryPointAtom } from "@/Store/DeliveryPoint";
+import { OrderPayment, OrderState } from "@/Types/Order";
 
 type ShopBucketType = {
   handleShopBag: () => void;
@@ -228,50 +229,21 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       values = { ...values, items: [...itemsToProceed] };
 
       await apiClient.OrderData(values);
-
-      const testObj: SdekPostTypeBase = {
-        tariff_code: Tariffs_SDEK.StorageToStorage,
-        type: deliveryTypes.InternetShop,
-        comment: values.description,
-        number: `${Math.round(Math.random() * 1000)}`,
-        shipment_point: "KSD11",
-        delivery_point: deliveryPoint ? deliveryPoint.code : null,
-        seller: {
-          name: "Безганс Эмиль Владимирович",
-          inn: "090108428776",
-          ownership_form: "16",
-          phone: "89337772777",
-          address: "г. Краснодар, ул.Советская, 36"
-        },
-        recipient: {
-          name: values.reciver,
-          contragent_type: "INDIVIDUAL",
-          email: values.email ?? null,
-          phones: [{
-            number: values.telephone
-          }]
-        },
-        packages: [{
-          number: `${Math.round(Math.random() * 1000)}-KSD`,
-          comment: values.description,
-          weight: shopBucket.reduce((acc, value) => {
-            return acc + value.weight
-          }, 0),
-          length: 60,
-          width: 60,
-          items: shopBucket.map(el => ({
-            name: el.name,
-            ware_key: el.article,
-            amount: el.count,
-            cost: 0,
-            payment: {
-              value: 0
-            },
-            weight: el.weight,
-          } as ItemType)),
-        }]
+      if(deliveryPoint?.code) {
+        await apiClient.PostOrder({
+          address: "",
+          client: {
+            clientName: values.reciver,
+            comment: values.description,
+            email: values.email,
+            telephone: values.telephone
+          },
+          payment: OrderPayment.Card,
+          pvzCode: deliveryPoint.code,
+          state: null,
+          items: shopBucket.map(el => ({ itemId: el.id, count: el.count }))
+        })
       }
-      await apiClient.PostCDEKForm(testObj)
 
       setShopBucket([]);
       localStorage.removeItem("shopBucket");
