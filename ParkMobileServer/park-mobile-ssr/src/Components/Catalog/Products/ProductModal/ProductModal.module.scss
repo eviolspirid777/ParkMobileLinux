@@ -1,3 +1,5 @@
+$button-bg-color: #87a08b;
+
 .item-modal-window {
     border: none;
     background-color: transparent;
@@ -43,6 +45,24 @@
         gap: 20px;
         padding: 20px;
         font-family: "SF-Pro-Display-Regular_light";
+
+        &-credit-button {
+            display: inline-block;
+            border: 1px solid $button-bg-color;
+            border-radius: 6px;
+            color:  $button-bg-color;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 400;
+            height: 45px;
+            line-height: 45px;
+            letter-spacing: 1px;
+            padding-left: 30px;
+            padding-right: 30px;
+            &:hover {
+                color: $button-bg-color;
+            }
+        }
 
         & header {
             & h3 {
@@ -109,7 +129,7 @@
         & button {
             display: inline-block;
             color: #ffffff;
-            background-color: #87a08b;
+            background-color: $button-bg-color;
             border-radius: 6px;
             -moz-border-radius: 6px;
             -webkit-border-radius: 6px;
@@ -124,8 +144,8 @@
             &[data-unstocked="true"] {
                 // opacity: 0.5;
                 background-color: #fff;
-                border: 2px solid #87a08b;
-                color: #87a08b;
+                border: 2px solid $button-bg-color;
+                color: $button-bg-color;
                 font-size: 1rem;
             }
         }
@@ -143,7 +163,7 @@
             & span {}
 
             & a {
-                color: #87a08b;
+                color: $button-bg-color;
                 cursor: pointer;
             }
         }
@@ -278,9 +298,15 @@
 
         &-data {
             gap: 10px;
+            &-prices {
+                strong {
+                    font-size: 1.1rem;
+                }
+            }
             & header {
                 h3 {
                     font-size: 1rem;
+                    line-height: 18px;
                 }
 
                 article {

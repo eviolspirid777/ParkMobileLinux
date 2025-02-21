@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkMobileServer.DbContext;
 using ParkMobileServer.DTO.Order;
@@ -24,7 +25,7 @@ namespace ParkMobileServer.Controllers
             _orderService = orderService;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("Orders")]
         public async Task<IActionResult> GetOrders()
         {
@@ -36,7 +37,7 @@ namespace ParkMobileServer.Controllers
             return Ok(orders);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("GetOrderById")]
         public async Task<IActionResult> GetOrderById([FromQuery] int id)
         {
@@ -55,7 +56,6 @@ namespace ParkMobileServer.Controllers
             return Ok(OrderMappers.MapToOrder(response));
         }
 
-        //[Authorize]
         [HttpPost("PostOrder")]
         public async Task<IActionResult> PostOrder([FromBody]Order data)
         {
@@ -76,6 +76,7 @@ namespace ParkMobileServer.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("ChangeOrderStatus")]
         public async Task<IActionResult> ChangeOrderStatus ([FromBody] OrderStatusRequest data)
         {
@@ -94,7 +95,7 @@ namespace ParkMobileServer.Controllers
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("DeleteOrderById/{id}")]
         public async Task<IActionResult> DeleteOrderById(int id)
         {

@@ -33,6 +33,9 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
+  const serializedGoods = JSON.stringify([{ name: CardData?.name, price: CardData?.discountPrice ?? CardData?.price, quantity: 1 }])
+  console.log(serializedGoods);
+
   // const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
   
   const {
@@ -117,7 +120,7 @@ useEffect(() => {
     window.removeEventListener("resize", handleResize);
     document.body.style.overflow = "auto";
   };
-}, [openProductCard.state]);
+}, [openProductCard.state, CardData]);
 
 const handleCreditPrice = () => {
   if(CardData?.price) {
@@ -237,6 +240,15 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
                 >
                   {(CardData?.stock && CardData?.stock > 0) ? "Купить" : "Заказать"}
                 </button>
+                {CardData.stock && CardData.stock > 0 && (
+                  <a
+                    className={styles["item-container-data-credit-button"]}
+                    href={`https://ecom.otpbank.ru/smart-form/?config=fc431351-6149-4431-9823-10e6998d8974&tradeId=230107099000001&goods=${serializedGoods}`}
+                    target="_blank"
+                  >
+                    Купить в кредит
+                  </a>
+                )}
                 <div className={styles["credit"]}>
                   <span>Доступно</span>
                   <a>в кредит</a>
@@ -248,7 +260,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
             <div
               className={styles["MarkdownContent"]}
               style={{
-                maxHeight: `${(isRendered && window.screen.width > 1024) ? modalHeight - 300 : modalHeight - (modalHeight * 0.85)}px`,
+                maxHeight: `${(isRendered && window.screen.width > 1024) ? modalHeight - 400 : modalHeight - (modalHeight * 0.85)}px`,
                 overflow: "auto",
                 padding: "0% 5% 0% 0%",
                 textAlign: "justify"
