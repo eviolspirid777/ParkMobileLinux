@@ -11,6 +11,7 @@ namespace ParkMobileServer.CDEKHttp
 
     public class CdekHttp
     {
+        //TODO: не забудь поменять!
         //PROD
         //const string CDEK_API = "https://api.cdek.ru/v2";
 

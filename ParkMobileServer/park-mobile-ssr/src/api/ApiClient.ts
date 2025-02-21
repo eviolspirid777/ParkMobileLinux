@@ -15,17 +15,17 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 export type AuthorizationType = {userName: string, password: string}
 
-// const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`;
-// const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`;
-// const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek";
-// const ORDERS_ITEMS_PATH = "https://parkmobile.store/api/api/Order";
-// export const SIGNAL_R_ORDERS = "https://parkmobile.store/api/OrdersHub"; 
+const AUTORIZATIONS_PATH = `https://parkmobile.store/api/api/Autorization`;
+const POSTGRE_ITEMS_PATH = `https://parkmobile.store/api/api/ItemsPostgre`;
+const CDKEK_PATH_LOCAL = "https://parkmobile.store/api/api/Cdek";
+const ORDERS_ITEMS_PATH = "https://parkmobile.store/api/api/Order";
+export const SIGNAL_R_ORDERS = "https://parkmobile.store/api/OrdersHub"; 
 
-const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`;
-const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`;
-const ORDERS_ITEMS_PATH = "http://localhost:3001/api/Order";
-const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek";
-export const SIGNAL_R_ORDERS = "http://localhost:3001/OrdersHub"; 
+// const AUTORIZATIONS_PATH = `http://localhost:3001/api/Autorization`;
+// const POSTGRE_ITEMS_PATH = `http://localhost:3001/api/ItemsPostgre`;
+// const ORDERS_ITEMS_PATH = "http://localhost:3001/api/Order";
+// const CDKEK_PATH_LOCAL = "http://localhost:3001/api/Cdek";
+// export const SIGNAL_R_ORDERS = "http://localhost:3001/OrdersHub"; 
 
 // const CDEK_PATH = `https://api.cdek.ru/v2`;
 

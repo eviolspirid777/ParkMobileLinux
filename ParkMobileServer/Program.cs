@@ -32,7 +32,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
             builder.Services.AddStackExchangeRedisCache(options =>
             {
@@ -48,6 +48,7 @@ namespace ParkMobileServer
 			builder.Services.AddScoped<CreateItems>();
 			builder.Services.AddSingleton(provider =>
 			{
+				//TODO: не забудь поменять!!
 				//TEST
 				const string client_id = "wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP";
 				const string client_secret = "RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5";
@@ -90,14 +91,14 @@ namespace ParkMobileServer
             {
                 options.AddPolicy("AllowSpecificOrigin", policy =>
                 {
-					policy.WithOrigins("http://localhost:3000") // Разрешаем конкретный домен клиента
-						  .AllowAnyHeader()
-						  .AllowAnyMethod()
-						  .AllowCredentials(); // Разрешаем передачу cookies и авторизационных данных
-					//policy
-						//	.AllowAnyHeader()
-						//	.AllowAnyMethod()
-						//	.AllowCredentials();
+					//policy.WithOrigins("http://localhost:3000") // Разрешаем конкретный домен клиента
+					//	  .AllowAnyHeader()
+					//	  .AllowAnyMethod()
+					//	  .AllowCredentials(); // Разрешаем передачу cookies и авторизационных данных
+					policy
+							.AllowAnyHeader()
+							.AllowAnyMethod()
+							.AllowCredentials();
 				});
             });
 
