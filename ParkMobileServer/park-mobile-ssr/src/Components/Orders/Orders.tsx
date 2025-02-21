@@ -9,6 +9,8 @@ import { ordersCountAtom } from "@/Store/OrdersStore";
 import { useAtom } from "jotai";
 
 export const Orders = () => {
+  //TODO: Не забудь обработать получение ТРЕК-НОМЕРА в ответ на оформление доставки
+  //TODO: Нужно сделать еще рассылку по почте или на номер телефона успешного оформления заказа с трек-номером
   const [ ordersCount ] = useAtom(ordersCountAtom);
   const [orders, setOrders] = useState<OrderTableData[]>();
   const [open, setOpen] = useState(false);
