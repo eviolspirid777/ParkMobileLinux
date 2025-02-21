@@ -165,14 +165,12 @@ export const Categories: FC<CategoriesProps> = ({
   const handleBackFilters = () => {
     if(filters.length > 0) {
       const lastFilter = filters.at(-2);
-      console.log(lastFilter)
       let newCategories: string[];
       if(lastFilter) {
         newCategories = ItemsFiltersForMainMenu.get(lastFilter) as string[]
       } else {
         newCategories = baseCategoriesItems;
       }
-      console.log(newCategories)
       setCategories(prev => newCategories ?? prev)
       setFilters(prev => prev.toSpliced(-1,1))
     }

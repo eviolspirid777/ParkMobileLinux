@@ -12,9 +12,6 @@ export const SdekComponent = () => {
   const [ addresses ] = useAtom(AddressesAtom);
   const [ userCoords, setUserCoords ] = useState<{longitude: number, latitude: number}>({ latitude: 0, longitude: 0 })
   const [ selectedItem, setSelectedItem ] = useAtom(deliveryPointAtom);
-  useEffect(() => {
-    console.log(selectedItem)
-  }, [selectedItem])
   const [ shopBucket ] = useAtom(shopBucketAtom);
 
   useEffect(() => {
