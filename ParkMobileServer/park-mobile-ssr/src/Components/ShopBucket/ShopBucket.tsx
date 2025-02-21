@@ -22,9 +22,8 @@ import { useForm } from "antd/es/form/Form";
 import Image from "next/image"
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { AddressesAtom } from "@/Store/AddressesStore";
-import { deliveryTypes, ItemType, SdekPostTypeBase, Tariffs_SDEK } from "@/Types/CDEK";
 import { deliveryPointAtom } from "@/Store/DeliveryPoint";
-import { OrderPayment, OrderState } from "@/Types/Order";
+import { OrderPayment } from "@/Types/Order";
 
 type ShopBucketType = {
   handleShopBag: () => void;

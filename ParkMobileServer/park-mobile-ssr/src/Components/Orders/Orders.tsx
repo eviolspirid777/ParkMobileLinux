@@ -75,7 +75,9 @@ export const Orders = () => {
 
   const handleDecline = async (id: number | undefined) => {
     setSelectedItemId(id);
-    id && await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Disapproved }) 
+    if(id) {
+      await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Disapproved })
+    }
     setSelectedItemId(undefined)
   }
 
@@ -98,13 +100,17 @@ export const Orders = () => {
         )
       }));
 
-      selectedItemId === undefined && setOrders(transformedData);
+      if(!selectedItemId) {
+        setOrders(transformedData);
+      }
     }
     GetOrders()
   }, [ordersCount, selectedItemId])
 
   const handleSubmitSuccess = async (id: number | null) => {
-    id && await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Approved })
+    if(id) {
+      await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Approved })
+    }
     setSelectedItemId(undefined)
     setOpen(prev => !prev)
   }
