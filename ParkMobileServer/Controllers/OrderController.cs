@@ -76,6 +76,24 @@ namespace ParkMobileServer.Controllers
             return Ok();
         }
 
+        [HttpPost("ChangeOrderStatus")]
+        public async Task<IActionResult> ChangeOrderStatus ([FromBody] OrderStatusRequest data)
+        {
+            var order = await _postgreSQLDbContext
+                                            .Orders
+                                            .FindAsync(data.Id);
+            if(order == null)
+            {
+                return BadRequest();
+            }
+
+            order.State = data.State;
+            await _postgreSQLDbContext.SaveChangesAsync();
+            await _orderService.BroadcastOrderCountAsync();
+
+            return Ok();
+        }
+
         //[Authorize]
         [HttpDelete("DeleteOrderById/{id}")]
         public async Task<IActionResult> DeleteOrderById(int id)

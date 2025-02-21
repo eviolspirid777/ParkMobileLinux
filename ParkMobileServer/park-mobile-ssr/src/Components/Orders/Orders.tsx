@@ -3,7 +3,7 @@ import { Table, TableColumnsType } from "antd";
 import styles from "./Orders.module.scss";
 import { apiClient } from "@/api/ApiClient";
 import { useEffect, useState } from "react";
-import { OrderTableData, PaymentDictionary } from "@/Types/Order";
+import { OrderState, OrderTableData, PaymentDictionary } from "@/Types/Order";
 import { ApproveModal } from "./ApproveModal/ApproveModal";
 import { ordersCountAtom } from "@/Store/OrdersStore";
 import { useAtom } from "jotai";
@@ -42,22 +42,27 @@ export const Orders = () => {
       dataIndex: "buttonBlock",
       key: "buttonBlock",
       width: 200,
-      render: (item, record, index) => (
-        <div
-          className={styles["button-block"]}
-        >
-          <i
-            onClick={handleApprove.bind(this, record.id)}
-            className="fa-solid fa-check fa-lg"
-            title="Одобрить"
-          />
-          <i
-            onClick={handleDecline.bind(this, record.id)}
-            className="fa-solid fa-xmark fa-lg"
-            title="Отклонить"
-          />
-        </div>
-      )
+      render: (item, record) => {
+        return record.state === null ?
+          (
+            <div
+              className={styles["button-block"]}
+            >
+              <i
+                onClick={handleApprove.bind(this, record.id)}
+                className="fa-solid fa-check fa-lg"
+                title="Одобрить"
+              />
+              <i
+                onClick={handleDecline.bind(this, record.id)}
+                className="fa-solid fa-xmark fa-lg"
+                title="Отклонить"
+              />
+            </div>
+          ) : (
+            <i className={record.state === OrderState.Approved ? "fa-solid fa-check fa-lg" : "fa-solid fa-xmark fa-lg"}/>
+          )
+      }
     }
   ];
 
@@ -67,7 +72,9 @@ export const Orders = () => {
   }
 
   const handleDecline = async (id: number | undefined) => {
-    id && await apiClient.DeleteOrder(id)
+    setSelectedItemId(id);
+    id && await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Disapproved }) 
+    setSelectedItemId(undefined)
   }
 
   useEffect(() => {
@@ -88,26 +95,39 @@ export const Orders = () => {
           </div>
         )
       }));
-      setOrders(transformedData);
+
+      selectedItemId === undefined && setOrders(transformedData);
     }
     GetOrders()
-  }, [ordersCount])
+  }, [ordersCount, selectedItemId])
+
+  const handleSubmitSuccess = async (id: number | null) => {
+    id && await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Approved })
+    setSelectedItemId(undefined)
+    setOpen(prev => !prev)
+  }
 
   return (
-    <>
+    <div
+      className={styles["orders-layout"]}
+    >
+      <h2>Ждут рассмотрения</h2>
       <Table
         columns={columns}
-        dataSource={orders}
+        dataSource={orders?.filter(el => el.state === null)}
+
       />
+      <h2>Рассмотрены</h2>
       <Table
         columns={columns}
-        dataSource={orders?.filter(el => el.state)}
+        size="small"
+        dataSource={orders?.filter(el => el.state !== null)}
       />
       <ApproveModal
         open={open}
-        setOpen={setOpen.bind(this, (prevValue) => !prevValue)}
+        setOpen={handleSubmitSuccess}
         id={selectedItemId}
       />
-    </>
+    </div>
   )
 }

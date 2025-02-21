@@ -3,6 +3,14 @@
   & > span {
     padding: 0 0 30px 0px;
   }
+
+  &-form {
+    strong {
+      font-weight: 900;
+      height: 60px;
+      border-bottom: 1px solid black;
+    }
+  }
 }
 
 .button-block {

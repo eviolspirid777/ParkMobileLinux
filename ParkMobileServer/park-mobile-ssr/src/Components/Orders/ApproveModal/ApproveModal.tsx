@@ -10,7 +10,7 @@ import { deliveryTypes, ItemType, SdekPostTypeBase, Tariffs_SDEK } from "@/Types
 type ApproveModalProps = {
   id: number | undefined,
   open: boolean,
-  setOpen: () => void,
+  setOpen: (id: number | null) => void,
 }
 
 type FormFinishValuesType = {
@@ -51,15 +51,6 @@ export const ApproveModal: FC<ApproveModalProps> = ({
   }, [id])
 
   const handleSubmitForm = async (values: FormFinishValuesType) => {
-    console.log(values)
-
-    console.group("GROPUED")
-    console.log(values.itemInfo.items.reduce((acc, value) => {
-      return acc + value.weight
-    }, 0))
-    console.log(values.itemInfo.items[0].weight)
-    console.groupEnd()
-
     const testObj: SdekPostTypeBase = {
       tariff_code: Tariffs_SDEK.StorageToStorage,
       type: deliveryTypes.InternetShop,
@@ -88,8 +79,9 @@ export const ApproveModal: FC<ApproveModalProps> = ({
         weight: values.itemInfo.items.reduce((acc, value) => {
           return acc + value.weight
         }, 0),
-        length: 60,
-        width: 60,
+        length: values.itemInfo.length,
+        width: values.itemInfo.width,
+        height: values.itemInfo.height,
         items: items.map((el, index) => ({
           name: el.name,
           ware_key: el.article,
@@ -102,20 +94,22 @@ export const ApproveModal: FC<ApproveModalProps> = ({
         } as ItemType)),
       }]
     }
+    await apiClient.AutorizeCDEK();
     await apiClient.PostCDEKForm(testObj)
-    setOpen();
+    setOpen(id ?? null);
   }
 
   return (
     <Modal
       open={open}
-      onCancel={setOpen}
-      onClose={setOpen}
+      onCancel={setOpen.bind(this, null)}
+      onClose={setOpen.bind(this, null)}
       title="Формирование заявки СДЕК"
       footer={null}
       centered
     >
       <Form
+        className={styles["item-block-form"]}
         onFinish={handleSubmitForm}
       >
         {
@@ -138,6 +132,7 @@ export const ApproveModal: FC<ApproveModalProps> = ({
             </div>
           ))
         }
+        <strong>Заполните данные о заказе</strong>
         <Form.Item
           name={["itemInfo","length"]}
         >
@@ -173,7 +168,7 @@ export const ApproveModal: FC<ApproveModalProps> = ({
             Сформировать заявку
           </Button>
           <Button
-            onClick={setOpen}
+            onClick={setOpen.bind(this, null)}
           >
             Отменить
           </Button>

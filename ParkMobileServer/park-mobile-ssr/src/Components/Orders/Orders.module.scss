@@ -34,3 +34,15 @@ $active-scale: scale(0.9);
     }
   }
 }
+
+.orders-layout {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  width: 100%;
+
+  & h2 {
+    font-weight: 800;
+    font-size: 1.2rem;
+  }
+}

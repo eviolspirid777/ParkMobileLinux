@@ -7,7 +7,7 @@ import { GetAdressesCDEKParams, GetAdressesCDEKResponse, GetLocationsCDEKRespons
 import { GetItemByNameType } from "@/Types/GetItemByName";
 import { GetItemsMainMenuType } from "@/Types/GetItemsMainMenu";
 import { GetItemType } from "@/Types/GetItemType";
-import { Order } from "@/Types/Order";
+import { Order, OrderStatusChangeRequest } from "@/Types/Order";
 import { OrderItem } from "@/Types/OrderItem";
 import { SearchItemsResponseType } from "@/Types/SearchItemShortType";
 import { SliderResponse } from "@/Types/SliderResponse";
@@ -355,6 +355,11 @@ class ApiClient {
 
     async DeleteOrder(id: number) {
         const response = await this.authClient.delete(`${ORDERS_ITEMS_PATH}/DeleteOrderById/${id}`)
+        return response.data;
+    }
+
+    async ChangeOrderStatus(data: OrderStatusChangeRequest) {
+        const response = await this.authClient.post(`${ORDERS_ITEMS_PATH}/ChangeOrderStatus`, data)
         return response.data;
     }
     //#endregion

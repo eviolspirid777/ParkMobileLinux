@@ -30,6 +30,11 @@ export type Order = {
   items?: OrderItem[],
 }
 
+export type OrderStatusChangeRequest = {
+  id: number,
+  state: OrderState,
+}
+
 export type OrderClient = {
   clientName?: string,
   telephone?: string,
