@@ -106,7 +106,7 @@ namespace ParkMobileServer.Controllers
 				issuer: "ParkMobileServer",
 				audience: "ParkMobileAdmin",
 				claims: claims,
-				expires: DateTime.Now.AddMinutes(30), // Истечение через 30 минут
+				expires: DateTime.Now.AddHours(20), // Истечение через 20 часов
 				signingCredentials: credentials);
 
 			return new JwtSecurityTokenHandler().WriteToken(token);
