@@ -265,7 +265,7 @@ namespace ParkMobileServer.Controllers
 		[HttpPost("GetItem/{id}")]
 		public async Task<IActionResult> GetItem(int id)
 		{
-			var item = _postgreSQLDbContext
+			var item = await _postgreSQLDbContext
 								.ItemEntities
 								.Where(item => item.Id == id)
 								.Select(item => new
@@ -284,7 +284,7 @@ namespace ParkMobileServer.Controllers
 									item.Article!.Article,
 									item.Description!.Description
 								})
-								.FirstOrDefault();
+								.FirstOrDefaultAsync();
 			return Ok(item);
 		}
 

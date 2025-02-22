@@ -91,5 +91,20 @@ namespace ParkMobileServer.Mappers.ItemsMapper
                 Price = item.Price,
             };
         }
+
+        public static ItemFilteredDTO MapToItemDto(ItemEntity item)
+        {
+            return new ItemFilteredDTO
+            {
+                Id = item.Id,
+                Name = item.Name,
+                DiscountPrice = item.DiscountPrice,
+                Price = item.Price,
+                Image = item.Image,
+                IsPopular = item.IsPopular,
+                IsNewItem = item.IsNewItem,
+                Stock = item.Stock
+            };
+        }
     }
 }

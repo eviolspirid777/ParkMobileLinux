@@ -77,7 +77,7 @@ namespace ParkMobileServer.Functions
             var cachedData = await _cache.GetStringAsync(cacheKey);
             if (!string.IsNullOrEmpty(cachedData))
             {
-                return JsonConvert.DeserializeObject(cachedData);
+                return JsonConvert.DeserializeObject<ItemFilteredDTO>(cachedData);
             }
 
             var query = _postgreSQLDbContext
@@ -135,18 +135,9 @@ namespace ParkMobileServer.Functions
             var items = await query
                                 .Skip(searchCategoryRequest.Skip)
                                 .Take(searchCategoryRequest.Take)
-                                .Select(item => new
-                                {
-                                    item.Id,
-                                    item.Name,
-                                    item.Stock,
-                                    item.Image,
-                                    item.Price,
-                                    item.DiscountPrice,
-                                    item.IsPopular,
-                                    item.IsNewItem
-                                })
+                                .Select(item => ItemMapper.MapToItemDto(item))
                                 .ToListAsync();
+            
 
             if (items.Count == 0)
             {
@@ -290,7 +281,7 @@ namespace ParkMobileServer.Functions
             var cachedData = await _cache.GetStringAsync(cacheKey);
             if (!string.IsNullOrEmpty(cachedData))
             {
-                return JsonConvert.DeserializeObject(cachedData);
+                return JsonConvert.DeserializeObject<ItemFilteredDTOFull>(cachedData);
             }
 
             int? categoryId = null;
