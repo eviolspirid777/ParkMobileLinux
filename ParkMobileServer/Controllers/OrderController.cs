@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ParkMobileServer.DbContext;
 using ParkMobileServer.DTO.Order;
 using ParkMobileServer.Entities.Orders;
+using ParkMobileServer.HTTP;
 using ParkMobileServer.Mappers.OrderMapper;
 using ParkMobileServer.Services;
 
@@ -15,14 +16,17 @@ namespace ParkMobileServer.Controllers
     {
 		private readonly PostgreSQLDbContext _postgreSQLDbContext;
         private readonly OrderService _orderService;
+        private readonly SMSHttp _smsHttp;
         public OrderController
         (
             PostgreSQLDbContext postgreSQLDbContext,
-            OrderService orderService
+            OrderService orderService,
+            SMSHttp smsHttp
         )
         {
             _postgreSQLDbContext = postgreSQLDbContext;
             _orderService = orderService;
+            _smsHttp = smsHttp;
         }
 
         [Authorize]
@@ -82,16 +86,32 @@ namespace ParkMobileServer.Controllers
         {
             var order = await _postgreSQLDbContext
                                             .Orders
-                                            .FindAsync(data.Id);
+                                            .Include(order => order.Client)
+                                            .FirstOrDefaultAsync(order => order.Id == data.Id);
             if(order == null)
             {
                 return BadRequest();
             }
 
             order.State = data.State;
+            if(data.TrackNumber is not null)
+            {
+                order.TrackNumber = data.TrackNumber;
+            }
+
+            HttpResponseMessage? response = null;
+            if(data.State == OrderState.approved && order.Client?.Telephone != null && data.TrackNumber != null)
+            {
+                response = await _smsHttp.SendMessage(new Entities.Sms.SmsQueryParams { To = order.Client?.Telephone ?? "", Msg = $"Ваш трек-номер заказа: {data.TrackNumber}.\nМагазин ParkMobile." });
+            }
+
             await _postgreSQLDbContext.SaveChangesAsync();
             await _orderService.BroadcastOrderCountAsync();
 
+            if(response is not null)
+            {
+                return Ok(response);
+            }
             return Ok();
         }
 

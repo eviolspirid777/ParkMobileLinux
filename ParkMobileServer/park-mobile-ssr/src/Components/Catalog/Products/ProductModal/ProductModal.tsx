@@ -33,8 +33,7 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
-  const serializedGoods = JSON.stringify([{ name: CardData?.name, price: CardData?.discountPrice ?? CardData?.price, quantity: 1 }])
-  console.log(serializedGoods);
+  const serializedGoods = JSON.stringify([{ name: String(CardData?.name), price: CardData?.discountPrice?.toString() ?? CardData?.price.toString(), quantity: String(1) }])
 
   // const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
   
@@ -243,7 +242,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
                 {CardData.stock && CardData.stock > 0 && (
                   <a
                     className={styles["item-container-data-credit-button"]}
-                    href={`https://ecom.otpbank.ru/smart-form/?config=fc431351-6149-4431-9823-10e6998d8974&tradeId=230107099000001&goods=${serializedGoods}`}
+                    href={`https://ecom.otpbank.ru/smart-form/?config=fc431351-6149-4431-9823-10e6998d8974&tradeId=230107099000001&successURL=https://parkmobile.store/&failURL=https://parkmobile.store/&partnersURL=https://parkmobile.store/&goods=${serializedGoods}`}
                     target="_blank"
                   >
                     Купить в кредит

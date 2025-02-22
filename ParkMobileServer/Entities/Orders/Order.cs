@@ -21,6 +21,7 @@ namespace ParkMobileServer.Entities.Orders
         public int Id { get; set; }
         public string? Address {get; set;} = string.Empty;
         public string? PvzCode {get;set;} = string.Empty;
+        public string? TrackNumber { get; set; } = null;
 
         public OrderPayment? Payment { get; set; } = null;
         public OrderState? State { get; set; } = null!;

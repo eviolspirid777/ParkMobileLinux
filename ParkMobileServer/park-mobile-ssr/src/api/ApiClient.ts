@@ -3,7 +3,7 @@ import { RepairRequestType } from "@/hooks/useAddRepairRequest";
 import { TradeInType } from "@/Store/TradeInStore";
 import { CardItemType, CardType, RecivedCardDataType } from "@/Types/CardType";
 import { RecivedCardDataAdminType } from "@/Types/CardTypeAdmin";
-import { GetAdressesCDEKParams, GetAdressesCDEKResponse, GetLocationsCDEKResponse, SdekAutorizeResponse, SdekPostTypeBase } from "@/Types/CDEK";
+import { GetAdressesCDEKParams, GetAdressesCDEKResponse, GetLocationsCDEKResponse, SdekAutorizeResponse, SDEKPostResponse, SdekPostTypeBase } from "@/Types/CDEK";
 import { GetItemByNameType } from "@/Types/GetItemByName";
 import { GetItemsMainMenuType } from "@/Types/GetItemsMainMenu";
 import { GetItemType } from "@/Types/GetItemType";
@@ -255,9 +255,9 @@ class ApiClient {
         return response.data;
     }
 
-    async PostCDEKForm(data: SdekPostTypeBase) {
+    async PostCDEKForm(data: SdekPostTypeBase): Promise<AxiosResponse<SDEKPostResponse>> {
         const response = await this.cdekClient.post(`${CDKEK_PATH_LOCAL}/PostOrder`, data);
-        return response.data;
+        return response;
     }
 
     async PostRefusalCDEK(uuid: string)  {
@@ -283,6 +283,15 @@ class ApiClient {
             name
         })
         return response.data;
+    }
+
+    async GetOrderDataById(id: string) {
+        const response = await this.cdekClient.get(`${CDKEK_PATH_LOCAL}/GetOrderDataById`, {
+            params: {
+                id
+            }
+        })
+        return response
     }
 
     // async GetRegions() {

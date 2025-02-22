@@ -11,24 +11,22 @@ namespace ParkMobileServer.CDEKHttp
 
     public class CdekHttp
     {
-        //TODO: не забудь поменять!
-        //PROD
-        //const string CDEK_API = "https://api.cdek.ru/v2";
 
-        //TEST
-        const string CDEK_API = "https://api.edu.cdek.ru/v2";
 
-        private string _client_id;
-        private string _client_secret;
+        private readonly string _client_id;
+        private readonly string _client_secret;
+        private readonly string CDEK_API;
 
         private HttpClient _httpClient;
         public CdekHttp(
             string client_id,
-            string client_secret
+            string client_secret,
+            string CDEK_API_FROM_GLOBAL
         )
         {
             _client_id = client_id;
             _client_secret = client_secret;
+            CDEK_API = CDEK_API_FROM_GLOBAL;
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         }
@@ -139,6 +137,17 @@ namespace ParkMobileServer.CDEKHttp
                 return false;
             }
             return true;
+        }
+
+        public async Task<string> GetInfoByUuid(string uuid)
+        {
+            var response = await _httpClient.GetAsync($"{CDEK_API}/orders/{uuid}");
+            response.EnsureSuccessStatusCode();
+            var cdekJson = await response.Content.ReadAsStringAsync();
+
+            //var result = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(cdekJson);
+
+            return cdekJson;
         }
 
         public async Task<bool> RefuseOrderAsync(string uuid)

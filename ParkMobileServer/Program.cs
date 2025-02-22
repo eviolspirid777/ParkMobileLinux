@@ -9,6 +9,7 @@ using ParkMobileServer.Functions;
 using ParkMobileServer.CDEKHttp;
 using ParkMobileServer.SignalR.Orders;
 using ParkMobileServer.Services;
+using ParkMobileServer.HTTP;
 
 /*
  * Команды для развертывания докера на серваке
@@ -52,10 +53,18 @@ namespace ParkMobileServer
 				//TEST
 				const string client_id = "wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP";
 				const string client_secret = "RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5";
+                const string CDEK_API = "https://api.edu.cdek.ru/v2";
                 //PRODUCTION
-				//const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
-				//const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
-                return new CdekHttp(client_id, client_secret);
+                //const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
+                //const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
+                //const string CDEK_API = "https://api.cdek.ru/v2";
+
+                return new CdekHttp(client_id, client_secret, CDEK_API);
+			});
+			builder.Services.AddSingleton(provider =>
+			{
+				const string api_key = "EDC0958C-8540-EB66-D540-0339A6EFFD06";
+                return new SMSHttp(api_key);
 			});
 			
 			builder.WebHost.UseUrls("http://*:3001");

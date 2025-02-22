@@ -35,6 +35,12 @@ export const Orders = () => {
       key: "address",
     },
     {
+      title: "Трек-номер",
+      dataIndex: "trackNumber",
+      key: "trackNumber",
+      render: (value,record) => record.trackNumber ? <span>{record.trackNumber}</span> : null,
+    },
+    {
       title: "Код ПВЗ",
       dataIndex: "pvzCode",
       key: "pvzCode",
@@ -107,10 +113,7 @@ export const Orders = () => {
     GetOrders()
   }, [ordersCount, selectedItemId])
 
-  const handleSubmitSuccess = async (id: number | null) => {
-    if(id) {
-      await apiClient.ChangeOrderStatus({ id: id, state: OrderState.Approved })
-    }
+  const handleSubmitSuccess = () => {
     setSelectedItemId(undefined)
     setOpen(prev => !prev)
   }

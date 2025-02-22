@@ -2,7 +2,7 @@
 import { Button, Form, InputNumber, Modal } from "antd";
 import styles from "./ApproveModal.module.scss";
 import { FC, useEffect, useState } from "react";
-import { Order } from "@/Types/Order";
+import { Order, OrderState } from "@/Types/Order";
 import { apiClient } from "@/api/ApiClient";
 import { CardItemType } from "@/Types/CardType";
 import { deliveryTypes, ItemType, SdekPostTypeBase, Tariffs_SDEK } from "@/Types/CDEK";
@@ -10,7 +10,7 @@ import { deliveryTypes, ItemType, SdekPostTypeBase, Tariffs_SDEK } from "@/Types
 type ApproveModalProps = {
   id: number | undefined,
   open: boolean,
-  setOpen: (id: number | null) => void,
+  setOpen: () => void,
 }
 
 type FormFinishValuesType = {
@@ -51,59 +51,70 @@ export const ApproveModal: FC<ApproveModalProps> = ({
   }, [id])
 
   const handleSubmitForm = async (values: FormFinishValuesType) => {
-    const testObj: SdekPostTypeBase = {
-      tariff_code: Tariffs_SDEK.StorageToStorage,
-      type: deliveryTypes.InternetShop,
-      comment: order?.client.comment,
-      number: `${Math.round(Math.random() * 1000)}`,
-      shipment_point: "KSD11",
-      delivery_point: order?.pvzCode ?? "",
-      seller: {
-        name: "Безганс Эмиль Владимирович",
-        inn: "090108428776",
-        ownership_form: "16",
-        phone: "89337772777",
-        address: "г. Краснодар, ул.Советская, 36"
-      },
-      recipient: {
-        name: order?.client.clientName ?? "",
-        contragent_type: "INDIVIDUAL",
-        email: order?.client.email ?? "",
-        phones: [{
-          number: order?.client.telephone ?? ""
-        }]
-      },
-      packages: [{
-        number: `${Math.round(Math.random() * 1000)}-KSD`,
+    try {
+      const testObj: SdekPostTypeBase = {
+        tariff_code: Tariffs_SDEK.StorageToStorage,
+        type: deliveryTypes.InternetShop,
         comment: order?.client.comment,
-        weight: values.itemInfo.items.reduce((acc, value) => {
-          return acc + value.weight
-        }, 0),
-        length: values.itemInfo.length,
-        width: values.itemInfo.width,
-        height: values.itemInfo.height,
-        items: items.map((el, index) => ({
-          name: el.name,
-          ware_key: el.article,
-          amount: order?.items?.[index].count,
-          cost: 0,
-          payment: {
-            value: 0
-          },
-          weight: values.itemInfo.items[index].weight,
-        } as ItemType)),
-      }]
+        number: `${Math.round(Math.random() * 1000)}`,
+        shipment_point: "KSD11",
+        delivery_point: order?.pvzCode ?? "",
+        seller: {
+          name: "Безганс Эмиль Владимирович",
+          inn: "090108428776",
+          ownership_form: "16",
+          phone: "89337772777",
+          address: "г. Краснодар, ул.Советская, 36"
+        },
+        recipient: {
+          name: order?.client.clientName ?? "",
+          contragent_type: "INDIVIDUAL",
+          email: order?.client.email ?? "",
+          phones: [{
+            number: order?.client.telephone ?? ""
+          }]
+        },
+        packages: [{
+          number: `${Math.round(Math.random() * 1000)}-KSD`,
+          comment: order?.client.comment,
+          weight: values.itemInfo.items.reduce((acc, value) => {
+            return acc + value.weight
+          }, 0),
+          length: values.itemInfo.length,
+          width: values.itemInfo.width,
+          height: values.itemInfo.height,
+          items: items.map((el, index) => ({
+            name: el.name,
+            ware_key: el.article,
+            amount: order?.items?.[index].count,
+            cost: 0,
+            payment: {
+              value: 0
+            },
+            weight: values.itemInfo.items[index].weight,
+          } as ItemType)),
+        }]
+      }
+      await apiClient.AutorizeCDEK();
+      const {data} = await apiClient.PostCDEKForm(testObj);
+      if(id && data.related_entities.length > 0) {
+        await apiClient.ChangeOrderStatus({
+          id: id,
+          state: OrderState.Approved,
+          trackNumber: data.related_entities[0].cdek_number
+        })
+      }
+      setOpen();
+    } catch(ex) {
+      console.error(ex)
     }
-    await apiClient.AutorizeCDEK();
-    await apiClient.PostCDEKForm(testObj)
-    setOpen(id ?? null);
   }
 
   return (
     <Modal
       open={open}
-      onCancel={setOpen.bind(this, null)}
-      onClose={setOpen.bind(this, null)}
+      onCancel={setOpen}
+      onClose={setOpen}
       title="Формирование заявки СДЕК"
       footer={null}
       centered
@@ -168,7 +179,7 @@ export const ApproveModal: FC<ApproveModalProps> = ({
             Сформировать заявку
           </Button>
           <Button
-            onClick={setOpen.bind(this, null)}
+            onClick={setOpen}
           >
             Отменить
           </Button>

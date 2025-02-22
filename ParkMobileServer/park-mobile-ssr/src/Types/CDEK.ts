@@ -199,6 +199,30 @@ export type ItemType = {
   feacn_code?: string,
 }
 
+export type SDEKPostResponse = {
+  entity: {
+    uuid: string
+  },
+  requests: {
+    request_uuid?: string,
+    type: "CREATE" | "UPDATE" | "DELETE" | "AUTH" | "GET" | "CREATE_CLIENT_RETURN",
+    date_time: string,
+    state: string,
+    errors?: unknown[],
+    warnings?: unknown[]
+  }[],
+  related_entities: {
+    uuid: string,
+    type: "return_order" | "direct_order" | "client_return_order" | "client_direct_order" | "waybill" | "barcode" | "reverse_order" | "delivery",
+    url?: string,
+    create_time?: string,
+    cdek_number?: string,
+    date?: string,
+    time_from?: string,
+    time_to?: string,
+  }[]
+}
+
 export type SdekPostTypeBase = {
   type?: deliveryTypes,
   number?: string,

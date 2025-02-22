@@ -60,6 +60,13 @@ namespace ParkMobileServer.Controllers
             }
         }
 
+        [HttpGet("GetOrderDataById")]
+        public async Task<IActionResult> GetOrderDataById([FromQuery] string id)
+        {
+            var response = await _cdekHttp.GetInfoByUuid(id);
+            return Ok(response);
+        }
+
         [HttpPost("Refusal")]
         public async Task<IActionResult> Refusal([FromQuery] string uuid)
         {

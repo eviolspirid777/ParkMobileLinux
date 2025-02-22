@@ -25,6 +25,7 @@ export type Order = {
   address: string,
   pvzCode: string,
   payment: OrderPayment,
+  trackNumber: string | null,
   state: OrderState | null,
   client: OrderClient, 
   items?: OrderItem[],
@@ -33,6 +34,7 @@ export type Order = {
 export type OrderStatusChangeRequest = {
   id: number,
   state: OrderState,
+  trackNumber?: string,
 }
 
 export type OrderClient = {
