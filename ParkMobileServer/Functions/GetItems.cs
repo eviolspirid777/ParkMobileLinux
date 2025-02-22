@@ -72,6 +72,14 @@ namespace ParkMobileServer.Functions
 
         public async Task<object> GetFilteredItemsAsync(SearchCategoryItemRequest searchCategoryRequest)
         {
+            string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{searchCategoryRequest.Filters?.Select(filter => $"{filter}_")}";
+
+            var cachedData = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cachedData))
+            {
+                return JsonConvert.DeserializeObject(cachedData);
+            }
+
             var query = _postgreSQLDbContext
                             .ItemEntities
                             .Where(item => item.isInvisible == false)
@@ -144,6 +152,13 @@ namespace ParkMobileServer.Functions
             {
                 throw new Exception("Не найдено товаров");
             }
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            };
+
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(items), cacheOptions);
 
             return new
             {
@@ -270,6 +285,14 @@ namespace ParkMobileServer.Functions
 
         public async Task<object> GetFilteredItemsAsync(GetItemDTO request)
         {
+            string cacheKey = $"filtered_items_{request.skip}_{request.take}_{request.filters?.Select(filter => $"{filter}_")}";
+
+            var cachedData = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cachedData))
+            {
+                return JsonConvert.DeserializeObject(cachedData);
+            }
+
             int? categoryId = null;
             int? brandId = null;
 
@@ -370,6 +393,13 @@ namespace ParkMobileServer.Functions
                                 .Skip(request.skip)
                                 .Take(request.take)
                                 .ToListAsync();
+
+            var cacheOptions = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            };
+
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(items), cacheOptions);
 
             return new
             {
