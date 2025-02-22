@@ -74,11 +74,11 @@ namespace ParkMobileServer.Functions
         {
             string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{searchCategoryRequest.Filters?.Select(filter => $"{filter}_")}";
 
-            var cachedData = await _cache.GetStringAsync(cacheKey);
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                return JsonConvert.DeserializeObject<ItemFilteredDTO>(cachedData);
-            }
+            //var cachedData = await _cache.GetStringAsync(cacheKey);
+            //if (!string.IsNullOrEmpty(cachedData))
+            //{
+            //    return JsonConvert.DeserializeObject<ItemFilteredDTO>(cachedData);
+            //}
 
             var query = _postgreSQLDbContext
                             .ItemEntities
@@ -278,11 +278,11 @@ namespace ParkMobileServer.Functions
         {
             string cacheKey = $"filtered_items_{request.skip}_{request.take}_{request.filters?.Select(filter => $"{filter}_")}";
 
-            var cachedData = await _cache.GetStringAsync(cacheKey);
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                return JsonConvert.DeserializeObject<ItemFilteredDTOFull>(cachedData);
-            }
+            //var cachedData = await _cache.GetStringAsync(cacheKey);
+            //if (!string.IsNullOrEmpty(cachedData))
+            //{
+            //    return JsonConvert.DeserializeObject<ItemFilteredDTOFull>(cachedData);
+            //}
 
             int? categoryId = null;
             int? brandId = null;
