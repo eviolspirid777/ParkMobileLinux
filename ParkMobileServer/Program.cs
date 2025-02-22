@@ -33,7 +33,7 @@ namespace ParkMobileServer
 
 			builder.Services.AddDbContext<PostgreSQLDbContext>(options =>
 			{
-				options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreWorkConnection"));
+				options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 			});
             builder.Services.AddStackExchangeRedisCache(options =>
             {
@@ -51,15 +51,15 @@ namespace ParkMobileServer
 			{
 				//TODO: не забудь поменять!!
 				//TEST
-				const string client_id = "wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP";
-				const string client_secret = "RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5";
-                const string CDEK_API = "https://api.edu.cdek.ru/v2";
-                //PRODUCTION
-                //const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
-                //const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
-                //const string CDEK_API = "https://api.cdek.ru/v2";
+				//const string client_id = "wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP";
+				//const string client_secret = "RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5";
+    //            const string CDEK_API = "https://api.edu.cdek.ru/v2";
+				//PRODUCTION
+				const string client_id = "P9uVcIXC6Q5sLSQJj0tCjt4joMIl3hjI";
+				const string client_secret = "gCfbHZSUPizoOevkwSJNMIi0bO17iwav";
+				const string CDEK_API = "https://api.cdek.ru/v2";
 
-                return new CdekHttp(client_id, client_secret, CDEK_API);
+				return new CdekHttp(client_id, client_secret, CDEK_API);
 			});
 			builder.Services.AddSingleton(provider =>
 			{
@@ -110,11 +110,11 @@ namespace ParkMobileServer
 					//		.AllowAnyMethod()
 					//		.AllowCredentials();
 
-       //             policy.WithOrigins("https://parkmobile.store")
-							//.AllowAnyHeader()
-							//.AllowAnyMethod()
-							//.AllowCredentials();
-                });
+					policy.WithOrigins("https://parkmobile.store")
+					.AllowAnyHeader()
+					.AllowAnyMethod()
+					.AllowCredentials();
+				});
             });
 
             builder.Services.AddSignalR();
