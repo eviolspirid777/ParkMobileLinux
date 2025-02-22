@@ -145,8 +145,6 @@ namespace ParkMobileServer.CDEKHttp
             response.EnsureSuccessStatusCode();
             var cdekJson = await response.Content.ReadAsStringAsync();
 
-            //var result = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(cdekJson);
-
             return cdekJson;
         }
 
