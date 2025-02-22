@@ -228,7 +228,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       values = { ...values, items: [...itemsToProceed] };
 
       await apiClient.OrderData(values);
-      if(deliveryPoint?.code) {
+      if(deliveryPoint?.code && values.deliveryType === "sdek-delivery") {
         await apiClient.PostOrder({
           trackNumber: null,
           address: "",
