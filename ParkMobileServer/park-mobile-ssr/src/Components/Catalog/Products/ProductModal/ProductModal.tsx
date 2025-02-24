@@ -24,16 +24,6 @@ type ProductModalProps = {
   handleAddToBucket: () => void;
 };
 
-const params = new URLSearchParams({
-  config: "fc431351-6149-4431-9823-10e6998d8974",
-  tradeID: "230107099000001",
-  successURL: "https://parkmobile.store/",
-  failURL: "https://parkmobile.store/",
-  partnersURL: "https://parkmobile.store/",
-  creditType: "2",
-  firstPayment: "1"
-});
-
 export const ProductModal: FC<ProductModalProps> = ({
   CardData,
   closeModal,
@@ -43,29 +33,48 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
-  const goods = [
-    {
-      name: CardData?.name,
-      price: CardData?.discountPrice ?? CardData?.price,
-      quantity: 1,
-    }
-  ]
+  const [isRendered, setIsRendered] = useState(false);
+  useEffect(() => {
+    setIsRendered(true);
+  }, [])
 
-  goods.forEach((item, index) => {
-    Object.entries(item).forEach(([key, value]) => {
-      if(value && !params.has(`goods[${index}][${key}]`))
-      params.append(`goods[${index}][${key}]`, value as string);
-    });
-  });
+  const [params, setParams] = useState(new URLSearchParams({
+    config: "fc431351-6149-4431-9823-10e6998d8974",
+    tradeID: "230107099000001",
+    partnersURL: "https://parkmobile.store/",
+  }));
+
+  useEffect(() => {
+    if(CardData && CardData.name) {
+      const goods = [
+        {
+          quantity: 1,
+          price: (CardData?.discountPrice ?? CardData?.price ?? -1) * 1.06,
+          name: CardData?.name,
+        }
+      ];
+
+      const newParams = new URLSearchParams(params.toString());
+    
+      goods.forEach((item, index) => {
+        Object.entries(item).forEach(([key, value]) => {
+          if(newParams.has(`goods[${index}][${key}]`)) {
+            newParams.delete(`goods[${index}][${key}]`)
+          }
+          if(value && params.get(`goods[${index}][${key}]`) !== value) {
+            newParams.append(`goods[${index}][${key}]`, value as string);
+          }
+        });
+      });
+
+      setParams(newParams);
+    }
+  }, [CardData]);
   
   const {
     postOrderItemAsync,
   } = usePostOrderItem();
   
-  const [isRendered, setIsRendered] = useState(false);
-  useEffect(() => {
-    setIsRendered(true);
-  }, [])
   
   const computedCarDataNewPriceWithPercent = () => {
     if(CardData?.price) {
