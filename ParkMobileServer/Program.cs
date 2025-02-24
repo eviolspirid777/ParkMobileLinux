@@ -100,10 +100,10 @@ namespace ParkMobileServer
             {
                 options.AddPolicy("AllowSpecificOrigin", policy =>
                 {
-					policy.WithOrigins("http://localhost:3000") // Разрешаем конкретный домен клиента
-						  .AllowAnyHeader()
-						  .AllowAnyMethod()
-						  .AllowCredentials(); // Разрешаем передачу cookies и авторизационных данных
+					// policy.WithOrigins("http://localhost:3000") // Разрешаем конкретный домен клиента
+					// 	  .AllowAnyHeader()
+					// 	  .AllowAnyMethod()
+					// 	  .AllowCredentials(); // Разрешаем передачу cookies и авторизационных данных
 
 					//policy
 					//		.AllowAnyHeader()
