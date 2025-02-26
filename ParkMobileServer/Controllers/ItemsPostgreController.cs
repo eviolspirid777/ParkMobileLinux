@@ -295,7 +295,7 @@ namespace ParkMobileServer.Controllers
 			try
 			{
 				var response = await _itemService.DeleteItemAsync(id);
-				return Ok(response);
+                return Ok(response);
 			}
 			catch (Exception ex)
 			{
@@ -363,7 +363,10 @@ namespace ParkMobileServer.Controllers
 
 			await _postgreSQLDbContext.SaveChangesAsync();
 
-			return Ok();
+            const string cacheKey = "popularItems";
+            await _cache.RemoveAsync(cacheKey);
+
+            return Ok();
 		}
 
 		[HttpGet("GetPopularItems")]

@@ -62,6 +62,8 @@ namespace ParkMobileServer.Functions
 
             _postgreSQLDbContext.ItemEntities.Add(item);
             await _postgreSQLDbContext.SaveChangesAsync();
+            const string cacheKey = "popularItems";
+            await _cache.RemoveAsync(cacheKey);
             return true;
         }
 
@@ -97,7 +99,8 @@ namespace ParkMobileServer.Functions
                     .Remove(item);
 
             await _postgreSQLDbContext.SaveChangesAsync();
-
+            const string cacheKey = "popularItems";
+            await _cache.RemoveAsync(cacheKey);
             return true;
         }
     }
