@@ -33,18 +33,48 @@ export const ProductModal: FC<ProductModalProps> = ({
   const [api, contextHolder] = notification.useNotification();
   const [openOrderForm, setOpenOrderForm] = useState(false);
 
-  const serializedGoods = JSON.stringify([{ name: String(CardData?.name), price: CardData?.discountPrice?.toString() ?? CardData?.price.toString(), quantity: String(1) }])
+  const [isRendered, setIsRendered] = useState(false);
+  useEffect(() => {
+    setIsRendered(true);
+  }, [])
 
-  // const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
+  const [params, setParams] = useState(new URLSearchParams({
+    config: "fc431351-6149-4431-9823-10e6998d8974",
+    tradeID: "230107099000001",
+    partnersURL: "https://parkmobile.store/",
+  }));
+
+  useEffect(() => {
+    if(CardData && CardData.name) {
+      const goods = [
+        {
+          quantity: 1,
+          price: (CardData?.discountPrice ?? CardData?.price ?? -1) * 1.06,
+          name: CardData?.name,
+        }
+      ];
+
+      const newParams = new URLSearchParams(params.toString());
+    
+      goods.forEach((item, index) => {
+        Object.entries(item).forEach(([key, value]) => {
+          if(newParams.has(`goods[${index}][${key}]`)) {
+            newParams.delete(`goods[${index}][${key}]`)
+          }
+          if(value && params.get(`goods[${index}][${key}]`) !== value) {
+            newParams.append(`goods[${index}][${key}]`, value as string);
+          }
+        });
+      });
+
+      setParams(newParams);
+    }
+  }, [CardData]);
   
   const {
     postOrderItemAsync,
   } = usePostOrderItem();
   
-  const [isRendered, setIsRendered] = useState(false);
-  useEffect(() => {
-    setIsRendered(true);
-  }, [])
   
   const computedCarDataNewPriceWithPercent = () => {
     if(CardData?.price) {
@@ -242,7 +272,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
                 {CardData.stock && CardData.stock > 0 && (
                   <a
                     className={styles["item-container-data-credit-button"]}
-                    href={`https://ecom.otpbank.ru/smart-form/?config=fc431351-6149-4431-9823-10e6998d8974&tradeId=230107099000001&successURL=https://parkmobile.store/&failURL=https://parkmobile.store/&partnersURL=https://parkmobile.store/&goods=${serializedGoods}`}
+                    href={`https://ecom.otpbank.ru/smart-form?${params.toString()}`}
                     target="_blank"
                   >
                     Купить в кредит
