@@ -75,7 +75,6 @@ export const ProductModal: FC<ProductModalProps> = ({
     postOrderItemAsync,
   } = usePostOrderItem();
   
-  
   const computedCarDataNewPriceWithPercent = () => {
     if(CardData?.price) {
       const number = CardData?.discountPrice ? Math.ceil(CardData.discountPrice * 1.06 / 100) * 100 : Math.ceil(CardData?.price * 1.06 / 100) * 100;

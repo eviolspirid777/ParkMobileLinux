@@ -2,16 +2,16 @@
 import gsap from "gsap";
 import styles from "./Tiles.module.scss";
 import { useEffect, useRef } from "react";
-import { useAtom } from "jotai";
-import { categoryAtom } from "@/Store/FiltersStore";
 import Image from "next/image"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type TileItem = {
   title: string;
   description: string;
   img: string;
   key: string;
+  route: string;
   category: string;
 };
 
@@ -22,6 +22,7 @@ export const Tiles = () => {
       description: "Умнее. Ярче. Могущественнее",
       img: "/images/TilesImages/AppleWatchTile/appleWatchTileReviewed.webp",
       category: "Watch",
+      route: "/categories/Apple/watches",
       key: "1",
     },
     {
@@ -29,6 +30,7 @@ export const Tiles = () => {
       description: "Сногсшибательный. Вскружит голову.",
       img: "/images/TilesImages/MacBookTile/macBookReviewed.webp",
       category: "Mac",
+      route: "/categories/Apple/MacBook",
       key: "2",
     },
     {
@@ -36,6 +38,7 @@ export const Tiles = () => {
       description: "Твой следующий компьютер - не компьютер",
       img: "/images/TilesImages/IpadTile/ipadTileReviewed.webp",
       category: "iPad",
+      route: "/categories/Apple/iPad",
       key: "3",
     },
     {
@@ -43,6 +46,7 @@ export const Tiles = () => {
       description: "Никаких проводов. Только магия звука.",
       img: "/images/TilesImages/AirpodsTile/PodsTileReviewed.webp",
       category: "Airpods",
+      route: "/categories/Apple/AirPods",
       key: "4",
     },
   ];
@@ -50,12 +54,11 @@ export const Tiles = () => {
   const h2Refs = useRef<HTMLHeadingElement[]>([]);
   const spanRefs = useRef<HTMLSpanElement[]>([]);
   const buttonRefs = useRef<HTMLDivElement[]>([]);
-
-  const [, setCategories] = useAtom(categoryAtom);
+  const naviagate = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY >= 1400) {
+      if (window.scrollY >= 945) {
         tilesItems.forEach((_, index) => {
           const h2Element = h2Refs.current[index];
           const spanElement = spanRefs.current[index];
@@ -122,8 +125,8 @@ export const Tiles = () => {
     };
   }, []);
 
-  const handleCategory = (category: string) => {
-    setCategories(category);
+  const handleCategory = (route: string) => {
+    naviagate.push(route)
   };
 
   return (
@@ -157,7 +160,7 @@ export const Tiles = () => {
             <Link href="/#catalog">
               <button
                 data-button="подробнее"
-                onClick={handleCategory.bind(null, el.category)}
+                onClick={handleCategory.bind(null, el.route)}
               >
                 Подробнее
               </button>
@@ -165,7 +168,7 @@ export const Tiles = () => {
             <Link href="/#catalog">
               <button
                 data-button="купить"
-                onClick={handleCategory.bind(null, el.category)}
+                onClick={handleCategory.bind(null, el.route)}
               >
                 Купить
               </button>

@@ -1,3 +1,5 @@
+import { BaseShopBucketFormData } from "../BaseShopBucketFormData";
+
 export const SelfDeliveryComponent = () => {
-  return null;
+  return <BaseShopBucketFormData />;
 };

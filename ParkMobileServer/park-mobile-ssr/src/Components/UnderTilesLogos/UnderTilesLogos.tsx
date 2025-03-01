@@ -2,7 +2,7 @@
 import React from "react";
 import styles from "./UnderTilesLogos.module.scss";
 import { useRouter } from "next/navigation";
-import Image from "next/image"
+import Image from "next/image";
 
 export const UnderTilesLogos = () => {
   const navigate = useRouter();
@@ -21,8 +21,16 @@ export const UnderTilesLogos = () => {
       link: "Samsung",
     },
     {
+      image: "/images/ItemsLogos/xiaomi.webp",
+      link: "Xiaomi",
+    },
+    {
       image: "/images/ItemsLogos/sony.webp",
       link: "Gaming",
+    },
+    {
+      image: "/images/ItemsLogos/yandex.webp",
+      link: "Headphones/yandex",
     },
   ];
 

@@ -14,6 +14,8 @@ import { GetItemType } from "@/Types/GetItemType";
 import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
 import { SortType } from "@/Types/SortType";
 
+const itemsOnPage = 8;
+
 const convertFilter = (item: string) => {
   return decodeURIComponent(item.replaceAll("%20", " ").replaceAll("%22", "\""))
 }
@@ -88,7 +90,7 @@ const ItemPage = () => {
   );
 
   const [skip, setSkip] = useState(0);
-  const [take] = useState(16);
+  const [take] = useState(itemsOnPage);
   const [sort, setSort] = useState<SortType>()
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -183,6 +185,7 @@ const ItemPage = () => {
           itemsCount={itemsFromStore?.count}
           currentPage={currentPage}
           onPageChange={handleOnPageChange}
+          itemsOnPage={itemsOnPage}
         />
       }
     </div>

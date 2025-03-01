@@ -1,13 +1,11 @@
 "use client";
 import {
   Drawer,
-  Input,
   Radio,
   Button,
   Space,
   ConfigProvider,
   Form,
-  Select,
   RadioChangeEvent,
 } from "antd";
 import styles from "./ShopBucket.module.scss";
@@ -21,9 +19,9 @@ import { apiClient } from "@/api/ApiClient";
 import { useForm } from "antd/es/form/Form";
 import Image from "next/image"
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
-import { AddressesAtom } from "@/Store/AddressesStore";
 import { deliveryPointAtom } from "@/Store/DeliveryPoint";
 import { OrderPayment } from "@/Types/Order";
+import { useOtpBank } from "@/Shared/Hooks/useOtpBank";
 
 type ShopBucketType = {
   handleShopBag: () => void;
@@ -46,15 +44,6 @@ type FormValuesType = {
   }[]
 }
 
-type YandexSuggestType = {
-  title: {
-    text: string
-  },
-  subtitle: {
-    text: string
-  }
-}
-
 const translationKeyDictionary = new Map([
   ["article", "Артикул"],
   ["weight", "Вес"]
@@ -62,18 +51,17 @@ const translationKeyDictionary = new Map([
 
 export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [ deliveryPoint ] = useAtom(deliveryPointAtom);
-  const [, setAddresses] = useAtom(AddressesAtom);
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
 
   const [childDrawer, setChildDrawer] = useState(false);
   const [paymentType, setPaymentType] = useState("cash");
   const [deliveryType, setDeliveryType] = useState<"sdek-delivery" | "krasnodar-self-delivery" | "krasnodar-delivery">("krasnodar-self-delivery");
-  const [cityOptions, setCityOptions] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [cities, setCities] = useState<{ city: string, street: string }[]>();
 
   const [form] = useForm();
+
+  const {
+    redirectToOtp
+  } = useOtpBank({items: shopBucket})
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(() => {});
@@ -114,52 +102,6 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     return formattedNumber;
   };
 
-  const fetchSuggestions = async (searchTerm: string) => {
-    if (!searchTerm) {
-      setCityOptions([]); // Очистка при пустом вводе
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://suggest-maps.yandex.ru/v1/suggest?apikey=8ab2e2a3-2ca6-491b-8ef3-5687f909f24c&text=${searchTerm}&lang=ru&results=10`
-      );
-      const data = await response.json();
-
-      if (data.results) {
-        const arr = data.results.map(
-          (el: YandexSuggestType, index: number) => ({
-            label: el.title.text,
-            value: `${index}|||${el.title.text}`,
-          })
-        );
-        const cities = data.results.map(
-          (el: YandexSuggestType) => ({
-            city: el.subtitle.text,
-            street: el.title.text
-          })
-        )
-        setCities(cities);
-        setCityOptions(arr);
-      }
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-    }
-  };
-
-  const debounce = <T extends unknown[]>(
-    func: (...args: T) => void,
-    delay: number
-  ) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return (...args: T) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  };
-
   const handleItemCount = (el: DataType, state: "minus" | "plus") => {
     setShopBucket((previousData) =>
       previousData.map((item) => {
@@ -183,28 +125,6 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     );
   };
 
-  const handleChange = (value: string) => {
-    debouncedFetchSuggestions(value);
-  };
-
-  const handleAddresses = async (value: string) => {
-    debounceAddresses(value)
-  }
-
-  const debounceAddresses = 
-  debounce(async (searchTerm: string) => {
-    await apiClient.AutorizeCDEK()
-    const locations = await apiClient.GetLocationsCDEK(searchTerm);
-    const foundCode = locations.at(0)?.code
-    const adresses = await apiClient.GetAdressesCDEK({ CityCode: foundCode })
-    setAddresses(adresses)
-  }, 1000);
-
-  const debouncedFetchSuggestions = 
-    debounce(async (searchTerm: string) => {
-      await fetchSuggestions(searchTerm);
-    }, 1000);
-
   const handlePayment = (event: RadioChangeEvent) => {
     if (event.target.value === "card") {
       setPaymentType("card");
@@ -212,11 +132,6 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       setPaymentType("cash");
     }
   };
-
-  const handleSelect = (_: unknown, newValue: {label: string, value: string}) => {
-    const city = cities?.find(item => item.street === newValue.label)?.city
-    handleAddresses(city ?? newValue.label)
-  }
 
   const handleFinish = async (values: FormValuesType) => {
     try {
@@ -381,76 +296,9 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                 form={form}
                 onFinish={handleFinish}
               >
-                <div className={styles["submit-shopping-block-data-user-info"]}>
-                  <strong>Контактная информация</strong>
-                  <div
-                    className={
-                      styles["submit-shopping-block-data-user-info-telname"]
-                    }
-                  >
-                    <Form.Item
-                      name="personName"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Пожалуйста, введите имя!",
-                        },
-                      ]}
-                    >
-                      <Input type="text" placeholder="Ваше имя*" />
-                    </Form.Item>
-                    <Form.Item
-                      name="telephone"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Пожалуйста, введите телефон!",
-                        },
-                      ]}
-                    >
-                      <Input type="tel" placeholder="+7 (999) 999-99-99" />
-                    </Form.Item>
-                  </div>
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Заполните электронную почту!",
-                      },
-                    ]}
-                  >
-                    <Input type="email" placeholder="Ваша электронная почта" />
-                  </Form.Item>
-                </div>
                 <div className={styles["submit-shopping-block-data-delivery"]}>
-                  <strong>Доставка</strong>
+                  <strong>Способ получения</strong>
                   <div>
-                    { deliveryType !== "krasnodar-self-delivery" &&
-                      <div>
-                        <Form.Item
-                          name="city"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Пожалуйста, выберите город!",
-                            },
-                          ]}
-                        >
-                          <Select
-                            options={cityOptions}
-                            showSearch
-                            onSearch={handleChange}
-                            onSelect={handleSelect}
-                            filterOption={() => true}
-                            placeholder="Укажите адрес доставки"
-                            style={{ height: "38px" }}
-                          />
-                        </Form.Item>
-                        {/* TODO: Здесь будет адрес вручения */}
-                        <label></label>
-                      </div>
-                    }
                     <Form.Item
                       name="deliveryType"
                       initialValue={"krasnodar-self-delivery"}
@@ -489,7 +337,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                       </Radio.Group>
                     </Form.Item>
                     {deliveryOptions.get(deliveryType)
-                      ? deliveryOptions.get(deliveryType)!()
+                      ? deliveryOptions.get(deliveryType)?.()
                       : null}
                   </div>
                   <div
@@ -535,10 +383,22 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
                               </strong>
                             </div>
                           </Radio>
+                          <Radio
+                            value="credit"
+                            onChange={redirectToOtp}
+                          >
+                            <div className={styles["delivery-item-block"]}>
+                              <strong>
+                                В кредит
+                              </strong>
+                            </div>
+                          </Radio>
                         </Space>
                       </Radio.Group>
                     </Form.Item>
                   </div>
+                </div>
+                <div className={styles["submit-shopping-block-data-user-info"]}>
                 </div>
                 <Button
                   className={styles["submit-button"]}

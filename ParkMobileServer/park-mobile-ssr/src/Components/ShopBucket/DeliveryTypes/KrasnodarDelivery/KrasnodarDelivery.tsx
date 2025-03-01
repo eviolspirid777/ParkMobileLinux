@@ -1,13 +1,12 @@
 import { Form, Input } from "antd";
 
 import styles from "./KrasnodarDelivery.module.scss";
+import { BaseShopBucketFormData } from "../BaseShopBucketFormData";
 
 export const KrasnodarDelivery = () => {
   return (
     <>
-      <Form.Item name="reciver">
-        <Input placeholder="Введите ФИО получателя" />
-      </Form.Item>
+      <BaseShopBucketFormData />
       <Form.Item name="street">
         <Input placeholder="Улица" />
       </Form.Item>

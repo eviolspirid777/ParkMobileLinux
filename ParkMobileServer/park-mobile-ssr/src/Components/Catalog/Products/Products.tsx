@@ -18,6 +18,7 @@ type ProductsType = {
   itemsCount: number | undefined;
   currentPage: number;
   onPageChange: (skip: number, page: number) => void;
+  itemsOnPage: number;
 };
 
 type ReducerType = {
@@ -62,12 +63,13 @@ export const Products: FC<ProductsType> = ({
   itemsCount,
   currentPage,
   onPageChange,
+  itemsOnPage
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     pages: [],
     currentPage: 1,
     skip: 0,
-    take: 16,
+    take: itemsOnPage,
   });
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
   // const [, setIsItemOpened] = useAtom(isItemOpenedAtom)
@@ -89,8 +91,8 @@ export const Products: FC<ProductsType> = ({
   useEffect(() => {
     if (itemsCount !== undefined) {
       dispatch({
-        skip: (currentPage - 1) * 16,
-        take: 16,
+        skip: (currentPage - 1) * itemsOnPage,
+        take: itemsOnPage,
         currentPage,
         itemsLength: itemsCount,
       });
@@ -98,7 +100,7 @@ export const Products: FC<ProductsType> = ({
   }, [itemsCount, currentPage]);
 
   const handlePageClick = (page: number) => {
-    const newSkip = (page - 1) * 16;
+    const newSkip = (page - 1) * itemsOnPage;
     onPageChange(newSkip, page);
   };
 
@@ -176,7 +178,7 @@ export const Products: FC<ProductsType> = ({
               current={state.currentPage}
               total={itemsCount}
               showLessItems
-              pageSize={16}
+              pageSize={itemsOnPage}
               onChange={handlePageClick}
               showSizeChanger={false}
             />

@@ -72,13 +72,17 @@ namespace ParkMobileServer.Functions
 
         public async Task<object> GetFilteredItemsAsync(SearchCategoryItemRequest searchCategoryRequest)
         {
-            string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{searchCategoryRequest.Filters?.Select(filter => $"{filter}_")}";
+            var customFiltersStringified = searchCategoryRequest
+                            .Filters?
+                            .Select(filter => $"{filter}_")
+                            .Aggregate((current, next) => current + next);
+            string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{customFiltersStringified}";
 
-            //var cachedData = await _cache.GetStringAsync(cacheKey);
-            //if (!string.IsNullOrEmpty(cachedData))
-            //{
-            //    return JsonConvert.DeserializeObject<ItemFilteredDTO>(cachedData);
-            //}
+            var cachedData = await _cache.GetStringAsync(cacheKey);
+            if (!string.IsNullOrEmpty(cachedData))
+            {
+                return JsonConvert.DeserializeObject<ItemFilteredResponse>(cachedData);
+            }
 
             var query = _postgreSQLDbContext
                             .ItemEntities
@@ -144,18 +148,20 @@ namespace ParkMobileServer.Functions
                 throw new Exception("Не найдено товаров");
             }
 
+            object response = new
+            {
+                items,
+                count = itemsCount
+            };
+
             var cacheOptions = new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
             };
 
-            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(items), cacheOptions);
+            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(response), cacheOptions);
 
-            return new
-            {
-                items,
-                count = itemsCount
-            };
+            return response;
         }
 
         public async Task<object> GetSearchItemsByName(GetSearchItemRequest searchRequest)
@@ -273,132 +279,6 @@ namespace ParkMobileServer.Functions
                 items = newItems,
             };
         }
-
-        public async Task<object> GetFilteredItemsAsync(GetItemDTO request)
-        {
-            string cacheKey = $"filtered_items_{request.skip}_{request.take}_{request.filters?.Select(filter => $"{filter}_")}";
-
-            //var cachedData = await _cache.GetStringAsync(cacheKey);
-            //if (!string.IsNullOrEmpty(cachedData))
-            //{
-            //    return JsonConvert.DeserializeObject<ItemFilteredDTOFull>(cachedData);
-            //}
-
-            int? categoryId = null;
-            int? brandId = null;
-
-            var query = _postgreSQLDbContext
-                                    .ItemEntities
-                                    .Where(item => item.isInvisible == false)
-                                    .Select(item => new
-                                    {
-                                        item.Id,
-                                        item.Name,
-                                        item.DiscountPrice,
-                                        item.Price,
-                                        item.Image,
-                                        item.IsPopular,
-                                        item.IsNewItem,
-                                        item.BrandId,
-                                        item.CategoryId,
-                                        item.Stock
-                                    })
-                                    .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(request.category))
-            {
-                categoryId = (await _postgreSQLDbContext
-                                        .ItemCategories
-                                        .FirstOrDefaultAsync(c => c.Name == request.category))?
-                                        .Id;
-            }
-            if (!string.IsNullOrWhiteSpace(request.brand))
-            {
-                brandId = (await _postgreSQLDbContext
-                                    .ItemBrands
-                                    .FirstOrDefaultAsync(b => b.Name.ToLower() == request.brand.ToLower()))?
-                                    .Id;
-            }
-
-            if (categoryId.HasValue)
-            {
-                query = query.Where(item => item.CategoryId == categoryId.Value);
-            }
-
-            if (brandId.HasValue)
-            {
-                query = query.Where(item => item.BrandId == brandId.Value);
-            }
-
-            if (request.Sort != null)
-            {
-                switch (request.Sort.Field)
-                {
-                    case "name":
-                        {
-                            if (request.Sort.Type == "asc")
-                            {
-                                query = query.OrderBy(item => item.Name);
-                            }
-                            else
-                            {
-                                query = query.OrderByDescending(item => item.Name);
-                            }
-                            break;
-                        }
-                    case "price":
-                        {
-                            if (request.Sort.Type == "asc")
-                            {
-                                query = query.OrderBy(item => item.Price);
-                            }
-                            else
-                            {
-                                query = query.OrderByDescending(item => item.Price);
-                            }
-                            break;
-                        }
-                }
-            }
-            else
-            {
-                query = query
-                            .OrderByDescending(item => item.IsNewItem)
-                            .ThenByDescending(item => item.Name);
-            }
-
-            var count = await query.CountAsync();
-
-            var items = await query
-                                .Select(item => new
-                                {
-                                    item.Id,
-                                    item.Name,
-                                    item.DiscountPrice,
-                                    item.Price,
-                                    item.Image,
-                                    item.IsPopular,
-                                    item.IsNewItem,
-                                    item.Stock
-                                })
-                                .Skip(request.skip)
-                                .Take(request.take)
-                                .ToListAsync();
-
-            var cacheOptions = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            };
-
-            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(items), cacheOptions);
-
-            return new
-            {
-                count,
-                items
-            };
-        }
-
         public async Task<object> GetItemsForAdmin(int skip, int take, string name)
         {
             var query = _postgreSQLDbContext

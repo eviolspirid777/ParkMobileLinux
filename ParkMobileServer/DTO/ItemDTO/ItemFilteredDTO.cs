@@ -11,4 +11,10 @@
         public bool IsPopular { get; set; }
         public bool IsNewItem { get; set; }
     }
+
+    public class ItemFilteredResponse
+    {
+        public List<ItemFilteredDTO> Items { get; set; } = [];
+        public int Count { get; set; }
+    }
 }

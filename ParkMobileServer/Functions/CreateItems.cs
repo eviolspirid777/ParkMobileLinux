@@ -62,8 +62,7 @@ namespace ParkMobileServer.Functions
 
             _postgreSQLDbContext.ItemEntities.Add(item);
             await _postgreSQLDbContext.SaveChangesAsync();
-            const string cacheKey = "popularItems";
-            await _cache.RemoveAsync(cacheKey);
+            await ClearAllCache();
             return true;
         }
 
@@ -99,9 +98,23 @@ namespace ParkMobileServer.Functions
                     .Remove(item);
 
             await _postgreSQLDbContext.SaveChangesAsync();
-            const string cacheKey = "popularItems";
-            await _cache.RemoveAsync(cacheKey);
+            await ClearAllCache();
             return true;
+        }
+
+        //TODO: вынести в отдельный сервис
+        public async Task ClearAllCache()
+        {
+            await _cache.GetStringAsync("anyKey");
+
+            var redisConnection = (StackExchange.Redis.ConnectionMultiplexer)_cache.GetType()
+                .GetProperty("Connection", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                ?.GetValue(_cache);
+
+            if (redisConnection != null)
+            {
+                await redisConnection.GetServer(redisConnection.GetEndPoints().First()).FlushAllDatabasesAsync();
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ import { ContentType } from "@/Types/SliderContentType";
 import { useAtom } from "jotai";
 import { shopBucketAtom } from "@/Store/ShopBucket";
 import Image from "next/image"
+import Link from "next/link";
+import { Dropdown, MenuProps } from "antd";
 
 type HeaderProps = {
   mouseEnter: (
@@ -20,6 +22,37 @@ type HeaderProps = {
   handleMainMenuRoute: () => void;
   handleShopBag: () => void;
 };
+
+const items: MenuProps["items"] = [
+  {
+    key: "1",
+    label: 
+    <Link href="/help/delivery">
+      Доставка и оплата
+    </Link>,
+  },
+  {
+    key: "2",
+    label: 
+    <Link href="/help/gurantee">
+      Гарантии и возврат
+    </Link>,
+  },
+  {
+    key: "3",
+    label: 
+    <Link href="/help/trade-in">
+      Trade-in
+    </Link>,
+  },
+  {
+    key: "4",
+    label: 
+    <Link href="/help/credit">
+      Рассрочка и кредит
+    </Link>,
+  },
+]
 
 export const Header: FC<HeaderProps> = ({
   mouseEnter,
@@ -128,6 +161,18 @@ export const Header: FC<HeaderProps> = ({
             {el.navTitle}
           </a>
         ))}
+      </nav>
+      <nav
+        className={styles["nav-bar-moreover"]}
+      >
+        <Dropdown
+          menu={{
+            items
+          }}
+        >
+          <a>Помощь</a>
+        </Dropdown>
+        <Link href="/about/contacts">О компании</Link>
       </nav>
       <nav className={styles["nav-bucket-search"]}>
         <i

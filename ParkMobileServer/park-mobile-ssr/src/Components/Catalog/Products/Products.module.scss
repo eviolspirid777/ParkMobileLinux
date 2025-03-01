@@ -43,8 +43,15 @@
 
 @media (min-width:0px) and (max-width: 400px) {
   .product-cards-block {
-    grid-template-columns: 1fr;
-    gap: 20px 0px;
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .product {
+    align-items: center;
+    width: 100%;
   }
 }
 
@@ -52,5 +59,10 @@
   .product-cards-block {
     grid-template-columns: 1fr 1fr;
     gap: 40px 0px;
+  }
+
+  .product {
+    align-items: center;
+    width: 100%;
   }
 }

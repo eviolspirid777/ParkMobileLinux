@@ -17,6 +17,8 @@ type ProductObertkaProps = {
   category: string;
 };
 
+const itemsOnPage = 8;
+
 export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
   let filters: string[] = [];
   
@@ -26,7 +28,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
     filters = ItemsFilters.get(category as string) as string[]
   }
 
-  const [take] = useState(16);
+  const [take] = useState(itemsOnPage);
   const [sort, setSort] = useState<SortType>()
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -151,6 +153,7 @@ export const ProductObertka: FC<ProductObertkaProps> = ({ category }) => {
         itemsCount={items?.count}
         currentPage={currentPage}
         onPageChange={handleOnPageChange}
+        itemsOnPage={itemsOnPage}
       />
     </div>
   );

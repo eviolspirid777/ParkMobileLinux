@@ -36,10 +36,10 @@
         flex-flow: row wrap;
         align-items: center;
         justify-content: baseline;
-        width: 100vw;
+        width: 100%;
         gap: 10px;
         margin-top: 20px;
-        padding: 2em 2vw;
+        padding: 2em 0vw 2em 2vw;
         & span {
             display: inline-block;
             user-select: none;

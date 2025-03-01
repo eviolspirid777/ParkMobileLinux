@@ -1,5 +1,5 @@
 .header {
-  position: sticky;
+  position: sticky relative;
   top: 0px;
   transition: top .2s ease-in-out;
   left: 0px;
@@ -30,6 +30,22 @@
   align-self: center;
   justify-self: center;
   color: white;
+
+  &-moreover {
+    position: absolute;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 10px;
+    top: 18px;
+    left: 73%;
+    & a {
+      cursor: pointer;
+      user-select: none;
+      font-family: "SF-Pro-Display-Regular_light";
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.842);
+    }
+  }
 }
 
 .nav {

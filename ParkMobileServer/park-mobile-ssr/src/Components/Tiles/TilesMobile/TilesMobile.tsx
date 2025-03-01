@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
@@ -9,21 +9,13 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import styles from "./TilesMobile.module.scss";
-import { useAtom } from "jotai";
-import { categoryAtom } from "@/Store/FiltersStore";
-import { animateScroll as scroll } from "react-scroll";
 
 export const TilesMobile = () => {
   const [isClient, setIsClient] = useState(false);
-  const [, setCategories] = useAtom(categoryAtom);
+  const naviagate = useRouter();
 
-  const handleCategory = (category: string) => {
-    scroll.scrollTo(2552, {
-      duration: 50,
-      smooth: true,
-    });
-
-    setCategories(category);
+  const handleCategory = (route: string) => {
+    naviagate.push(route)
   };
 
   const tilesItems = [
@@ -33,11 +25,13 @@ export const TilesMobile = () => {
       text: "Умнее. Ярче. Могущественнее",
       color: "white",
       action: () => handleCategory("Watch"),
+      route: "/categories/Apple/watches",
     },
     {
       image: "images/TilesImages/MacBookTile/macBookReviewedMobile.jpg",
       header: "MacBook Pro",
       text: "Сногсшибательный. Вскружит голову.",
+      route: "/categories/Apple/MacBook",
       color: "black",
       action: () => handleCategory("Mac"),
     },
@@ -45,6 +39,7 @@ export const TilesMobile = () => {
       image: "images/TilesImages/AirpodsTile/PodsTileReviewedMobile.jpg",
       header: "AirPods",
       text: "Никаких проводов. Только магия звука.",
+      route: "/categories/Apple/AirPods",
       color: "white",
       action: () => handleCategory("Airpods"),
     },
@@ -53,6 +48,7 @@ export const TilesMobile = () => {
       header: "iPad",
       text: "Твой следующий компьютер - не компьютер.",
       color: "black",
+      route: "/categories/Apple/iPad",
       action: () => handleCategory("iPad"),
     },
   ];
@@ -88,10 +84,16 @@ export const TilesMobile = () => {
               <h2>{el.header}</h2>
               <span>{el.text}</span>
               <div className={styles["button-block"]}>
-                <button data-button="купить" onClick={el.action}>
+                <button
+                  data-button="купить"
+                  onClick={handleCategory.bind(null, el.route)}
+                >
                   Купить
                 </button>
-                <button data-button="подробнее" onClick={el.action}>
+                <button
+                  data-button="подробнее"
+                  onClick={handleCategory.bind(null, el.route)}
+                >
                   Подробнее
                 </button>
               </div>

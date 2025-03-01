@@ -363,8 +363,7 @@ namespace ParkMobileServer.Controllers
 
 			await _postgreSQLDbContext.SaveChangesAsync();
 
-            const string cacheKey = "popularItems";
-            await _cache.RemoveAsync(cacheKey);
+            await _itemService.ClearAllCache();
 
             return Ok();
 		}
@@ -373,22 +372,6 @@ namespace ParkMobileServer.Controllers
 		public async Task<IActionResult> GetPopularItems()
 		{
 			var response = await _getItemsService.GetPopularItemsAsync();
-
-            return Ok(response);
-		}
-
-        [HttpPost("GetItems")]
-        public async Task<IActionResult> GetItems(GetItemDTO GetItemRequest)
-        {
-			object response;
-
-			if(GetItemRequest.category == "New")
-			{
-				response = await _getItemsService.GetNewItemsAsync(GetItemRequest);
-				return Ok(response);
-            }
-
-			response = await _getItemsService.GetFilteredItemsAsync(GetItemRequest);
 
             return Ok(response);
 		}
@@ -412,7 +395,6 @@ namespace ParkMobileServer.Controllers
 				description = order.description,
 				email = order.email,
 				paymentType = order.paymentType,
-				personName = order.personName,
 				postMat = order.postMat,
 				reciver = order.reciver,
 				telephone = order.telephone,
@@ -430,7 +412,7 @@ namespace ParkMobileServer.Controllers
 
 			string message = $"Новый заказ!\n\n\n" +
 				"Клиент:\n" +
-				$"\tИмя: {newOrderTelegram.personName}\n" +
+				$"\tИмя: {newOrderTelegram.reciver}\n" +
 				$"\tТелефон: {newOrderTelegram.telephone}\n" +
 				$"\tEmail: {newOrderTelegram.email}\n\n\n" +
 				"Заказ:\n" +

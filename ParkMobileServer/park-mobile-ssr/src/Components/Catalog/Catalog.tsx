@@ -15,13 +15,15 @@ import { SortSelect } from "@/Shared/Components/SortSelect/SortSelect";
 import { SortType } from "@/Types/SortType";
 import { filterAtom } from "@/Store/Filter";
 
+const itemsOnPage = 8;
+
 export const Catalog = () => {
   const navigate = useRouter();
 
   const [filters] = useAtom(filterAtom);
 
   const [skip, setSkip] = useState(0);
-  const [take] = useState(16);
+  const [take] = useState(itemsOnPage);
   const [sort, setSort] = useState<SortType>()
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -67,7 +69,10 @@ export const Catalog = () => {
 
   const setSortType = (value: string) => {
     const [field, type] = value.split(",")
-    setSort({field: field, type: type as "asc" | "desc"})
+    setSort({
+      field: field,
+      type: type as "asc" | "desc"
+    })
   }
 
   useEffect(() => {
@@ -106,6 +111,7 @@ export const Catalog = () => {
           itemsCount={items?.count}
           currentPage={currentPage}
           onPageChange={handleOnPageChange}
+          itemsOnPage={itemsOnPage}
         />
       )}
     </div>
