@@ -4,7 +4,7 @@ import styles from "./Tiles.module.scss";
 import { useEffect, useRef } from "react";
 import Image from "next/image"
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 type TileItem = {
   title: string;
@@ -54,7 +54,7 @@ export const Tiles = () => {
   const h2Refs = useRef<HTMLHeadingElement[]>([]);
   const spanRefs = useRef<HTMLSpanElement[]>([]);
   const buttonRefs = useRef<HTMLDivElement[]>([]);
-  const naviagate = useRouter();
+  // const naviagate = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -125,9 +125,9 @@ export const Tiles = () => {
     };
   }, []);
 
-  const handleCategory = (route: string) => {
-    naviagate.push(route)
-  };
+  // const handleCategory = (route: string) => {
+  //   naviagate.push(route)
+  // };
 
   return (
     <div className={styles["card-tiles-block"]}>
@@ -157,18 +157,16 @@ export const Tiles = () => {
             }}
             data-buttons={el.key}
           >
-            <Link href="/#catalog">
+            <Link href={el.route}>
               <button
                 data-button="подробнее"
-                onClick={handleCategory.bind(null, el.route)}
               >
                 Подробнее
               </button>
             </Link>
-            <Link href="/#catalog">
+            <Link href={el.route}>
               <button
                 data-button="купить"
-                onClick={handleCategory.bind(null, el.route)}
               >
                 Купить
               </button>
