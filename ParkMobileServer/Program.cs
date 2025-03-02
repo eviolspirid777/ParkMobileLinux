@@ -105,15 +105,15 @@ namespace ParkMobileServer
 					//	  .AllowAnyMethod()
 					//	  .AllowCredentials(); // Разрешаем передачу cookies и авторизационных данных
 
-					//policy
-					//		.AllowAnyHeader()
-					//		.AllowAnyMethod()
-					//		.AllowCredentials();
-
-					policy.WithOrigins("https://parkmobile.store")
+					policy
 							.AllowAnyHeader()
 							.AllowAnyMethod()
 							.AllowCredentials();
+
+					//policy.WithOrigins("https://parkmobile.store")
+					//		.AllowAnyHeader()
+					//		.AllowAnyMethod()
+					//		.AllowCredentials();
 				});
             });
 
