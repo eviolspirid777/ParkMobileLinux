@@ -7,28 +7,7 @@ import Image from "next/image";
 import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 
 type ShopBucketMobileProps = {
-  shopBucket: (
-    | {
-        image: string;
-        name: string;
-        count: number;
-        price: number;
-        discountPrice?: number;
-        article: string;
-        color?: undefined;
-        memory?: undefined;
-      }
-    | {
-        image: string;
-        name: string;
-        count: number;
-        color: string;
-        memory: string;
-        price: number;
-        discountPrice?: number;
-        article: string;
-      }
-  )[];
+  shopBucket: DataType[];
   handleItemCount: (el: DataType, type: "minus" | "plus") => void;
   handleDeleteItem: (index: number) => void;
   open: boolean;

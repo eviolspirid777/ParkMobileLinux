@@ -363,9 +363,9 @@ namespace ParkMobileServer.Controllers
 
 			await _postgreSQLDbContext.SaveChangesAsync();
 
-            await _itemService.ClearAllCache();
+			await _itemService.ClearAllCache();
 
-            return Ok();
+			return Ok();
 		}
 
 		[HttpGet("GetPopularItems")]

@@ -7,7 +7,7 @@ export type DataType = {
   count: number;
   price: number;
   weight: number,
-  discountPrice?: number;
+  discountPrice?: number | null;
   article: string;
   color?: undefined;
   memory?: undefined;

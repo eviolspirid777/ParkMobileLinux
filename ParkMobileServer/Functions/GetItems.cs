@@ -76,7 +76,13 @@ namespace ParkMobileServer.Functions
                             .Filters?
                             .Select(filter => $"{filter}_")
                             .Aggregate((current, next) => current + next);
+
             string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{customFiltersStringified}";
+
+            if (searchCategoryRequest.Sort != null)
+            {
+                cacheKey += $"_{searchCategoryRequest.Sort.Field}_{searchCategoryRequest.Sort.Type}";
+            }
 
             var cachedData = await _cache.GetStringAsync(cacheKey);
             if (!string.IsNullOrEmpty(cachedData))

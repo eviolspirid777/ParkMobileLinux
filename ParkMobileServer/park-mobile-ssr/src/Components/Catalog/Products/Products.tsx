@@ -125,11 +125,8 @@ export const Products: FC<ProductsType> = ({
             count: 1,
             image: cardData.image!,
             weight: cardData.weight,
-            price: cardData.price!,
-            discountPrice:
-              typeof cardData.discountPrice === "string"
-                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
-                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
+            price: cardData.price,
+            discountPrice: cardData.discountPrice // Используем undefined, если discountPrice отсутствует
           },
         ];
       });

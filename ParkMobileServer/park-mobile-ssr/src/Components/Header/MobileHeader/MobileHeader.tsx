@@ -94,6 +94,11 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
     naviagate.push("/about/contacts");
   }
 
+  const handleLogoClick = () => {
+    handleMainMenuRoute();
+    handleShopBag();
+  }
+
   return (
     <>
     {
@@ -124,7 +129,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                   className={styles["image"]}
                   height={50}
                   width={50}
-                  onClick={handleMainMenuRoute}
+                  onClick={handleLogoClick}
                   draggable="false"
                 />
                 <div className={styles["nav-bucket-search"]}>
@@ -224,7 +229,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
         <Drawer
           placement="left"
           open={open}
-          onClose={() => setOpen(false)}
+          onClose={setOpen.bind(null, false)}
           width="100%"
           className={styles["drawer"]}
           closeIcon={

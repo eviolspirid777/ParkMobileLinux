@@ -22,6 +22,7 @@ import { convertToIntlFormat } from "@/Shared/Functions/convertToIntlFormat";
 import { deliveryPointAtom } from "@/Store/DeliveryPoint";
 import { OrderPayment } from "@/Types/Order";
 import { useOtpBank } from "@/Shared/Hooks/useOtpBank";
+import { useRouter } from "next/navigation";
 
 type ShopBucketType = {
   handleShopBag: () => void;
@@ -52,6 +53,8 @@ const translationKeyDictionary = new Map([
 export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
   const [ deliveryPoint ] = useAtom(deliveryPointAtom);
   const [shopBucket, setShopBucket] = useAtom(shopBucketAtom);
+
+  const navigate = useRouter();
 
   const [childDrawer, setChildDrawer] = useState(false);
   const [paymentType, setPaymentType] = useState("cash");
@@ -160,6 +163,10 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
         })
       }
 
+      if("ym" in window && typeof window.ym === "function") {
+        window.ym(99483189,'reachGoal','submitForm')
+      }
+      navigate.push("/success")
       setShopBucket([]);
       localStorage.removeItem("shopBucket");
     } catch (error) {
