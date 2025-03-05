@@ -18,7 +18,7 @@ export const BaseShopBucketFormData = () => {
       };
     
       const validateMail = (_: unknown, value: string) => {
-        const mailRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+        const mailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
         if(!value || !mailRegex.test(value)) {
           return Promise.reject()
