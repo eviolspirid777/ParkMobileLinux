@@ -1,7 +1,7 @@
 export const ItemsFilters = new Map([
     ["Apple", ["iPhone", "MacBook", "iPad", "AirPods", "Apple Watch", "Apple TV"]],
     ["Samsung", ["Смартфоны", "Наушники", "Умные часы"]],
-    ["Xiaomi", ["Смартфоны", "Наушники", "ТВ Приставки"]],
+    ["Xiaomi", ["Смартфоны", "Наушники"]],
     ["Xiaomi 14 Ultra", []],
     ["Xiaomi 14", []],
     ["Xiaomi 14T Pro", []],

@@ -18,7 +18,7 @@ import { MobileSearchMenu } from "./MobileSearchMenu/MobileSearchMenu";
 
 type MobileHeaderProps = {
   handleMainMenuRoute: () => void;
-  handleShopBag: () => void;
+  handleShopBag: (state: boolean | undefined) => void;
   setTradeInOpen: (state: boolean) => void;
   setDeviceFixOpen: (state: boolean) => void;
 };
@@ -96,7 +96,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
 
   const handleLogoClick = () => {
     handleMainMenuRoute();
-    handleShopBag();
+    handleShopBag(false);
   }
 
   return (
@@ -141,7 +141,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
                     <span>{shopBucket.length}</span>
                     <i
                       className="fa-sharp fa-thin fa-bag-shopping fa-lg"
-                      onClick={handleShopBag}
+                      onClick={handleShopBag.bind(null, undefined)}
                     />
                   </div>
                 </div>

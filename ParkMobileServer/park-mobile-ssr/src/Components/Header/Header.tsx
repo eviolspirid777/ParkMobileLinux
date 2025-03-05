@@ -81,7 +81,7 @@ export const Header: FC<HeaderProps> = ({
     },
     {
       navTitle: "Xiaomi",
-      titles: ["Смартфоны", "Наушники", "ТВ Приставки"],
+      titles: ["Смартфоны", "Наушники"],
       subTitles: ["Заявка на Трейд-Ин", "Заявка на ремонт"],
     },
     {

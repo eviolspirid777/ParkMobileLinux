@@ -25,7 +25,7 @@ import { useOtpBank } from "@/Shared/Hooks/useOtpBank";
 import { useRouter } from "next/navigation";
 
 type ShopBucketType = {
-  handleShopBag: () => void;
+  handleShopBag: (state: boolean | undefined) => void;
   open: boolean;
 };
 
@@ -174,13 +174,13 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
     } finally {
       form.resetFields();
       setChildDrawer((prev) => !prev);
-      handleShopBag();
+      handleShopBag(undefined);
     }
   };
 
   return (
     <Drawer
-      onClose={handleShopBag}
+      onClose={handleShopBag.bind(null, undefined)}
       open={open}
       closable={false}
       width={700}
@@ -189,7 +189,7 @@ export const ShopBucket: FC<ShopBucketType> = ({ open, handleShopBag }) => {
       <div className={styles["drawer-items-block"]}>
         <header>
           <h3>Ваш заказ</h3>
-          <i className="fa-regular fa-xmark fa-2xl" onClick={handleShopBag} />
+          <i className="fa-regular fa-xmark fa-2xl" onClick={handleShopBag.bind(null, undefined)} />
         </header>
         <hr />
         <Media
