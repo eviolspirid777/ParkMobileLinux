@@ -72,9 +72,10 @@ export const BaseShopBucketFormData = () => {
               ]}
             >
                 <Input
-                type="tel"
-                placeholder="+7 (999) 999-99-99"
-                onChange={handlePhoneChange}
+                  type="tel"
+                  placeholder="+7 (999) 999-99-99"
+                  onChange={handlePhoneChange}
+                  maxLength={12}
                 />
             </Form.Item>
             </div>
@@ -92,7 +93,6 @@ export const BaseShopBucketFormData = () => {
             <Input
                 type="email"
                 placeholder="Ваша электронная почта"
-                maxLength={12}
             />
             </Form.Item>
         </>
