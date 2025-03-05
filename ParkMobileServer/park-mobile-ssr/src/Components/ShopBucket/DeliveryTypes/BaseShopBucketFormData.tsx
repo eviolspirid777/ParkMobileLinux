@@ -92,6 +92,7 @@ export const BaseShopBucketFormData = () => {
             <Input
                 type="email"
                 placeholder="Ваша электронная почта"
+                maxLength={12}
             />
             </Form.Item>
         </>
