@@ -61,10 +61,7 @@ export const MobileSearchMenu: FC<MobileSearchMenuProps> = ({
             image: cardData.image!,
             weight: cardData.weight,
             price: cardData.price!,
-            discountPrice:
-              typeof cardData.discountPrice === "string"
-                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
-                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
+            discountPrice: cardData.discountPrice
           },
         ];
       });
