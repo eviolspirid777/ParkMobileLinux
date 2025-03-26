@@ -2,11 +2,11 @@
 {
     public static class RedisCacheService
     {
-        public static void AddRedisService(this IServiceCollection services, IConfiguration configuration)
+        public static void AddRedisService(this IServiceCollection services, string? connectionString)
         {
             services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = configuration.GetConnectionString("Redis");
+                options.Configuration = connectionString;
                 options.InstanceName = "RedisInstance";
             });
         }

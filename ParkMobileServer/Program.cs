@@ -34,7 +34,7 @@ namespace ParkMobileServer
 			var builder = WebApplication.CreateBuilder(args);
 
 			builder.Services.AddDbService<PostgreSQLDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
-			builder.Services.AddRedisService(builder.Configuration);
+			builder.Services.AddRedisService(builder.Configuration.GetConnectionString("Redis"));
 			builder.Services.AddTelegramService();
             builder.Services.AddScoped<GetItems>();
 			builder.Services.AddScoped<CreateItems>();
@@ -46,7 +46,7 @@ namespace ParkMobileServer
             builder.Services.AddControllers();
 
 			builder.Services.AddParMobileAuthentificationService(builder.Configuration["JwtSecret"]);
-			builder.Services.AddCorsService(CorsService.CORS_ENUM.ANY);
+			builder.Services.AddCorsService(CORS_ENUM.ANY);
 
             builder.Services.AddSignalR();
             builder.Services.AddScoped<OrderService>();

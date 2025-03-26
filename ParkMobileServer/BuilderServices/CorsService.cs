@@ -1,13 +1,13 @@
 ﻿namespace ParkMobileServer.BuilderServices
 {
+    public enum CORS_ENUM
+    {
+        LOCAL = 0,
+        ANY = 1,
+        DEPLOY = 2
+    }
     public static class CorsService
     {
-        public enum CORS_ENUM
-        {
-            LOCAL = 0,
-            ANY = 1,
-            DEPLOY = 2
-        }
         public static void AddCorsService(this IServiceCollection services, CORS_ENUM type)
         {
             services.AddCors(options =>
