@@ -89,10 +89,7 @@ export const HeaderSlider: FC<HeaderSliderProps> = ({
             image: cardData.image!,
             price: cardData.price!,
             weight: cardData.weight,
-            discountPrice:
-              typeof cardData.discountPrice === "string"
-                ? parseFloat(cardData.discountPrice) // Преобразуем строку в число
-                : cardData.discountPrice ?? undefined, // Используем undefined, если discountPrice отсутствует
+            discountPrice: cardData.discountPrice
           },
         ];
       });

@@ -41,8 +41,8 @@ export const MobileHeaderBlock = () => {
     handleMouseLeave();
   };
 
-  const handleShopBag = () => {
-    setOpen((previousState) => !previousState);
+  const handleShopBag = (state: boolean | undefined) => {
+    setOpen((previousState) => state ?? !previousState);
   };
 
   return (
