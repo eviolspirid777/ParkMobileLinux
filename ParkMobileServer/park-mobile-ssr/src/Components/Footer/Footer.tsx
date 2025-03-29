@@ -3,15 +3,11 @@ import { usePathname, useRouter } from "next/navigation";
 import styles from "./Footer.module.scss";
 import { TelegramIcon } from "./Telegram";
 import { animateScroll as scroll } from "react-scroll";
-import { useAtom } from "jotai";
-import { categoryAtom } from "@/Store/FiltersStore";
 import Image from "next/image";
 
 export const Footer = () => {
   const pathName = usePathname();
   const naviagate = useRouter();
-
-  const [, setCategories] = useAtom(categoryAtom);
 
   const handlePath = (path: string, scrollValue?: number) => {
     if (pathName === path) {
@@ -20,13 +16,9 @@ export const Footer = () => {
     naviagate.push(path);
   };
 
-  const handleCategory = (category: string) => {
-    naviagate.push("/");
-    setTimeout(() => {
-      setCategories(category);
-      naviagate.push("#catalog")
-    }, 100)
-  };
+  const handleCatalogNavigate = (path: string) => {
+    naviagate.push(path);
+  }
 
   return (
     <div className={styles["footer-block"]}>
@@ -60,14 +52,13 @@ export const Footer = () => {
         </div>
         <div className={styles["footer-block-help-items"]}>
           <h2>Каталог</h2>
-          <span onClick={handleCategory.bind(null, "Mac")}>Mac</span>
-          <span onClick={handleCategory.bind(null, "iPhone")}>iPhone</span>
-          <span onClick={handleCategory.bind(null, "Watch")}>Watch</span>
-          <span onClick={handleCategory.bind(null, "iPad")}>iPad</span>
-          <span onClick={handleCategory.bind(null, "Аксессуары")}>
+          <span onClick={handleCatalogNavigate.bind(null, "/categories/Apple/MacBook")}>Mac</span>
+          <span onClick={handleCatalogNavigate.bind(null, "/categories/Apple/iPhone")}>iPhone</span>
+          <span onClick={handleCatalogNavigate.bind(null, "/categories/Apple/watches")}>Watch</span>
+          <span onClick={handleCatalogNavigate.bind(null, "/categories/Apple/iPad")}>iPad</span>
+          <span onClick={handleCatalogNavigate.bind(null, "/categories/Gaming/accessories")}>
             Аксессуары
           </span>
-          <span onClick={handleCategory.bind(null, "Гаджеты")}>Гаджеты</span>
         </div>
         <div className={styles["footer-block-help-items"]}>
           <h2>Подпишись</h2>

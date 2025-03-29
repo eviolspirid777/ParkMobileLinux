@@ -12,12 +12,20 @@ import { accentColorAtom } from "@/Store/AccentColor";
 import { useAtom } from "jotai";
 import { useGetSliderData } from "@/hooks/useGetSliderData";
 import { useGetSliderDataMobile } from "@/hooks/useGetSliderDataMobile";
+import { SliderResponse } from "@/Types/SliderResponse";
+
+import { useRouter } from "next/navigation";
 
 
 export const SwiperList = () => {
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<SliderResponse[]>([]);
   const [accentColor, setAccentColor] = useAtom(accentColorAtom)
   const [isRendered, setIsRendered] = useState(false);
+  const naviagate = useRouter();
+
+  const handleCategory = (path: string) => {
+    naviagate.push(path);
+  };
 
   const {
     sliderData,
@@ -50,10 +58,10 @@ export const SwiperList = () => {
 
   useEffect(() => {
     if(mobileSliderData) {
-      setImages(mobileSliderData.map(data => data.imageData))
+      setImages(mobileSliderData)
     }
     else if(sliderData) {
-      setImages(sliderData.map(data => data.imageData))
+      setImages(sliderData)
     }
   }, [mobileSliderData, sliderData])
 
@@ -78,6 +86,26 @@ export const SwiperList = () => {
     }
   }, [accentColor]);
 
+  const handleImageClick = (image: SliderResponse) => {
+    switch(image.name) {
+      case "Ipad":
+      case "IpadMobile": {
+        handleCategory("/categories/Apple/iPad");
+        break;
+      }
+      case "Iphone":
+      case "IphoneMobile": {
+        handleCategory("/categories/Apple/iPhone/iPhone%2016");
+        break;
+      }
+      case "iphoneWIthGlass":
+      case "iphoneWIthGlassMobile": {
+        handleCategory("/categories/Apple/iPhone");
+        break;
+      }
+    }
+  };
+
   return (
     <div style={{ backgroundColor: accentColor || "transparent" }}>
       {
@@ -98,13 +126,14 @@ export const SwiperList = () => {
             <SwiperSlide key={index}>
               <ImageData
                 className={styles["image-container"]}
-                src={`data:image/jpeg;base64,${image}`}
+                src={`data:image/jpeg;base64,${image.imageData}`}
                 alt="swiper_image"
                 width={1200}
                 height={300}
                 quality={100}
                 layout="relative"
                 priority
+                onClick={() => handleImageClick(image)}
               />
             </SwiperSlide>
           ))}

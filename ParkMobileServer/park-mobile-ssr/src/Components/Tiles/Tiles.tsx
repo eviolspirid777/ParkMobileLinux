@@ -58,7 +58,7 @@ export const Tiles = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY >= 945) {
+      if (window.scrollY >= 1130) {
         tilesItems.forEach((_, index) => {
           const h2Element = h2Refs.current[index];
           const spanElement = spanRefs.current[index];

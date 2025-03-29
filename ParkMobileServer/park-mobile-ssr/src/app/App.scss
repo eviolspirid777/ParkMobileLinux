@@ -630,6 +630,18 @@ body {
 }
 
 @font-face {
+    font-family: "Inter-regular-20px";
+    src: url("/fonts/inter/Inter_18pt-Regular.ttf");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Inter-bold-20px";
+    src: url("/fonts/inter/Inter_18pt-Bold.ttf");
+    font-display: swap;
+}
+
+@font-face {
     font-family: "SF-Pro-Display-Regular";
     src: url("/fonts/SF-Pro-Display-Regular.otf");
     font-display: swap;

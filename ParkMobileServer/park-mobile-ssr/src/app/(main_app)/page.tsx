@@ -15,9 +15,9 @@ const Home = async () => {
       <CustomQueryProvider>
         <SwiperList/>
         {/* <UnderSwiperCards /> */}
+        <UnderTilesLogos />
         <PopularItems />
         <TilesWrapper />
-        <UnderTilesLogos />
         <AboutMainPage />
         {/* <Catalog /> */}
       </CustomQueryProvider>
