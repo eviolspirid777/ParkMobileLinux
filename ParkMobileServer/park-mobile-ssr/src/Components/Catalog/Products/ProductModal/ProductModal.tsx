@@ -239,7 +239,7 @@ const handleSubmitData = async (values: Omit<OrderItem, "article" | "itemName">)
               {
                 CardData ? 
                 <>
-                  <span>Рыночная цена:</span>
+                  <span>Цена в магазине:</span>
                   <strong>{computedCarDataNewPriceWithPercent()} ₽</strong>
                   <Tooltip
                     title={renderToolTipContent}

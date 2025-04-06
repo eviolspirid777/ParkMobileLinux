@@ -6,6 +6,7 @@ import { SwiperList } from "@/Components/Swiper/Swiper";
 import { CustomQueryProvider } from "@/Shared/Components/CustomQueryProvider/CustomQueryProvider";
 import { TilesWrapper } from "@/Components/Tiles/TilesWrapper/TilesWrapper";
 import { AboutMainPage } from "@/Components/AboutMainPage/AboutMainPage";
+// import { Comments } from "@/Components/Comments/Comments";
 
 export const revalidate = 3600
 
@@ -20,6 +21,7 @@ const Home = async () => {
         <TilesWrapper />
         <AboutMainPage />
         {/* <Catalog /> */}
+        {/* <Comments /> */}
       </CustomQueryProvider>
     </>
   );
