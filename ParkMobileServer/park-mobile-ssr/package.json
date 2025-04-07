@@ -3,15 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "devTest": "next dev --experimental-https",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "bun --bun next dev",
+    "devTest": "bun --bun next dev --experimental-https",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "lint": "bun --bun next lint",
     "firebaseDeploy": "firebase deploy",
-    "export": "next build && next export",
-    "DeployOnLocal": "npx serve@latest out",
-    "preinstall": "npx npm-force-resolutions"
+    "export": "bun --bun next build && bun --bun next export",
+    "DeployOnLocal": "bunx serve out"
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.2",
