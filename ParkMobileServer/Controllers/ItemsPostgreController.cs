@@ -285,22 +285,28 @@ namespace ParkMobileServer.Controllers
 									item.Description!.Description
 								})
 								.FirstOrDefaultAsync();
+
+			if (item == null)
+			{
+				throw new NotFoundException($"Товар с ID {id} не найден");
+			}
+
 			return Ok(item);
 		}
 
 		[Authorize]
 		[HttpDelete("DeleteItem/{id}")]
-		public async Task<IActionResult> DeleteItem (int id )
+		public async Task<IActionResult> DeleteItem(int id)
 		{
 			try
 			{
 				var response = await _itemService.DeleteItemAsync(id);
-                return Ok(response);
+				return Ok(response);
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError("Ошибка! {message}", ex.Message);
-				return BadRequest(ex.Message);
+				_logger.LogError("Ошибка при удалении товара! {message}", ex.Message);
+				throw new BusinessException($"Ошибка при удалении товара: {ex.Message}");
 			}
 		}
 

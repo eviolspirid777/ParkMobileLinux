@@ -8,6 +8,8 @@ using ParkMobileServer.Entities.Items;
 using ParkMobileServer.Helpers;
 using ParkMobileServer.Mappers.ItemsMapper;
 using System.Xml.Linq;
+using System.Diagnostics;
+using ParkMobileServer.Metrics;
 
 namespace ParkMobileServer.Functions
 {
@@ -27,147 +29,167 @@ namespace ParkMobileServer.Functions
 
         public async Task<object> GetItemsByNameAsync(GetSearchItemRequest searchRequest)
         {
-            var splittedName = searchRequest.Name.Split(" ");
+            var stopwatch = Stopwatch.StartNew();
+            try
+            {
+                var splittedName = searchRequest.Name.Split(" ");
 
-            var query = _postgreSQLDbContext
-                                .ItemEntities
-                                .Where(item => item.isInvisible == false)
-                                .Include(item => item.Description)
-                                .Include(item => item.Article)
+                var query = _postgreSQLDbContext
+                                    .ItemEntities
+                                    .Where(item => item.isInvisible == false)
+                                    .Include(item => item.Description)
+                                    .Include(item => item.Article)
+                                    .AsQueryable();
+
+                foreach (var splitValue in splittedName)
+                {
+                    query = query
+                                .Where(item => item.Name.ToLower().Contains(splitValue.ToLower()))
                                 .AsQueryable();
+                }
 
-            foreach (var splitValue in splittedName)
-            {
-                query = query
-                            .Where(item => item.Name.ToLower().Contains(splitValue.ToLower()))
-                            .AsQueryable();
+                var itemsCount = await query.CountAsync();
+
+                var items = await query
+                                    .Skip(searchRequest.Skip)
+                                    .Take(searchRequest.Take)
+                                    .Select(item => new
+                                    {
+                                        item.Id,
+                                        item.Name,
+                                        item.Price,
+                                        item.DiscountPrice,
+                                        item.Image,
+                                    })
+                                    .ToListAsync();
+                
+                if(itemsCount == 0)
+                {
+                    throw new Exception("Не найдено данных!");
+                }
+
+                return new
+                {
+                    items = items,
+                    count = itemsCount
+                };
             }
-
-            var itemsCount = await query.CountAsync();
-
-            var items = await query
-                                .Skip(searchRequest.Skip)
-                                .Take(searchRequest.Take)
-                                .Select(item => new
-                                {
-                                    item.Id,
-                                    item.Name,
-                                    item.Price,
-                                    item.DiscountPrice,
-                                    item.Image,
-                                })
-                                .ToListAsync();
-            
-            if(itemsCount == 0)
+            finally
             {
-                throw new Exception("Не найдено данных!");
+                ApplicationMetrics.DatabaseQueryDuration
+                    .WithLabels("GetItemsByName")
+                    .Observe(stopwatch.Elapsed.TotalSeconds);
             }
-
-            return new
-            {
-                items = items,
-                count = itemsCount
-            };
         }
 
         public async Task<object> GetFilteredItemsAsync(SearchCategoryItemRequest searchCategoryRequest)
         {
-            var customFiltersStringified = searchCategoryRequest
-                            .Filters?
-                            .Select(filter => $"{filter}_")
-                            .Aggregate((current, next) => current + next);
-
-            string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{customFiltersStringified}";
-
-            if (searchCategoryRequest.Sort != null)
+            var stopwatch = Stopwatch.StartNew();
+            try
             {
-                cacheKey += $"_{searchCategoryRequest.Sort.Field}_{searchCategoryRequest.Sort.Type}";
-            }
+                var customFiltersStringified = searchCategoryRequest
+                                .Filters?
+                                .Select(filter => $"{filter}_")
+                                .Aggregate((current, next) => current + next);
 
-            var cachedData = await _cache.GetStringAsync(cacheKey);
-            if (!string.IsNullOrEmpty(cachedData))
-            {
-                return JsonConvert.DeserializeObject<ItemFilteredResponse>(cachedData);
-            }
+                string cacheKey = $"filtered_items_{searchCategoryRequest.Skip}_{searchCategoryRequest.Take}_{customFiltersStringified}";
 
-            var query = _postgreSQLDbContext
-                            .ItemEntities
-                            .Where(item => item.isInvisible == false)
-                            .Include(i => i.Filters)
-                            .AsQueryable();
-
-            if (searchCategoryRequest.Filters != null && searchCategoryRequest.Filters.Count > 0)
-            {
-                query = query
-                            .Where(i => searchCategoryRequest.Filters
-                                .All(filter => i.Filters.Any(f => f.Name == filter)));
-            }
-
-            if(searchCategoryRequest.Sort != null)
-            {
-                switch(searchCategoryRequest.Sort.Field)
+                if (searchCategoryRequest.Sort != null)
                 {
-                    case "name":
+                    cacheKey += $"_{searchCategoryRequest.Sort.Field}_{searchCategoryRequest.Sort.Type}";
+                }
+
+                var cachedData = await _cache.GetStringAsync(cacheKey);
+                if (!string.IsNullOrEmpty(cachedData))
+                {
+                    return JsonConvert.DeserializeObject<ItemFilteredResponse>(cachedData);
+                }
+
+                var query = _postgreSQLDbContext
+                                .ItemEntities
+                                .Where(item => item.isInvisible == false)
+                                .Include(i => i.Filters)
+                                .AsQueryable();
+
+                if (searchCategoryRequest.Filters != null && searchCategoryRequest.Filters.Count > 0)
+                {
+                    query = query
+                                .Where(i => searchCategoryRequest.Filters
+                                    .All(filter => i.Filters.Any(f => f.Name == filter)));
+                }
+
+                if(searchCategoryRequest.Sort != null)
+                {
+                    switch(searchCategoryRequest.Sort.Field)
                     {
-                        if (searchCategoryRequest.Sort.Type == "asc")
+                        case "name":
                         {
-                            query = query.OrderBy(item => item.Name);
+                            if (searchCategoryRequest.Sort.Type == "asc")
+                            {
+                                query = query.OrderBy(item => item.Name);
+                            }
+                            else
+                            {
+                                query = query.OrderByDescending(item => item.Name);
+                            }
+                            break;
                         }
-                        else
+                        case "price":
                         {
-                            query = query.OrderByDescending(item => item.Name);
+                            if (searchCategoryRequest.Sort.Type == "asc")
+                            {
+                                query = query.OrderBy(item => item.Price);
+                            }
+                            else
+                            {
+                                query = query.OrderByDescending(item => item.Price);
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    case "price":
-                    {
-                        if (searchCategoryRequest.Sort.Type == "asc")
-                        {
-                            query = query.OrderBy(item => item.Price);
-                        }
-                        else
-                        {
-                            query = query.OrderByDescending(item => item.Price);
-                        }
-                        break;
                     }
                 }
+                else
+                {
+                    query = query
+                                .OrderByDescending(item => item.IsNewItem)
+                                .ThenByDescending(item => item.Name);
+                }
+
+                var itemsCount = await query.CountAsync();
+
+                var items = await query
+                                    .Skip(searchCategoryRequest.Skip)
+                                    .Take(searchCategoryRequest.Take)
+                                    .Select(item => ItemMapper.MapToItemDto(item))
+                                    .ToListAsync();
+                
+
+                if (items.Count == 0)
+                {
+                    throw new Exception("Не найдено товаров");
+                }
+
+                object response = new
+                {
+                    items,
+                    count = itemsCount
+                };
+
+                var cacheOptions = new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                };
+
+                await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(response), cacheOptions);
+
+                return response;
             }
-            else
+            finally
             {
-                query = query
-                            .OrderByDescending(item => item.IsNewItem)
-                            .ThenByDescending(item => item.Name);
+                ApplicationMetrics.DatabaseQueryDuration
+                    .WithLabels("GetFilteredItems")
+                    .Observe(stopwatch.Elapsed.TotalSeconds);
             }
-
-            var itemsCount = await query.CountAsync();
-
-            var items = await query
-                                .Skip(searchCategoryRequest.Skip)
-                                .Take(searchCategoryRequest.Take)
-                                .Select(item => ItemMapper.MapToItemDto(item))
-                                .ToListAsync();
-            
-
-            if (items.Count == 0)
-            {
-                throw new Exception("Не найдено товаров");
-            }
-
-            object response = new
-            {
-                items,
-                count = itemsCount
-            };
-
-            var cacheOptions = new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            };
-
-            await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(response), cacheOptions);
-
-            return response;
         }
 
         public async Task<object> GetSearchItemsByName(GetSearchItemRequest searchRequest)

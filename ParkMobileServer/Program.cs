@@ -12,6 +12,9 @@ using ParkMobileServer.Services;
 using ParkMobileServer.HTTP;
 using ParkMobileServer.BuilderServices;
 using static ParkMobileServer.BuilderServices.CdekHttpService;
+using ParkMobileServer.Middleware;
+using Prometheus;
+using ParkMobileServer.Repositories;
 
 /*
  * Команды для развертывания докера на серваке
@@ -36,22 +39,36 @@ namespace ParkMobileServer
 			builder.Services.AddDbService<PostgreSQLDbContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 			builder.Services.AddRedisService(builder.Configuration.GetConnectionString("Redis"));
 			builder.Services.AddTelegramService();
-            builder.Services.AddScoped<GetItems>();
+			builder.Services.AddScoped<GetItems>();
 			builder.Services.AddScoped<CreateItems>();
+
+			// Регистрация репозиториев
+			builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+			builder.Services.AddScoped<IItemRepository, ItemRepository>();
+
+			// Регистрация сервисов
+			builder.Services.AddScoped<IItemService, ItemService>();
 
 			builder.Services.AddCdekHttpService(ENV_ENUM.PRODUCTION);
 			builder.Services.AddSmsHttpService();
 
 			builder.WebHost.UseUrls("http://*:3001");
-            builder.Services.AddControllers();
+			builder.Services.AddControllers();
 
 			builder.Services.AddParMobileAuthentificationService(builder.Configuration["JwtSecret"]);
 			builder.Services.AddCorsService(CORS_ENUM.ANY);
 
-            builder.Services.AddSignalR();
-            builder.Services.AddScoped<OrderService>();
+			builder.Services.AddSignalR();
+			builder.Services.AddScoped<OrderService>();
 
-            var app = builder.Build();
+			var app = builder.Build();
+
+			// Настройка метрик
+			app.UseMetricServer();
+			app.UseHttpMetrics();
+			app.UseMiddleware<MetricsMiddleware>();
+
+			app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 			app.UseCors("AllowSpecificOrigin");
 
