@@ -8,7 +8,7 @@ export const Comments = () => {
       <div
         style={{
           width:"560px",
-          height:"800px",
+          height:"600px",
           overflow:"hidden",
           position:"relative"
         }}

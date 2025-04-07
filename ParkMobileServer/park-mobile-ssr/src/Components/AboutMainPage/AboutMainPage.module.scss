@@ -3,7 +3,7 @@
     flex-flow: row nowrap;
     align-items: center;
     gap: 100px;
-    padding: 3% 10% 10% 10%;
+    padding: 3% 10% 4% 10%;
     width: 100%;
 
     & h3 {
@@ -17,11 +17,17 @@
         flex-flow: column nowrap;
         gap: 50px;
         align-items: flex-start;
+        justify-content: flex-start;
         width: 100%;
+    }
+
+    &-map {
+        align-self: baseline;
     }
 
     &-about {
         margin-top: 0%;
+        align-self: baseline;
     }
 
     &-info-block {
@@ -47,7 +53,7 @@
             letter-spacing: 1px;
             & span {
                 text-wrap: balance;
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
         }
     }
@@ -235,20 +241,12 @@
         align-self: flex-start;
 
         &-text {
+            display: flex;
             align-self: flex-start;
             & span {
                 text-align: left !important;
+                font-size: 1.2rem;
             }
-        }
-    }
-
-    .about-contacts-block-info-block-text {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
-
-        & span {
-            text-align: center;
         }
     }
 
@@ -278,13 +276,13 @@
 
     .about-contacts-block {
         padding: 17% 4% 0% 4% !important;
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: 50%;
         width: 100vw;
     }
 
     .about-contacts-block-about {
-        margin-top: 20%;
+        margin-top: 5%;
 
         & .about-contacts-block-info-block {
             flex-direction: column;
